@@ -13,6 +13,7 @@ import { Users } from "./collections/Users"
 import { Works } from "./collections/Works"
 import { emailAdapterOf } from "./email"
 import { env } from "./env"
+import { healthEndpoint } from "./health"
 import { Footer } from "./globals/Footer"
 import { LandingPage } from "./globals/LandingPage"
 import { r2StorageOptions } from "./storage"
@@ -32,6 +33,8 @@ export default buildConfig({
   collections: [Works, Sectors, Assets, Clients, Users],
   globals: [LandingPage, Footer],
   editor: lexicalEditor(),
+  // Served at /api/health — the platform readiness probe.
+  endpoints: [healthEndpoint],
   secret: env.PAYLOAD_SECRET,
   email: emailAdapterOf(env),
   typescript: {

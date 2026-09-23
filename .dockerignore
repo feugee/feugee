@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.husky
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+coverage
+README.md
