@@ -12,7 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 ### Issue tracker
 
-Issues are tracked in GitHub Issues (Nafibal/feugee) via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+Issues are tracked in GitHub Issues (feugee/feugee) via the `gh` CLI. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
