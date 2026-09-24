@@ -46,7 +46,8 @@ jobs:
 
       # No setup-buildx here: the default (docker driver) builder keeps RUN
       # steps on the runner's bridge network, where 172.17.0.1 reaches the
-      # Postgres service above.
+      # Postgres service above. That driver has no cache export, so no
+      # cache-from/cache-to — an uncached build on the runner is still fast.
       - uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
@@ -110,6 +111,4 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           build-args: ${{ steps.args.outputs.args }}
