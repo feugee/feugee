@@ -65,12 +65,18 @@ docker build \
   -t feugee:latest .
 ```
 
+### CI-built image (GitHub Actions)
+
+Building on the VPS is optional. Pushing to `main` triggers [the build workflow](.github/workflows/build-image.yml): an Actions runner (7 GB RAM — far beyond the target VPS) builds the image against a throwaway Postgres service and publishes it to `ghcr.io/feugee/feugee` (tags: `latest` + commit SHA). The workflow needs the same build-time env as GitHub secrets/variables; `DATABASE_URL` is generated in-workflow, pointing at the throwaway database through the runner's bridge gateway. Pages prerender against that empty database — harmless, because the runtime seed writes through the Payload Local API, firing the revalidation hooks that repopulate the served pages on first boot.
+
+This is the recommended release path on a small VPS: Coolify deploys `ghcr.io/feugee/feugee:latest` directly and never runs `next build` on the server.
+
 ### Deploying on Coolify (VPS)
 
-The app runs as a Dockerfile deployment next to a Postgres service, both on one server (sizing notes in issue #2):
+The app runs as a Docker image deployment next to a Postgres service, both on one server (sizing notes in issue #2):
 
-1. **Postgres first** — add Coolify's PostgreSQL service; the first app build migrates it, so it must be reachable (empty is fine). Note its internal connection URL.
-2. **Create the app** from the repository, build type Dockerfile. Coolify passes its environment variables into the build when the Dockerfile declares them as `ARG`s — the full runtime env from `.env.example` (minus `SEED_DEMO`) must be set, with `DATABASE_URL` pointing at the Postgres service.
+1. **Postgres first** — add Coolify's PostgreSQL service; the app's entrypoint migrates and seeds it on every boot, so it must exist and be reachable (empty is fine). Note its internal connection URL.
+2. **Create the app** — preferred: deploy the CI-built image `ghcr.io/feugee/feugee:latest` (Docker-image resource; publish the GHCR package or configure pull credentials). Alternatively, build from the repository with build type Dockerfile — Coolify passes its environment variables into the build when the Dockerfile declares them as `ARG`s. Either way, the full runtime env from `.env.example` (minus `SEED_DEMO`) must be set, with `DATABASE_URL` pointing at the Postgres service.
 3. **First release** — set `SEED_DEMO=true`, `PAYLOAD_ADMIN_EMAIL`, and `PAYLOAD_ADMIN_PASSWORD` for the initial deploy so the admin account is created along with the demo content; remove all three afterwards. The admin credentials are only read on a boot that actually creates the admin.
 4. **Domain + HTTPS** — attach the domain in Coolify; its proxy handles certificates. `NEXT_PUBLIC_SERVER_URL` must match it exactly.
 5. **Health check** — set Coolify's health-check path to `/api/health`.
