@@ -1,15 +1,15 @@
-import type { S3StorageOptions } from "@payloadcms/storage-s3"
+import type { S3StorageOptions } from "@payloadcms/storage-s3";
 
-import type { Env } from "./env"
+import type { Env } from "./env";
 
-type R2StorageOptions = Omit<S3StorageOptions, "collections">
+type R2StorageOptions = Omit<S3StorageOptions, "collections">;
 
 /**
  * The S3 endpoint the credentials point at: the explicit S3-compatible
  * override (local dev's Biznet Gio, via R2_ENDPOINT) or the derived R2 one.
  */
 export const r2EndpointOf = (env: Env): string =>
-  env.R2_ENDPOINT ?? `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
+  env.R2_ENDPOINT ?? `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
 
 export const r2PublicAssetUrlOf = (
   env: Env,
@@ -17,18 +17,18 @@ export const r2PublicAssetUrlOf = (
   prefix = "",
 ): string => {
   const baseUrl =
-    env.R2_PUBLIC_URL ?? `${env.NEXT_PUBLIC_SERVER_URL}/api/assets/file`
+    env.R2_PUBLIC_URL ?? `${env.NEXT_PUBLIC_SERVER_URL}/api/assets/file`;
   const path = [prefix, filename]
     .filter(Boolean)
     .flatMap((segment) => segment.split("/"))
     .map(encodeURIComponent)
-    .join("/")
+    .join("/");
 
-  return `${baseUrl.replace(/\/$/, "")}/${path}`
-}
+  return `${baseUrl.replace(/\/$/, "")}/${path}`;
+};
 
 export function r2StorageOptions(env: Env): R2StorageOptions {
-  const s3CompatibleOverride = Boolean(env.R2_ENDPOINT)
+  const s3CompatibleOverride = Boolean(env.R2_ENDPOINT);
 
   return {
     bucket: env.R2_BUCKET,
@@ -47,5 +47,5 @@ export function r2StorageOptions(env: Env): R2StorageOptions {
       // "auto" pseudo-region.
       region: s3CompatibleOverride ? "us-east-1" : "auto",
     },
-  }
+  };
 }

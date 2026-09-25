@@ -1,14 +1,14 @@
-import type { CollectionConfig } from "payload"
+import type { CollectionConfig } from "payload";
 
 import {
   revalidateSiteAfterChange,
   revalidateSiteAfterDelete,
-} from "../hooks/revalidateSite"
+} from "../hooks/revalidateSite";
 import {
   assetUploadLimitBytes,
   describeSize,
   uploadSizeError,
-} from "./assetUploadCap"
+} from "./assetUploadCap";
 
 export const Assets: CollectionConfig = {
   slug: "assets",
@@ -26,8 +26,8 @@ export const Assets: CollectionConfig = {
   upload: {
     mimeTypes: ["image/*", "video/*"],
     modifyResponseHeaders: ({ headers }) => {
-      headers.set("Cache-Control", "public, max-age=31536000, immutable")
-      return headers
+      headers.set("Cache-Control", "public, max-age=31536000, immutable");
+      return headers;
     },
     // The size ladder every public placement requests from, smallest to
     // largest: Footer cards and marquee logos (thumbnail), the Works
@@ -66,9 +66,9 @@ export const Assets: CollectionConfig = {
   hooks: {
     beforeValidate: [
       ({ req }) => {
-        const error = uploadSizeError(req.file?.size)
+        const error = uploadSizeError(req.file?.size);
         if (error) {
-          throw error
+          throw error;
         }
       },
     ],
@@ -102,4 +102,4 @@ export const Assets: CollectionConfig = {
       },
     },
   ],
-}
+};

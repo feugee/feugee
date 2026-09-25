@@ -1,25 +1,25 @@
-import { postgresAdapter } from "@payloadcms/db-postgres"
-import { s3Storage } from "@payloadcms/storage-s3"
-import { lexicalEditor } from "@payloadcms/richtext-lexical"
-import path from "path"
-import { buildConfig } from "payload"
-import { fileURLToPath } from "url"
-import sharp from "sharp"
+import { postgresAdapter } from "@payloadcms/db-postgres";
+import { s3Storage } from "@payloadcms/storage-s3";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import path from "path";
+import { buildConfig } from "payload";
+import { fileURLToPath } from "url";
+import sharp from "sharp";
 
-import { Assets } from "./collections/Assets"
-import { Clients } from "./collections/Clients"
-import { Sectors } from "./collections/Sectors"
-import { Users } from "./collections/Users"
-import { Works } from "./collections/Works"
-import { emailAdapterOf } from "./email"
-import { env } from "./env"
-import { healthEndpoint } from "./health"
-import { Footer } from "./globals/Footer"
-import { LandingPage } from "./globals/LandingPage"
-import { r2PublicAssetUrlOf, r2StorageOptions } from "./storage"
+import { Assets } from "./collections/Assets";
+import { Clients } from "./collections/Clients";
+import { Sectors } from "./collections/Sectors";
+import { Users } from "./collections/Users";
+import { Works } from "./collections/Works";
+import { emailAdapterOf } from "./email";
+import { env } from "./env";
+import { healthEndpoint } from "./health";
+import { Footer } from "./globals/Footer";
+import { LandingPage } from "./globals/LandingPage";
+import { r2PublicAssetUrlOf, r2StorageOptions } from "./storage";
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 export default buildConfig({
   serverURL: env.NEXT_PUBLIC_SERVER_URL,
@@ -57,4 +57,4 @@ export default buildConfig({
       ...r2StorageOptions(env),
     }),
   ],
-})
+});

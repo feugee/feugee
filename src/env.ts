@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 export const envSchema = z
   .object({
@@ -49,7 +49,7 @@ export const envSchema = z
         code: "custom",
         path: ["NEXT_PUBLIC_SERVER_URL"],
         message: "NEXT_PUBLIC_SERVER_URL must not end with a trailing slash",
-      })
+      });
     }
 
     // `next build` also runs with NODE_ENV=production — an artifact built
@@ -57,7 +57,7 @@ export const envSchema = z
     // built app actually starts serving (NEXT_PHASE distinguishes the two).
     const runtimeProduction =
       process.env.NODE_ENV === "production" &&
-      process.env.NEXT_PHASE !== "phase-production-build"
+      process.env.NEXT_PHASE !== "phase-production-build";
 
     if (
       runtimeProduction &&
@@ -67,7 +67,7 @@ export const envSchema = z
         code: "custom",
         path: ["NEXT_PUBLIC_SERVER_URL"],
         message: "NEXT_PUBLIC_SERVER_URL must be https:// in production",
-      })
+      });
     }
 
     if (Boolean(env.SMTP_HOST) === Boolean(env.RESEND_API_KEY)) {
@@ -76,8 +76,8 @@ export const envSchema = z
         path: ["SMTP_HOST"],
         message:
           "Set exactly one of SMTP_HOST (SMTP transport) or RESEND_API_KEY (Resend)",
-      })
-      return
+      });
+      return;
     }
 
     if (env.SMTP_HOST) {
@@ -86,7 +86,7 @@ export const envSchema = z
           code: "custom",
           path: ["SMTP_PORT"],
           message: "SMTP_PORT is required when SMTP_HOST is set",
-        })
+        });
       }
 
       if (Boolean(env.SMTP_USER) !== Boolean(env.SMTP_PASS)) {
@@ -94,17 +94,17 @@ export const envSchema = z
           code: "custom",
           path: ["SMTP_USER"],
           message: "Set SMTP_USER and SMTP_PASS together, or neither",
-        })
+        });
       }
     } else if (env.SMTP_PORT || env.SMTP_USER || env.SMTP_PASS) {
       ctx.addIssue({
         code: "custom",
         path: ["SMTP_PORT"],
         message: "SMTP_* vars are set without SMTP_HOST — remove them",
-      })
+      });
     }
-  })
+  });
 
-export type Env = z.infer<typeof envSchema>
+export type Env = z.infer<typeof envSchema>;
 
-export const env = envSchema.parse(process.env)
+export const env = envSchema.parse(process.env);
