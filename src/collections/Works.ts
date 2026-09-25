@@ -60,6 +60,23 @@ export const Works: CollectionConfig = {
       type: "text",
     },
     {
+      name: "description",
+      type: "richText",
+      admin: {
+        description:
+          "The Work's summary prose, shown as the Overview block on the Work Detail Page.",
+      },
+    },
+    {
+      name: "descriptionLabel",
+      type: "text",
+      defaultValue: "Overview",
+      admin: {
+        description:
+          "The heading above the Description on the Work Detail Page. Empty shows the Description with no heading.",
+      },
+    },
+    {
       name: "thumbnail",
       type: "upload",
       relationTo: "assets",

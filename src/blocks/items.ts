@@ -41,6 +41,20 @@ export const textItem: Block = {
   labels: { singular: "Text", plural: "Text" },
   fields: [
     {
+      name: "verticalAlignment",
+      type: "select",
+      defaultValue: "bottom",
+      options: [
+        { label: "Top", value: "top" },
+        { label: "Center", value: "center" },
+        { label: "Bottom", value: "bottom" },
+      ],
+      admin: {
+        description:
+          "Where the text sits in its cell when the cell is taller than the text.",
+      },
+    },
+    {
       name: "entries",
       type: "array",
       labels: { singular: "Entry", plural: "Entries" },
