@@ -13,8 +13,15 @@ const nextConfig: NextConfig = {
     globalNotFound: true,
   },
   images: {
+    // localhost resolves to a loopback IP, which the optimizer blocks as an
+    // SSRF guard by default — safe here since remotePatterns below already
+    // restricts it to this app's own asset route, and prod never hits this.
+    dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
     remotePatterns: [
-      { protocol: "http", hostname: "localhost" },
+      // Local dev serves assets from the app itself over a non-default port —
+      // remotePatterns matches port '' (the default) unless one is given, so
+      // omitting it here would 400 every http://localhost:3000/... asset URL.
+      { protocol: "http", hostname: "localhost", port: "3000" },
       { protocol: "https", hostname: "feugee.com" },
       ...(process.env.R2_PUBLIC_URL
         ? [
