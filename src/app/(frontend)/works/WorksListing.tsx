@@ -395,7 +395,7 @@ export const WorksListing = ({
           navbar (sticky pushes down to its offset); below lg it is static
           above the single column, so the padding supplies that clearance
           there instead. */}
-      <aside className="self-start lg:pb-6 px-6 max-lg:pt-[calc(var(--navbar-height)+2.5rem)] lg:sticky lg:top-[calc(var(--navbar-height)+2.5rem)]">
+      <aside className="self-start lg:pb-6 md:px-12 px-6 max-lg:pt-32 lg:sticky lg:top-32">
         {/* A div, not a nav: the filter buttons are controls, not links. */}
         <div className="lg:space-y-12">
           <div className="w-full space-y-6 border-b border-neutral-900 pb-12">
@@ -491,7 +491,10 @@ export const WorksListing = ({
           {filteredItems.length === 0 ? (
             <p className="p-8 text-xl text-neutral-600">Works coming soon</p>
           ) : (
-            <div className="flex w-full flex-col gap-1 lg:flex-row" ref={gridRef}>
+            <div
+              className="flex w-full flex-col gap-1 lg:flex-row"
+              ref={gridRef}
+            >
               {columns.map((column, columnIndex) => (
                 <div
                   className="flex w-full flex-1 flex-col gap-1"

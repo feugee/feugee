@@ -93,22 +93,36 @@ const columnRowClassName =
   "w-full flex flex-col-reverse md:flex-col gap-10 items-start lg:flex-row md:justify-between";
 
 // Shared by both Contact CTA buttons and their fallback-button branches.
-const ctaButtonClassName =
-  "inline-flex items-center gap-2 text-white px-6 py-3 rounded border-neutral-800 border";
+const ctaButtonClassName = `inline-flex items-center gap-2 hover:text-primary-500 transition px-6 py-4 rounded-[4px] border-neutral-800 border`;
 
 // One button for both CTA actions — identical styling; they differ only in
 // the resolved label and URL.
-const CtaButton = ({ label, url }: { label: string; url: string | null }) =>
+const CtaButton = ({
+  label,
+  url,
+  primary,
+}: {
+  label: string;
+  url: string | null;
+  primary?: boolean;
+}) =>
   url ? (
     <Link
-      className={ctaButtonClassName}
+      className={
+        ctaButtonClassName + (primary ? " bg-white text-black" : " text-white")
+      }
       href={url}
       onNavigate={(event) => navigateWithBlackout(event, url)}
     >
       {label} <ArrowRight />
     </Link>
   ) : (
-    <button className={ctaButtonClassName} type="button">
+    <button
+      className={
+        ctaButtonClassName + (primary ? " bg-white text-black" : " text-white")
+      }
+      type="button"
+    >
       {label} <ArrowRight />
     </button>
   );
@@ -156,8 +170,12 @@ export const FooterContent = ({ data }: { data: Footer }) => {
 
   return (
     /* The data attribute marks the Page Shift slab (ADR 0007). */
+    // <footer
+    //   className="mt-auto mx-auto max-w-360 bg-red-500 px-6 pt-6 flex flex-col gap-y-6 items-stretch justify-start bg-linear-to-t from-[#161616] to-neutral-950"
+    //   data-blackout-slab
+    // >
     <footer
-      className="mt-auto px-6 pt-6 flex flex-col gap-y-6 items-stretch justify-start bg-linear-to-b from-[#161616] to-neutral-950"
+      className="mt-auto mx-auto max-w-360 px-6 pt-6 flex flex-col gap-y-6 items-stretch justify-start bg-neutral-950"
       data-blackout-slab
     >
       {hasFooterCtaContent(cta) && (
@@ -184,13 +202,17 @@ export const FooterContent = ({ data }: { data: Footer }) => {
             /* Both buttons share the row; each renders only with its label
                 filled, so an empty secondary label leaves the primary alone. */
             <div className="flex flex-wrap items-center justify-center gap-4">
-              {cta.actionLabel !== null && (
-                <CtaButton label={cta.actionLabel} url={cta.actionUrl} />
-              )}
               {cta.secondaryActionLabel !== null && (
                 <CtaButton
                   label={cta.secondaryActionLabel}
                   url={cta.secondaryActionUrl}
+                />
+              )}
+              {cta.actionLabel !== null && (
+                <CtaButton
+                  primary
+                  label={cta.actionLabel}
+                  url={cta.actionUrl}
                 />
               )}
             </div>
@@ -202,7 +224,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
           {aboutDescription && (
             <div className="space-y-3 w-full">
               <h2 className="text-base text-neutral-500">{aboutHeading}</h2>
-              <p className="text-base text-white w-full md:w-[80%]">
+              <p className="text-2xl text-white w-full md:w-[80%]">
                 {aboutDescription}
               </p>
             </div>
@@ -230,7 +252,9 @@ export const FooterContent = ({ data }: { data: Footer }) => {
                     <Link
                       className="group text-base text-white"
                       href={link.url}
-                      onNavigate={(event) => navigateWithBlackout(event, link.url)}
+                      onNavigate={(event) =>
+                        navigateWithBlackout(event, link.url)
+                      }
                     >
                       <SwipeText>{link.label}</SwipeText>
                     </Link>
@@ -287,8 +311,8 @@ export const FooterContent = ({ data }: { data: Footer }) => {
         <div aria-hidden="true" className="w-full text-[#1F1F1F] md:mb-[-3%]">
           <LogoMark className="block h-auto w-full" monochrome />
         </div>
-        <div className="relative z-10 pb-6 md:absolute md:inset-x-0 md:bottom-0">
-          <div className="mb-6 h-px w-full bg-neutral-700" />
+        <div className="relative z-10 pb-16 md:absolute md:inset-x-0 md:bottom-0">
+          <div className="mb-16 h-px w-full bg-neutral-900" />
           <div className="w-full flex flex-wrap justify-between items-center gap-x-6 gap-y-3">
             <span className="text-sm text-neutral-500">
               &copy; {new Date().getFullYear()} {copyrightName}. All Rights

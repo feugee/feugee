@@ -107,9 +107,9 @@ export const TestimonialsSection = ({
   const [left, right] = splitTestimonialColumns(items);
 
   return (
-    <section aria-label={heading} className="p-6 md:p-16">
-      <div className="flex flex-col gap-10 md:flex-row md:justify-between">
-        <div className="w-full shrink-0 md:w-[40%]">
+    <section aria-label={heading} className="p-6 md:p-16 mx-auto max-w-360">
+      <div className="flex flex-col gap-10 md:flex-row md:justify-between md:gap-x-16">
+        <div className="w-full shrink-0 md:w-[30%]">
           <div className="inline-flex rounded border border-neutral-700 px-4 py-2">
             <h2 className="text-md text-white">{heading}</h2>
           </div>
@@ -119,7 +119,7 @@ export const TestimonialsSection = ({
             </p>
           )}
         </div>
-        <div className="w-full md:w-[50%]">
+        <div className="w-full md:w-[70%] ">
           {/* Mobile: one full-width rising column with every testimonial. */}
           <div className="md:hidden">
             <MarqueeColumn direction="up" items={items} />

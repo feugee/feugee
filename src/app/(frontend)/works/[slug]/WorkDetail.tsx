@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import type { Work } from "@/payload-types";
@@ -80,7 +81,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
           navbar (sticky pushes down to its offset); below lg it is static
           above the single column, so the padding supplies that clearance
           there instead. */}
-      <aside className="self-start px-6 lg:pb-16 max-lg:pt-[calc(var(--navbar-height)+2.5rem)] lg:sticky lg:top-[calc(var(--navbar-height)+2.5rem)]">
+      <aside className="self-start px-6 md:px-12 lg:pb-16 max-lg:pt-32 lg:sticky lg:top-32">
         <nav aria-label="Work sections" className="lg:space-y-12">
           <div className="w-full pb-12 border-b border-neutral-900 space-y-6">
             <h1 className="text-neutral-50 text-4xl font-bold block">
@@ -182,7 +183,30 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                   <MetaList label="Collaborators" values={data.collaborators} />
                 </>
               ) : null}
+              {data.year != null ? (
+                <>
+                  <div className="w-px bg-neutral-900"></div>
+                  <Meta label="Year" value={data.year} />
+                </>
+              ) : null}
             </div>
+            {data.description ? (
+              <div className="w-full flex flex-row justify-start mb-8">
+                <dl className="w-full space-y-3">
+                  {data.descriptionLabel ? (
+                    <dt className="text-xl text-neutral-600">
+                      {data.descriptionLabel}
+                    </dt>
+                  ) : null}
+                  <dd>
+                    <RichText
+                      className="text-2xl text-white"
+                      data={data.description}
+                    />
+                  </dd>
+                </dl>
+              </div>
+            ) : null}
           </div>
         </section>
 

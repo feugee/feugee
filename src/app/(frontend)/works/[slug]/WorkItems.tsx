@@ -61,6 +61,13 @@ const AssetFigure = ({
   );
 };
 
+// The text Item's Vertical Alignment as the flex justify utility it renders.
+const textJustify = {
+  top: "justify-start",
+  center: "justify-center",
+  bottom: "justify-end",
+} as const;
+
 export const WorkItemView = ({
   assetSize,
   item,
@@ -72,7 +79,7 @@ export const WorkItemView = ({
     case "title":
       return (
         <div className="p-8">
-          <h2 className="text-xl font-semibold text-neutral-50">
+          <h2 className="text-[16px] font-semibold text-neutral-50">
             {item.title}
           </h2>
         </div>
@@ -82,19 +89,23 @@ export const WorkItemView = ({
         <div className="space-y-8 p-8">
           {(item.entries ?? []).map((entry, index) => (
             <div key={entry.id ?? index} className="space-y-2">
-              <h3 className="text-md text-neutral-600">{entry.title}</h3>
-              <RichText data={entry.text} className="text-2xl text-white" />
+              <h3 className="text-[16px] text-neutral-600">{entry.title}</h3>
+              <RichText data={entry.text} className="text-xl text-white" />
             </div>
           ))}
         </div>
       );
     case "text":
       return (
-        <div className="h-full space-y-8 p-8 flex flex-col justify-end">
+        <div
+          className={`h-full space-y-8 p-8 flex flex-col ${
+            textJustify[item.verticalAlignment ?? "bottom"]
+          }`}
+        >
           {(item.entries ?? []).map((entry, index) => (
             // One wrapper per entry keeps each paragraph separately targetable
             // by the animations planned for the real Work Detail Page.
-            <div key={entry.id ?? index} className=" text-2xl text-white">
+            <div key={entry.id ?? index} className=" text-xl text-white">
               <RichText data={entry.text} />
             </div>
           ))}

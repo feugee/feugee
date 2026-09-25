@@ -7,14 +7,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { accessibleHeroTitle } from "./heroTitle";
-import {
-  nextWordIndex,
-  WORD_BLUR_PX,
-  WORD_CYCLE_MS,
-} from "./rotatingWord";
+import { nextWordIndex, WORD_BLUR_PX, WORD_CYCLE_MS } from "./rotatingWord";
 import type { ScrollCueAction } from "./scrollCue";
 import { getSmoothScroll } from "./SmoothScroll";
 import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
+import { ArrowRight } from "./ArrowRight";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -170,7 +167,7 @@ export const HeroSlider = ({
   // rides as the un-blended video (difference with black is identity). The
   // blend and the pulse share the element — a wrapper's animated opacity
   // would wall the blend off from the video.
-  const scrollCueClassName = `absolute bottom-6 right-6 z-20 rounded-full bg-white px-6 py-3 text-base font-medium tracking-wide text-black mix-blend-difference md:bottom-12 md:right-16 ${
+  const scrollCueClassName = `absolute flex justify-center items-center gap-x-[8px] bottom-6 right-6 z-20 rounded-[4px] bg-white px-6 py-4 text-base font-medium tracking-wide text-black hover:text-primary-500 transtition- mix-blend-difference md:bottom-12 md:right-16 ${
     reducedMotion ? "" : "animate-cue-pulse"
   }`;
 
@@ -283,11 +280,17 @@ export const HeroSlider = ({
           onNavigate={(event) => navigateWithBlackout(event, cue.url)}
         >
           {cue.label}
+          <ArrowRight />
         </Link>
       ) : (
         cue.kind === "scroll" && (
-          <button className={scrollCueClassName} onClick={scrollBelowHero} type="button">
+          <button
+            className={scrollCueClassName}
+            onClick={scrollBelowHero}
+            type="button"
+          >
             {cue.label}
+            <ArrowRight />
           </button>
         )
       )}

@@ -122,16 +122,23 @@ export const WhoWeAreSection = ({
   );
 
   return (
-    <section aria-label={heading} className="p-6 md:p-16" ref={scopeRef}>
+    <section
+      aria-label={heading}
+      className="p-6 md:p-16 mx-auto max-w-360"
+      ref={scopeRef}
+    >
       <div className="flex flex-col gap-10 md:flex-row">
-        <div className="w-full md:w-[25%]">
+        <div className="w-full md:w-[30%]">
           <div className="inline-flex rounded border border-neutral-700 px-4 py-2">
             <h2 className="text-md text-white">{heading}</h2>
           </div>
         </div>
-        <div className="w-full md:w-[75%]">
+        <div className="w-full md:w-[70%]">
           {description && (
-            <p className="text-3xl text-white md:text-5xl" ref={textRef}>
+            <p
+              className="text-3xl text-white md:text-[40px] leading-[1.2em]"
+              ref={textRef}
+            >
               {words.map((word, index) => (
                 <Fragment key={index}>
                   <span className="text-neutral-600" data-reveal-word>

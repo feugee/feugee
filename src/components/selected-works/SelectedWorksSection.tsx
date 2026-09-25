@@ -257,14 +257,14 @@ export const SelectedWorksSection = ({
   if (items.length === 0) return null;
 
   return (
-    <section aria-label={heading} className="pt-32" ref={scopeRef}>
+    <section aria-label={heading} className="pt-16" ref={scopeRef}>
       {/* The shared sticky-chip heading — the Client Marquee's heading
           renders through the same component. Sticks below the Navbar for the
           whole section; z-20 keeps it above the cards but below the Pinned
           Caption layer (z-30) should a very short viewport ever make the two
           meet. */}
       <SectionHeading>{heading}</SectionHeading>
-      <div className="relative flex flex-col gap-1" ref={listRef}>
+      <div className="relative flex flex-col" ref={listRef}>
         {items.map((item) => (
           <SelectedWorkCard item={item} key={item.id} />
         ))}
@@ -287,7 +287,7 @@ export const SelectedWorksSection = ({
         <div className="pointer-events-none absolute bottom-[50svh] right-0 top-[50svh] z-20 mix-blend-difference">
           <div
             aria-hidden="true"
-            className="sticky top-[50svh] -translate-y-1/2 hidden flex-col items-start gap-3 pr-16 md:flex"
+            className="sticky top-[50svh] -translate-y-1/2 hidden flex-col items-start gap-3 pr-24 md:flex"
             data-works-rail
           >
             <span
@@ -324,15 +324,15 @@ export const SelectedWorksSection = ({
         <div className="grid">
           {items.map((item) => (
             <div
-              className="col-start-1 row-start-1 flex flex-col items-start justify-end gap-2 p-6 md:flex-row md:items-center md:justify-between md:p-16"
+              className="col-start-1 row-start-1 flex flex-col items-start justify-end gap-2 p-6 md:flex-row md:items-center md:justify-between md:p-24"
               data-pinned-caption
               key={item.id}
             >
-              <h3 className="text-3xl font-medium text-white md:text-5xl">
+              <h3 className="text-3xl font-medium text-white md:text-7xl">
                 {item.title}
               </h3>
               {item.year !== null && (
-                <p className="text-base text-white md:text-lg">{item.year}</p>
+                <p className="text-base text-white md:text-2xl">{item.year}</p>
               )}
             </div>
           ))}

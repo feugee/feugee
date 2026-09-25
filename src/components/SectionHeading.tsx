@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
  * keeps the section's content clear of the stuck chip.
  */
 export const SectionHeading = ({ children }: { children: ReactNode }) => (
-  <div className="sticky top-(--navbar-height) z-20 flex w-full justify-center pb-12 md:pb-16">
+  <div className="sticky top-32 z-20 flex w-full justify-center pb-12 md:pb-16">
     <div className="rounded border border-neutral-700 bg-neutral-950/70 px-4 py-2 backdrop-blur">
       <h2 className="text-md text-center text-white">{children}</h2>
     </div>
