@@ -199,7 +199,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                   ) : null}
                   <dd>
                     <RichText
-                      className="text-2xl text-white"
+                      className="text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
                       data={data.description}
                     />
                   </dd>

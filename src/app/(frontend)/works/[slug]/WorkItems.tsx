@@ -89,7 +89,10 @@ export const WorkItemView = ({
           {(item.entries ?? []).map((entry, index) => (
             <div key={entry.id ?? index} className="space-y-2">
               <h3 className="text-[16px] text-neutral-600">{entry.title}</h3>
-              <RichText data={entry.text} className="text-xl text-white" />
+              <RichText
+                data={entry.text}
+                className="text-xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+              />
             </div>
           ))}
         </div>
@@ -105,7 +108,10 @@ export const WorkItemView = ({
             // One wrapper per entry keeps each paragraph separately targetable
             // by the animations planned for the real Work Detail Page.
             <div key={entry.id ?? index} className=" text-xl text-white">
-              <RichText data={entry.text} />
+              <RichText
+                data={entry.text}
+                className="text-xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+              />
             </div>
           ))}
         </div>
