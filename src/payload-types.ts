@@ -1324,7 +1324,7 @@ export interface LandingPage {
 export interface Footer {
   id: number;
   /**
-   * The closing call-to-action at the top of the Footer: eyebrow, headline, body copy, and the button.
+   * The closing call-to-action at the top of the Footer: eyebrow, headline, body copy, and up to two buttons.
    */
   cta?: {
     /**
@@ -1341,6 +1341,14 @@ export interface Footer {
      * Where the button points — internal path or external URL. Without it the button renders inert.
      */
     actionUrl?: string | null;
+    /**
+     * The second button's label — e.g. "See our works". The button renders only when this is filled.
+     */
+    secondaryActionLabel?: string | null;
+    /**
+     * Where the second button points. Without it the button renders inert, like the primary.
+     */
+    secondaryActionUrl?: string | null;
   };
   about?: {
     heading?: string | null;
@@ -1384,7 +1392,7 @@ export interface Footer {
    */
   socialLinks?:
     | {
-        platform: 'facebook' | 'instagram' | 'x';
+        platform: 'facebook' | 'instagram' | 'x' | 'behance' | 'linkedin' | 'pinterest' | 'dribbble' | 'contra';
         url: string;
         id?: string | null;
       }[]
@@ -1476,6 +1484,8 @@ export interface FooterSelect<T extends boolean = true> {
         body?: T;
         actionLabel?: T;
         actionUrl?: T;
+        secondaryActionLabel?: T;
+        secondaryActionUrl?: T;
       };
   about?:
     | T

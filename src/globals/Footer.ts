@@ -2,6 +2,7 @@ import type { GlobalConfig } from "payload"
 
 import { publishedRead } from "../access/publishedRead"
 import { revalidateGlobalAfterChange } from "../hooks/revalidateSite"
+import { socialPlatformOptions } from "../components/socialPlatforms"
 
 // Site chrome rather than Landing Page content, so this lives on its own
 // global — the (frontend) root layout mounts the Footer on every public page.
@@ -39,7 +40,7 @@ export const Footer: GlobalConfig = {
       label: "Contact CTA",
       admin: {
         description:
-          "The closing call-to-action at the top of the Footer: eyebrow, headline, body copy, and the button.",
+          "The closing call-to-action at the top of the Footer: eyebrow, headline, body copy, and up to two buttons.",
       },
       fields: [
         {
@@ -70,6 +71,22 @@ export const Footer: GlobalConfig = {
           admin: {
             description:
               "Where the button points — internal path or external URL. Without it the button renders inert.",
+          },
+        },
+        {
+          name: "secondaryActionLabel",
+          type: "text",
+          admin: {
+            description:
+              'The second button\'s label — e.g. "See our works". The button renders only when this is filled.',
+          },
+        },
+        {
+          name: "secondaryActionUrl",
+          type: "text",
+          admin: {
+            description:
+              "Where the second button points. Without it the button renders inert, like the primary.",
           },
         },
       ],
@@ -189,11 +206,9 @@ export const Footer: GlobalConfig = {
         {
           name: "platform",
           type: "select",
-          options: [
-            { label: "Facebook", value: "facebook" },
-            { label: "Instagram", value: "instagram" },
-            { label: "X", value: "x" },
-          ],
+          // One vocabulary with the render icon map — the coherence test
+          // keeps every selectable platform carrying an icon.
+          options: [...socialPlatformOptions],
           required: true,
         },
         {

@@ -881,6 +881,9 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
     headline: "Tell us what you’re building",
     body: "Tell us about your goals and we will reply within a day with a clear scope and next steps.",
     actionLabel: "Work with us",
+    // The secondary action demonstrates the URL-bearing second button.
+    secondaryActionLabel: "See our works",
+    secondaryActionUrl: "/works",
   }
 
   // Seed only a Footer the CMS has never saved (findGlobal returns a doc with
@@ -931,6 +934,11 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
           { platform: "facebook", url: "https://www.facebook.com/feugeestudio" },
           { platform: "instagram", url: "https://www.instagram.com/feugeestudio" },
           { platform: "x", url: "https://x.com/feugeestudio" },
+          { platform: "behance", url: "https://www.behance.net/feugeestudio" },
+          { platform: "linkedin", url: "https://www.linkedin.com/company/feugeestudio" },
+          { platform: "pinterest", url: "https://www.pinterest.com/feugeestudio" },
+          { platform: "dribbble", url: "https://dribbble.com/feugeestudio" },
+          { platform: "contra", url: "https://contra.com/feugeestudio" },
         ],
         copyrightName: "Feugee",
       },
