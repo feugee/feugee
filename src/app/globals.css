@@ -188,3 +188,56 @@
 [data-custom-cursor] [contenteditable="true"] {
   cursor: text;
 }
+
+/*
+ * The Navbar's frosted floating bar (CONTEXT.md). The `<header>` stays a
+ * fixed full-width sticky box — page flow and every --navbar-height
+ * clearance depend on it — while the bar inside does the floating: inset
+ * 24px left, top and right, 12px radius, translucent dark, blur, hairline
+ * border.
+ *
+ * Two ways into the frosted state: the NavbarBar client component marks the
+ * header [data-frosted] once the visitor scrolls past the Hero, and the
+ * :has() selector below frosts hero-less pages from the very first paint —
+ * no JS, no flash. Deliberately unlayered like the cursor rules above, so
+ * these override the bar's Tailwind utilities (which carry the
+ * transparent-state bases, backdrop blur(0px) included so the frosting
+ * interpolates).
+ */
+header[data-frosted] .navbar-bar,
+body:not(:has([data-hero])) header .navbar-bar {
+  inset-inline: 24px;
+  top: 24px;
+  border-color: var(--color-neutral-700);
+  background-color: color-mix(
+    in oklab,
+    var(--color-neutral-950) 70%,
+    transparent
+  );
+  backdrop-filter: blur(8px);
+}
+
+/* The ~400ms frost ride on the site's swipe curve. The insets transition
+   by their logical name — the frosted state sets inset-inline — rather than
+   trusting the physical `inset` shorthand to map. */
+.navbar-bar {
+  transition:
+    top 400ms var(--ease-swipe),
+    inset-inline 400ms var(--ease-swipe),
+    background-color 400ms var(--ease-swipe),
+    border-color 400ms var(--ease-swipe),
+    backdrop-filter 400ms var(--ease-swipe);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-bar {
+    transition: none;
+  }
+}
+
+/* The bar overhangs its header's box by the 24px top inset, so it must not
+   eat input meant for the content it floats over; its own children take
+   events back (pointer-events isn't overridden per-child anywhere else). */
+.navbar-bar > * {
+  pointer-events: auto;
+}

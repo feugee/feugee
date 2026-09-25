@@ -81,7 +81,7 @@ A single content cell within a Layout — a standalone title, a set of paragraph
 _Avoid_: Cell, block, element
 
 **Scroll Progress Bar**:
-A thin fixed bar at the top of a public page that fills left to right as the visitor scrolls through the page's main content.
+A thin fixed bar at the top of a public page that fills left to right as the visitor scrolls through the page's main content — revealing a primary-to-secondary horizontal gradient that holds its screen position while the bar fills.
 _Avoid_: Progress indicator, reading bar, scroll tracker
 
 **Cursor**:
@@ -97,11 +97,11 @@ The whole page — Navbar, content, and Footer as one slab — drifting slightly
 _Avoid_: Page slide, parallax, push, page transition animation
 
 **Navbar**:
-The strip at the top of every public page: the logo and the Menu control.
+The strip at the top of every public page: the logo and the Menu control. Transparent while over the Hero; becomes a frosted floating bar once the visitor scrolls past the Hero — and on pages without a Hero, always.
 _Avoid_: Header, top bar, navigation bar
 
 **Menu**:
-The public site's primary navigation, opened as a dropdown from the Navbar on every viewport. Its links are the Footer's menu links — managed once in the CMS.
+The public site's primary navigation, opened as a dropdown from the Navbar on every viewport — whose control is a two-line icon (the second line shorter and right-justified) that grows its lines to equal length and rotates them into an X while open. Its links are the Footer's menu links — managed once in the CMS.
 _Avoid_: Nav, hamburger, overlay menu, navigation drawer
 
 **Footer**:
@@ -211,5 +211,5 @@ Text the Public site renders white with difference blending over an image or vid
 _Avoid_: Negative text, inverted text, knockout text, blend text
 
 **Swipe Text**:
-A control's label exchanging two clipped copies on hover — the resting copy swipes up out of view while an identical primary-500 copy swipes up from below into its place. Used on the Menu control's label, the Menu's items, and the Footer's menu links.
+A control's label exchanging two clipped copies on hover — the resting copy swipes up out of view while an identical primary-500 copy swipes up from below into its place. Used on the Menu's items and the Footer's menu links.
 _Avoid_: Rolling text, text swap, slide-up hover

@@ -390,7 +390,7 @@ export const WorksListing = ({
 
   return (
     <div className="mx-auto min-h-screen grid w-full lg:grid-cols-[360px_1fr]">
-      <ScrollProgress colorClassName="bg-secondary-500" scope={mainRef} />
+      <ScrollProgress scope={mainRef} />
       {/* The lg+ sticky top already seats the aside clear of the overlaid
           navbar (sticky pushes down to its offset); below lg it is static
           above the single column, so the padding supplies that clearance

@@ -6,17 +6,21 @@ import { useEffect, useRef, useState } from "react";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { SwipeText } from "@/components/SwipeText";
 
+import { menuIconLine } from "./menuIcon";
 import { menuItemTransition } from "./menuItemTransition";
 import type { MenuLink } from "./menuLinks";
 
 /**
  * The Navbar's Menu control: a button toggling the site's primary navigation
- * as bare text stacked under the label, which itself swaps to Close while
- * open. Opening staggers the items up into place; closing drops them out
- * together. Escape and an outside press close it, and a link click closes it
- * ahead of the navigation. The items carry no panel of their own — they sit
- * directly over page content, which the site's mostly-dark pages keep
- * readable.
+ * from its icon — two lines, the lower 2/3 the upper's length and
+ * right-justified — which on open grows both lines to equal length and
+ * rotates them into a centered X (~300ms on the site's swipe curve). The
+ * Menu/Close labels ride the button's aria-label; hover and focus swap the
+ * lines to primary-500. Opening staggers the items up into place; closing
+ * drops them out together. Escape and an outside press close it, and a link
+ * click closes it ahead of the navigation. The items carry no panel of their
+ * own — they sit directly over page content, which the site's mostly-dark
+ * pages keep readable.
  */
 export const Menu = ({ links }: { links: MenuLink[] }) => {
   const [open, setOpen] = useState(false);
@@ -44,17 +48,27 @@ export const Menu = ({ links }: { links: MenuLink[] }) => {
 
   return (
     <div className="relative" ref={rootRef}>
-      {/* The same SwipeText instance rides both labels, so a click mid-hover
-          swaps the word in place without re-mounting into the hovered pose. */}
       <button
         aria-controls="site-menu"
         aria-expanded={open}
-        className="group text-xl text-neutral-50"
+        aria-label={open ? "Close" : "Menu"}
+        className="flex h-9 w-9 items-center justify-center text-neutral-50 transition-colors duration-300 hover:text-primary-500 focus-visible:text-primary-500"
         onClick={() => setOpen((current) => !current)}
         ref={buttonRef}
         type="button"
       >
-        <SwipeText>{open ? "Close" : "Menu"}</SwipeText>
+        {/* The icon is aria-hidden — the button's aria-label carries the
+            Menu/Close announcement. The 12px-tall stack parks each 2px line
+            5px from the other's center, exactly the flight a centered X
+            needs; the lower line keeps 2/3 the length closed, right-justified
+            by items-end (see menuIcon.ts for the lines' own motion). */}
+        <span
+          aria-hidden="true"
+          className="flex h-3 w-9 flex-col items-end justify-between"
+        >
+          <span className={menuIconLine(open, true)} />
+          <span className={menuIconLine(open, false)} />
+        </span>
       </button>
       {/* The visibility transition flips on instantly when opening and only
           after the items' shared exit when closing, so the panel never hides

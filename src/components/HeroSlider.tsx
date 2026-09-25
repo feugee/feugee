@@ -178,6 +178,7 @@ export const HeroSlider = ({
     <section
       aria-label="Featured videos"
       className="relative h-svh w-full overflow-hidden bg-neutral-950"
+      data-hero
       ref={sectionRef}
     >
       <div className="absolute inset-0" ref={videoStackRef}>
