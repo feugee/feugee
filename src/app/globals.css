@@ -196,16 +196,14 @@
  * 24px left, top and right, 12px radius, translucent dark, blur, hairline
  * border.
  *
- * Two ways into the frosted state: the NavbarBar client component marks the
- * header [data-frosted] once the visitor scrolls past the Hero, and the
- * :has() selector below frosts hero-less pages from the very first paint —
- * no JS, no flash. Deliberately unlayered like the cursor rules above, so
- * these override the bar's Tailwind utilities (which carry the
- * transparent-state bases, backdrop blur(0px) included so the frosting
- * interpolates).
+ * The NavbarBar client component marks the header [data-frosted] once the
+ * visitor scrolls — past the Hero where there is one, or a small threshold
+ * on hero-less pages; every page starts transparent at the top.
+ * Deliberately unlayered like the cursor rules above, so these override the
+ * bar's Tailwind utilities (which carry the transparent-state bases,
+ * backdrop blur(0px) included so the frosting interpolates).
  */
-header[data-frosted] .navbar-bar,
-body:not(:has([data-hero])) header .navbar-bar {
+header[data-frosted] .navbar-bar {
   inset-inline: 24px;
   top: 24px;
   border-color: var(--color-neutral-700);

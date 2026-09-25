@@ -7,15 +7,20 @@ import { useEffect, useRef, type ReactNode } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Hero-less pages frost once the visitor has scrolled at all — far enough
+// that top-of-page jitter and overscroll can't flicker the toggle, near
+// enough that the first intentional scroll morphs the bar.
+const FROST_SCROLL_PX = 24;
+
 /**
  * The Navbar's client shell (the server Navbar keeps fetching the Menu's
  * links): the sticky `<header>` plus the floating bar that carries the logo
- * and the Menu control. Over the Hero the bar is transparent and full-width;
- * past the Hero it frosts — inset 24px left/top/right, 12px radius,
- * translucent dark, blur, hairline border, ~400ms (globals.css). The frosted
- * state is a header attribute this component toggles when the Hero's bottom
- * crosses the top of the viewport. Pages with no Hero never mount a trigger:
- * the stylesheet's :has() fallback frosts them from the very first paint.
+ * and the Menu control. Every page starts with the bar transparent and
+ * full-width at the top — over the Hero where there is one. The frosted
+ * state — inset 24px left/top/right, 12px radius, translucent dark, blur,
+ * hairline border, ~400ms (globals.css) — is a header attribute this
+ * component toggles when the visitor scrolls: past the Hero's bottom on the
+ * Landing Page, or past the small threshold above on hero-less pages.
  */
 export const NavbarBar = ({ children }: { children: ReactNode }) => {
   const headerRef = useRef<HTMLElement>(null);
@@ -26,24 +31,22 @@ export const NavbarBar = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const header = headerRef.current;
     if (!header) return;
-    const hero = document.querySelector("[data-hero]");
-    if (!(hero instanceof HTMLElement)) {
-      // Nothing to wait out — the stylesheet keeps hero-less pages frosted;
-      // just drop any mark carried over from the previous page.
-      header.removeAttribute("data-frosted");
-      return;
-    }
 
-    const setFrosted = (pastHero: boolean) =>
-      header.toggleAttribute("data-frosted", pastHero);
+    const setFrosted = (frosted: boolean) =>
+      header.toggleAttribute("data-frosted", frosted);
+    const hero = document.querySelector("[data-hero]");
     const trigger = ScrollTrigger.create({
-      trigger: hero,
-      start: "bottom top",
+      // With a Hero, the bar waits the Hero out: frosted once its bottom
+      // crosses the top of the viewport. Without one, plain scroll
+      // distance decides.
+      ...(hero instanceof HTMLElement
+        ? { trigger: hero, start: "bottom top" }
+        : { start: FROST_SCROLL_PX }),
       end: "max",
       onToggle: (self) => setFrosted(self.isActive),
     });
-    // A restored scroll position can start past the Hero — apply it now
-    // rather than wait for the first toggle.
+    // A restored scroll position can start past the threshold — apply it
+    // now rather than wait for the first toggle.
     setFrosted(trigger.isActive);
 
     return () => trigger.kill();

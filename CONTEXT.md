@@ -97,7 +97,7 @@ The whole page — Navbar, content, and Footer as one slab — drifting slightly
 _Avoid_: Page slide, parallax, push, page transition animation
 
 **Navbar**:
-The strip at the top of every public page: the logo and the Menu control. Transparent while over the Hero; becomes a frosted floating bar once the visitor scrolls past the Hero — and on pages without a Hero, always.
+The strip at the top of every public page: the logo and the Menu control. Transparent at the top of the page; becomes a frosted floating bar once the visitor scrolls — past the Hero where there is one, or on any page without one.
 _Avoid_: Header, top bar, navigation bar
 
 **Menu**:
