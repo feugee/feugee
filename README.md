@@ -81,3 +81,13 @@ The app runs as a Docker image deployment next to a Postgres service, both on on
 4. **Domain + HTTPS** — attach the domain in Coolify; its proxy handles certificates. `NEXT_PUBLIC_SERVER_URL` must match it exactly.
 5. **Health check** — set Coolify's health-check path to `/api/health`.
 6. **Subsequent deploys** — push to the branch Coolify watches; each boot re-runs migrate → seed → start, both idempotent.
+
+### Safe production release checklist
+
+Before the first public-R2 release, create the R2 custom domain in Cloudflare and configure the bucket for public reads. Set `R2_PUBLIC_URL=https://assets.example.com` in both Coolify's runtime environment and the GitHub repository variable used by the image workflow. Keep `R2_ACCOUNT_ID`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, and `R2_SECRET_ACCESS_KEY` in the appropriate GitHub secrets and Coolify environment fields; never commit them.
+
+Existing assets in the same R2 bucket are reused. The application does not copy or re-upload them: Payload regenerates their public URLs from the stored `_objectKey`, and generated image-size variants keep their existing object keys. Verify one original, one image variant, and one video URL after deployment. If the existing assets are in a different provider or bucket, copy the objects while preserving their keys before switching `R2_PUBLIC_URL`; do not delete the old storage until verification is complete.
+
+For a new Payload field, generate and commit its migration locally with `npm run migrate:create`, review both the migration code and its JSON snapshot, and deploy the migration with the application. The container runs `payload migrate --force-accept-warning` before starting, applying only pending migrations. Take a Postgres backup or snapshot before the release, and never use `payload migrate:fresh`, `payload migrate:reset`, or a destructive manual schema push against production.
+
+Pushing to `main` starts `.github/workflows/build-image.yml`. GitHub builds the image against a temporary Postgres database and publishes `ghcr.io/feugee/feugee:latest` plus a commit tag; it does not change the production database. Coolify must be configured to redeploy that image when `latest` changes, or you must trigger a redeploy manually. On the new container, the entrypoint applies pending migrations, runs the idempotent seed, and starts the server. A failed build or health check leaves the previous running release untouched; inspect the migration and application logs before retrying.
