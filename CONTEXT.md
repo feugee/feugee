@@ -20,12 +20,16 @@ _Avoid_: Banner, header, carousel
 A single video Asset in the Hero's slider, shown full-screen one at a time.
 _Avoid_: Frame, panel
 
+**Lead-In Word**:
+The fixed opening word of the Hero title, ahead of the Rotating Word — "Into" by default. Managed in the CMS alongside the Rotating Words.
+_Avoid_: Prefix, intro word, static word
+
 **Rotating Word**:
 The changing final word of the Hero title — one of the agency-managed words that cycles in place above the slide dashes.
 _Avoid_: Cycling word, animated word, swap word
 
 **Scroll Cue**:
-The "| Scroll to explore" text in the Hero's bottom-right signaling more content below.
+The button in the Hero's bottom-right signaling more content below — white with a black label, difference-blended over the Slide. Its label and optional URL are managed in the CMS; without a URL it scrolls to the content below the Hero.
 _Avoid_: Scroll hint, scroll indicator, scroll arrow
 
 **Client Marquee**:
@@ -156,6 +160,18 @@ _Avoid_: Unpublished, pending
 A Work visible on the public site. Only the Agency can publish.
 _Avoid_: Live, released
 
+**Subtitle**:
+The short tagline under a Work's title on the Work Detail Page.
+_Avoid_: Tagline, strapline, description
+
+**Description**:
+A Work's summary prose — rich text shown on the Work Detail Page below the meta rows, under its Overview label. Optional; a Work without one shows no Overview block.
+_Avoid_: Overview, blurb, summary, about
+
+**Overview**:
+The heading over a Work's Description on the Work Detail Page — "Overview" out of the box, editable per Work in the CMS; an empty label leaves the Description unheaded.
+_Avoid_: Description label, section heading
+
 **Sector**:
 The industry a Work was created for; the facet the Works Page filters Works by.
 _Avoid_: Category, industry, vertical
@@ -193,7 +209,7 @@ A proof figure on the Landing Page, as a value with a label — e.g. "55+" with 
 _Avoid_: Metric, counter, fact
 
 **Contact CTA**:
-The closing call-to-action at the top of the Footer on every public page — an eyebrow, headline, body copy, and the Work with us button. Managed as the `cta` group on the Footer global.
+The closing call-to-action at the top of the Footer on every public page — an eyebrow, headline, body copy, and up to two action buttons, each with its own label and URL; the second appears only when filled in. Managed as the `cta` group on the Footer global.
 _Avoid_: Contact section, CTA banner
 
 **Contact Details**:
