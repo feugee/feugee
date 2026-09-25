@@ -43,3 +43,5 @@ next-env.d.ts
 
 # payload uploads (local disk until R2 — see docs/adr/0002-asset-storage-on-cloudflare-r2.md)
 /assets
+
+.scratch/
