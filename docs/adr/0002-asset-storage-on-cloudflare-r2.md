@@ -15,3 +15,11 @@ Two consequences above turned out different once wired:
 
 - URLs the CMS stores are app-relative (`/api/assets/file/<filename>`), not provider URLs — the plugin streams objects through the app by default. Swapping providers later does not rewrite content references after all; only absolute URLs pasted into rich text would break.
 - Because objects stream through the app, heavy video still consumes VPS bandwidth — the original strain concern is half-solved (storage offloaded, bandwidth not). Direct serving is available via the plugin's `signedDownloads` (302 to presigned URLs, expiring); whether production wants that is deferred to the production R2 wiring. Uploads also set a public-read object ACL — honored by Biznet Gio, ignored by R2 (public access there is bucket-level); revisit alongside `signedDownloads` when wiring production.
+
+## Amendment — 2026-09-25: public custom-domain delivery
+
+Production uses a public R2 custom domain, supplied as `R2_PUBLIC_URL`, for anonymous Asset delivery. The S3 API endpoint remains private to the server and continues to handle uploads, deletes, and fallback reads. Payload's `generateFileURL` hook builds URLs from the stored object key, including generated image-size variants, so public pages never expose the R2 S3 endpoint.
+
+The Cloudflare dashboard must attach the custom domain to the bucket, enable public bucket access for that domain, and apply `Cache-Control: public, max-age=31536000, immutable` to the asset path. The application applies the same immutable header to its fallback `/api/assets/file/*` responses. Local development omits `R2_PUBLIC_URL` and keeps using the Payload route.
+
+This chooses public delivery over signed downloads because public Assets are embedded in anonymous pages and include large videos. The trade-off is that anyone with an Asset URL can fetch it; the custom domain and immutable caching remove VPS bandwidth from normal public traffic while retaining the app route for local development and operational fallback.

@@ -110,7 +110,6 @@ const WorkVisual = ({ item }: { item: WorksListItem }) =>
       className="h-auto w-full object-cover"
       height={item.visual.height}
       src={item.visual.url}
-      unoptimized
       width={item.visual.width}
     />
   );

@@ -23,6 +23,7 @@ const localDevEnv = {
 const productionEnv = {
   ...baseEnv,
   R2_ACCOUNT_ID: accountId,
+  R2_PUBLIC_URL: "https://assets.feugee.com",
 }
 
 // env.ts parses process.env at import time — stub a valid local-dev baseline
@@ -55,6 +56,15 @@ describe("envSchema", () => {
     const result = envSchema.safeParse(baseEnv)
     expect(result.success).toBe(false)
   })
+
+  it("rejects an HTTP public asset URL in production", () => {
+    const result = envSchema.safeParse({
+      ...productionEnv,
+      R2_PUBLIC_URL: "http://assets.feugee.com",
+    })
+
+    expect(result.success).toBe(false)
+  })
 })
 
 describe("r2StorageOptions", () => {
@@ -83,5 +93,27 @@ describe("r2StorageOptions", () => {
       accessKeyId: "test-key-id",
       secretAccessKey: "test-secret",
     })
+  })
+})
+
+describe("r2PublicAssetUrlOf", () => {
+  it("uses the public custom domain and preserves object-key segments", async () => {
+    const { r2PublicAssetUrlOf } = await import("./storage")
+
+    expect(
+      r2PublicAssetUrlOf(
+        envSchema.parse(productionEnv),
+        "hero image.webp",
+        "assets/abc123",
+      ),
+    ).toBe("https://assets.feugee.com/assets/abc123/hero%20image.webp")
+  })
+
+  it("falls back to the Payload file route for local development", async () => {
+    const { r2PublicAssetUrlOf } = await import("./storage")
+
+    expect(
+      r2PublicAssetUrlOf(envSchema.parse(localDevEnv), "hero.mp4"),
+    ).toBe("http://localhost:3000/api/assets/file/hero.mp4")
   })
 })

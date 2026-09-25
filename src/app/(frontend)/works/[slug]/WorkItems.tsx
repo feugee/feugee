@@ -53,7 +53,6 @@ const AssetFigure = ({
         src={sizedUrlOf(asset, size) ?? asset.url}
         alt={asset.alt}
         className="w-full h-full object-cover"
-        unoptimized
         width={asset.width ?? 1}
         height={asset.height ?? 1}
       />

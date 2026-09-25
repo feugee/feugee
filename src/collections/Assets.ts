@@ -25,6 +25,10 @@ export const Assets: CollectionConfig = {
   },
   upload: {
     mimeTypes: ["image/*", "video/*"],
+    modifyResponseHeaders: ({ headers }) => {
+      headers.set("Cache-Control", "public, max-age=31536000, immutable")
+      return headers
+    },
     // The size ladder every public placement requests from, smallest to
     // largest: Footer cards and marquee logos (thumbnail), the Works
     // masonry and multi-column Work items (tablet), one-column Work items

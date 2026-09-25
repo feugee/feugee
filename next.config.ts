@@ -1,7 +1,7 @@
-import type { NextConfig } from "next"
-import { withPayload } from "@payloadcms/next/withPayload"
+import type { NextConfig } from "next";
+import { withPayload } from "@payloadcms/next/withPayload";
 
-import { securityHeaders } from "./src/securityHeaders"
+import { securityHeaders } from "./src/securityHeaders";
 
 const nextConfig: NextConfig = {
   // The production image serves `.next/standalone/server.js` (see Dockerfile)
@@ -12,6 +12,20 @@ const nextConfig: NextConfig = {
   experimental: {
     globalNotFound: true,
   },
+  images: {
+    remotePatterns: [
+      { protocol: "http", hostname: "localhost" },
+      { protocol: "https", hostname: "feugee.com" },
+      ...(process.env.R2_PUBLIC_URL
+        ? [
+            {
+              protocol: "https" as const,
+              hostname: new URL(process.env.R2_PUBLIC_URL).hostname,
+            },
+          ]
+        : []),
+    ],
+  },
   poweredByHeader: false,
   async headers() {
     return [
@@ -19,8 +33,8 @@ const nextConfig: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
-    ]
+    ];
   },
-}
+};
 
-export default withPayload(nextConfig)
+export default withPayload(nextConfig);

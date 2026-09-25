@@ -11,6 +11,22 @@ type R2StorageOptions = Omit<S3StorageOptions, "collections">
 export const r2EndpointOf = (env: Env): string =>
   env.R2_ENDPOINT ?? `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`
 
+export const r2PublicAssetUrlOf = (
+  env: Env,
+  filename: string,
+  prefix = "",
+): string => {
+  const baseUrl =
+    env.R2_PUBLIC_URL ?? `${env.NEXT_PUBLIC_SERVER_URL}/api/assets/file`
+  const path = [prefix, filename]
+    .filter(Boolean)
+    .flatMap((segment) => segment.split("/"))
+    .map(encodeURIComponent)
+    .join("/")
+
+  return `${baseUrl.replace(/\/$/, "")}/${path}`
+}
+
 export function r2StorageOptions(env: Env): R2StorageOptions {
   const s3CompatibleOverride = Boolean(env.R2_ENDPOINT)
 

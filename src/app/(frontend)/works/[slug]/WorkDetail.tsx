@@ -144,7 +144,6 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                   alt={heroThumbnail.alt}
                   fill
                   className="object-cover"
-                  unoptimized
                 />
               )}
             </div>

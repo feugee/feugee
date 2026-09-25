@@ -16,7 +16,7 @@ import { env } from "./env"
 import { healthEndpoint } from "./health"
 import { Footer } from "./globals/Footer"
 import { LandingPage } from "./globals/LandingPage"
-import { r2StorageOptions } from "./storage"
+import { r2PublicAssetUrlOf, r2StorageOptions } from "./storage"
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -48,7 +48,12 @@ export default buildConfig({
   sharp,
   plugins: [
     s3Storage({
-      collections: { assets: true },
+      collections: {
+        assets: {
+          generateFileURL: ({ filename, prefix }) =>
+            r2PublicAssetUrlOf(env, filename, prefix),
+        },
+      },
       ...r2StorageOptions(env),
     }),
   ],

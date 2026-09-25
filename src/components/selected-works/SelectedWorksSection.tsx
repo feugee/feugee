@@ -56,7 +56,6 @@ const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
           className="h-full w-full object-cover"
           height={item.visual.height}
           src={item.visual.url}
-          unoptimized
           width={item.visual.width}
         />
       )}

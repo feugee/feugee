@@ -13,6 +13,7 @@ export const envSchema = z
     // (Biznet Gio Neo) via R2_ENDPOINT instead — see docs/adr/0002.
     R2_ACCOUNT_ID: z.string().min(1).optional(),
     R2_ENDPOINT: z.url().optional(),
+    R2_PUBLIC_URL: z.url().optional(),
     // Email transport — exactly one provider: any SMTP server (SMTP_*) or
     // Resend (RESEND_API_KEY). The Agency's call; local dev points SMTP at
     // Mailpit. See docs/adr/0009.
@@ -30,6 +31,16 @@ export const envSchema = z
     {
       message:
         "Set exactly one of R2_ACCOUNT_ID (production R2) or R2_ENDPOINT (S3-compatible override)",
+    },
+  )
+  .refine(
+    ({ R2_ACCOUNT_ID, R2_PUBLIC_URL }) =>
+      !R2_ACCOUNT_ID ||
+      (Boolean(R2_PUBLIC_URL) && R2_PUBLIC_URL?.startsWith("https://")),
+    {
+      path: ["R2_PUBLIC_URL"],
+      message:
+        "R2_PUBLIC_URL is required and must use https:// when using production R2",
     },
   )
   .superRefine((env, ctx) => {
