@@ -143,6 +143,28 @@ export interface Work {
   slug?: string | null;
   subtitle?: string | null;
   /**
+   * The Work's summary prose, shown as the Overview block on the Work Detail Page.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * The heading above the Description on the Work Detail Page. Empty shows the Description with no heading.
+   */
+  descriptionLabel?: string | null;
+  /**
    * The primary visual for this Work, shown at the top of the Work Detail Page.
    */
   thumbnail?: (number | null) | Asset;
@@ -225,6 +247,10 @@ export interface Work {
                             blockType: 'titled-text';
                           }
                         | {
+                            /**
+                             * Where the text sits in its cell when the cell is taller than the text.
+                             */
+                            verticalAlignment?: ('top' | 'center' | 'bottom') | null;
                             entries?:
                               | {
                                   text: {
@@ -300,6 +326,10 @@ export interface Work {
                             blockType: 'titled-text';
                           }
                         | {
+                            /**
+                             * Where the text sits in its cell when the cell is taller than the text.
+                             */
+                            verticalAlignment?: ('top' | 'center' | 'bottom') | null;
                             entries?:
                               | {
                                   text: {
@@ -375,6 +405,10 @@ export interface Work {
                             blockType: 'titled-text';
                           }
                         | {
+                            /**
+                             * Where the text sits in its cell when the cell is taller than the text.
+                             */
+                            verticalAlignment?: ('top' | 'center' | 'bottom') | null;
                             entries?:
                               | {
                                   text: {
@@ -450,6 +484,10 @@ export interface Work {
                             blockType: 'titled-text';
                           }
                         | {
+                            /**
+                             * Where the text sits in its cell when the cell is taller than the text.
+                             */
+                            verticalAlignment?: ('top' | 'center' | 'bottom') | null;
                             entries?:
                               | {
                                   text: {
@@ -525,6 +563,10 @@ export interface Work {
                             blockType: 'titled-text';
                           }
                         | {
+                            /**
+                             * Where the text sits in its cell when the cell is taller than the text.
+                             */
+                            verticalAlignment?: ('top' | 'center' | 'bottom') | null;
                             entries?:
                               | {
                                   text: {
@@ -792,6 +834,8 @@ export interface WorksSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   subtitle?: T;
+  description?: T;
+  descriptionLabel?: T;
   thumbnail?: T;
   featureVisual?: T;
   client?: T;
@@ -846,6 +890,7 @@ export interface WorksSelect<T extends boolean = true> {
                           text?:
                             | T
                             | {
+                                verticalAlignment?: T;
                                 entries?:
                                   | T
                                   | {
@@ -895,6 +940,7 @@ export interface WorksSelect<T extends boolean = true> {
                           text?:
                             | T
                             | {
+                                verticalAlignment?: T;
                                 entries?:
                                   | T
                                   | {
@@ -944,6 +990,7 @@ export interface WorksSelect<T extends boolean = true> {
                           text?:
                             | T
                             | {
+                                verticalAlignment?: T;
                                 entries?:
                                   | T
                                   | {
@@ -993,6 +1040,7 @@ export interface WorksSelect<T extends boolean = true> {
                           text?:
                             | T
                             | {
+                                verticalAlignment?: T;
                                 entries?:
                                   | T
                                   | {
@@ -1042,6 +1090,7 @@ export interface WorksSelect<T extends boolean = true> {
                           text?:
                             | T
                             | {
+                                verticalAlignment?: T;
                                 entries?:
                                   | T
                                   | {
