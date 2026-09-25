@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { accessibleHeroTitle, normalizeRotatingWords } from "./heroTitle";
+import {
+  accessibleHeroTitle,
+  DEFAULT_HERO_LEAD_IN,
+  heroLeadInOf,
+  normalizeRotatingWords,
+} from "./heroTitle";
 
 describe("normalizeRotatingWords", () => {
   it("keeps filled words and trims surrounding whitespace", () => {
@@ -27,14 +32,38 @@ describe("normalizeRotatingWords", () => {
   });
 });
 
+describe("heroLeadInOf", () => {
+  it("defaults the lead-in word to \"Into\"", () => {
+    expect(DEFAULT_HERO_LEAD_IN).toBe("Into");
+    expect(heroLeadInOf(null)).toBe("Into");
+    expect(heroLeadInOf(undefined)).toBe("Into");
+  });
+
+  it("keeps a filled lead-in word and trims it", () => {
+    expect(heroLeadInOf("Beyond")).toBe("Beyond");
+    expect(heroLeadInOf("  Through  ")).toBe("Through");
+  });
+
+  it("falls back to the default when blank after trimming", () => {
+    expect(heroLeadInOf("")).toBe("Into");
+    expect(heroLeadInOf("   ")).toBe("Into");
+  });
+});
+
 describe("accessibleHeroTitle", () => {
-  it("joins the title, the lead-in, and every word", () => {
+  it("joins the title, the lead-in word, and every word", () => {
     expect(
-      accessibleHeroTitle("We're Feugee", ["Motion", "Design", "Experience"]),
+      accessibleHeroTitle("We're Feugee", ["Motion", "Design", "Experience"], "Into"),
     ).toBe("We're Feugee Into Motion, Design, Experience");
   });
 
+  it("carries a CMS-edited lead-in word", () => {
+    expect(accessibleHeroTitle("We're Feugee", ["Motion"], "Beyond")).toBe(
+      "We're Feugee Beyond Motion",
+    );
+  });
+
   it("falls back to the bare title when there are no words", () => {
-    expect(accessibleHeroTitle("We're Feugee", [])).toBe("We're Feugee");
+    expect(accessibleHeroTitle("We're Feugee", [], "Into")).toBe("We're Feugee");
   });
 });

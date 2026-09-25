@@ -49,6 +49,39 @@ export const LandingPage: GlobalConfig = {
           type: "text",
         },
         {
+          name: "leadInWord",
+          type: "text",
+          defaultValue: "Into",
+          admin: {
+            description:
+              'The fixed opening word of the title\'s second line — "Into" by default.',
+          },
+        },
+        {
+          type: "group",
+          name: "scrollCue",
+          label: "Scroll Cue",
+          admin: {
+            description:
+              "The button in the Hero's bottom-right. Without a URL it scrolls to the content below the Hero; without a label it does not render.",
+          },
+          fields: [
+            {
+              name: "label",
+              type: "text",
+              defaultValue: "Scroll to explore",
+            },
+            {
+              name: "url",
+              type: "text",
+              admin: {
+                description:
+                  "Internal path or external URL. Leave empty to scroll to the content below the Hero.",
+              },
+            },
+          ],
+        },
+        {
           name: "rotatingWords",
           type: "array",
           labels: {
@@ -135,6 +168,14 @@ export const LandingPage: GlobalConfig = {
       ],
     },
     {
+      name: "clientsHeading",
+      type: "text",
+      defaultValue: "Clients Ideas We've Visualized",
+      admin: {
+        description: "The heading above the Client Marquee.",
+      },
+    },
+    {
       name: "selectedWorks",
       type: "relationship",
       relationTo: "works",
@@ -142,6 +183,14 @@ export const LandingPage: GlobalConfig = {
       filterOptions: () => ({ _status: { equals: "published" } }),
       admin: {
         description: "Works featured on the Landing Page, in display order.",
+      },
+    },
+    {
+      name: "selectedWorksHeading",
+      type: "text",
+      defaultValue: "Selected Works",
+      admin: {
+        description: "The heading above the Selected Works.",
       },
     },
     {

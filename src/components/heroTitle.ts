@@ -1,11 +1,16 @@
 /**
- * Pure helpers for the Hero title. The lead-in is structural copy, hardcoded
- * here and shared with the component — the agency-managed part is only the
- * word list.
+ * Pure helpers for the Hero title. The agency-managed parts are the lead-in
+ * word and the word list; both resolve here so the component and the
+ * screen-reader twin can never disagree.
  */
 
-// "Into" — the fixed word ahead of the Rotating Word on the title's second line.
-export const HERO_LEAD_IN = "Into";
+// "Into" — the default Lead-In Word ahead of the Rotating Word on the title's
+// second line; the CMS field seeds with this and may override it.
+export const DEFAULT_HERO_LEAD_IN = "Into";
+
+export const heroLeadInOf = (
+  leadIn: string | null | undefined,
+): string => leadIn?.trim() || DEFAULT_HERO_LEAD_IN;
 
 // Structural stand-in for the CMS rows: wordless rows are a mid-edit Live
 // Preview state, not an error.
@@ -25,5 +30,6 @@ export const normalizeRotatingWords = (
 export const accessibleHeroTitle = (
   title: string,
   words: readonly string[],
+  leadIn: string,
 ): string =>
-  words.length > 0 ? `${title} ${HERO_LEAD_IN} ${words.join(", ")}` : title;
+  words.length > 0 ? `${title} ${leadIn} ${words.join(", ")}` : title;

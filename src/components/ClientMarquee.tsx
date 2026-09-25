@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { SectionHeading } from "./SectionHeading";
+
 export interface MarqueeClient {
   id: number;
   name: string;
@@ -56,16 +58,24 @@ const LogoList = ({
 );
 
 /**
- * The Client Marquee: an endless horizontal scroll built from two identical
- * lists — the track translates left by exactly one list's width (its own
+ * The Client Marquee: its heading — the same sticky chip the Selected Works
+ * heading rides — above an endless horizontal scroll built from two identical
+ * lists. The track translates left by exactly one list's width (its own
  * -50%), so the seam is invisible. Hovering pauses the scroll; reduced-motion
  * visitors get a static, single-list row.
  */
-export const ClientMarquee = ({ clients }: { clients: MarqueeClient[] }) => (
+export const ClientMarquee = ({
+  clients,
+  heading,
+}: {
+  clients: MarqueeClient[];
+  heading: string;
+}) => (
   <section
-    aria-label="Clients"
+    aria-label={heading}
     className="group relative border-t border-neutral-900 p-6 md:p-16"
   >
+    <SectionHeading>{heading}</SectionHeading>
     <div className="overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
       <div className="flex w-max animate-marquee motion-reduce:animate-none">
         <LogoList clients={clients} />

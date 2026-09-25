@@ -1234,6 +1234,20 @@ export interface LandingPage {
     title?: string | null;
     subtitle?: string | null;
     /**
+     * The fixed opening word of the title's second line — "Into" by default.
+     */
+    leadInWord?: string | null;
+    /**
+     * The button in the Hero's bottom-right. Without a URL it scrolls to the content below the Hero; without a label it does not render.
+     */
+    scrollCue?: {
+      label?: string | null;
+      /**
+       * Internal path or external URL. Leave empty to scroll to the content below the Hero.
+       */
+      url?: string | null;
+    };
+    /**
      * The words that cycle as the title's last word, in order. A single word renders statically.
      */
     rotatingWords?:
@@ -1270,9 +1284,17 @@ export interface LandingPage {
       }[]
     | null;
   /**
+   * The heading above the Client Marquee.
+   */
+  clientsHeading?: string | null;
+  /**
    * Works featured on the Landing Page, in display order.
    */
   selectedWorks?: (number | Work)[] | null;
+  /**
+   * The heading above the Selected Works.
+   */
+  selectedWorksHeading?: string | null;
   /**
    * Endorsements of the agency, shown below Selected Works in two counter-scrolling columns.
    */
@@ -1385,6 +1407,13 @@ export interface LandingPageSelect<T extends boolean = true> {
     | {
         title?: T;
         subtitle?: T;
+        leadInWord?: T;
+        scrollCue?:
+          | T
+          | {
+              label?: T;
+              url?: T;
+            };
         rotatingWords?:
           | T
           | {
@@ -1411,7 +1440,9 @@ export interface LandingPageSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
+  clientsHeading?: T;
   selectedWorks?: T;
+  selectedWorksHeading?: T;
   testimonials?:
     | T
     | {

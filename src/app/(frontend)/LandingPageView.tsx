@@ -14,7 +14,13 @@ import {
   type TestimonialItem,
 } from "@/components/testimonials/TestimonialsSection";
 import { sizedUrlOf, videoPosterOf } from "@/components/work";
-import { normalizeRotatingWords } from "@/components/heroTitle";
+import {
+  DEFAULT_CLIENTS_HEADING,
+  DEFAULT_SELECTED_WORKS_HEADING,
+  landingHeadingOf,
+} from "@/components/landingHeadings";
+import { heroLeadInOf, normalizeRotatingWords } from "@/components/heroTitle";
+import { resolveScrollCue } from "@/components/scrollCue";
 
 // The Live Preview machinery rides a lazy chunk: it only downloads inside
 // the CMS Dashboard's preview iframe, where the gate below has seen
@@ -83,6 +89,19 @@ export const LandingPageContent = ({
     [data],
   );
 
+  // Blank CMS fields fall back to the defaults the fields seed with: the
+  // Lead-In Word, both section headings, and the Scroll Cue's label.
+  const leadInWord = heroLeadInOf(data.hero?.leadInWord);
+  const cue = resolveScrollCue(data.hero?.scrollCue);
+  const clientsHeading = landingHeadingOf(
+    data.clientsHeading,
+    DEFAULT_CLIENTS_HEADING,
+  );
+  const selectedWorksHeading = landingHeadingOf(
+    data.selectedWorksHeading,
+    DEFAULT_SELECTED_WORKS_HEADING,
+  );
+
   const heading = data.whoWeAre?.heading?.trim() || "Who We Are";
   const description = data.whoWeAre?.description?.trim() || null;
   const stats = data.stats ?? [];
@@ -112,7 +131,13 @@ export const LandingPageContent = ({
   return (
     <div className="flex flex-1 flex-col">
       {slides.length > 0 ? (
-        <HeroSlider rotatingWords={rotatingWords} slides={slides} title={heroTitle} />
+        <HeroSlider
+          cue={cue}
+          leadInWord={leadInWord}
+          rotatingWords={rotatingWords}
+          slides={slides}
+          title={heroTitle}
+        />
       ) : (
         <h1 className="sr-only">{heroTitle}</h1>
       )}
@@ -125,9 +150,11 @@ export const LandingPageContent = ({
         />
       )}
 
-      {clients.length > 0 && <ClientMarquee clients={clients} />}
+      {clients.length > 0 && (
+        <ClientMarquee clients={clients} heading={clientsHeading} />
+      )}
 
-      <SelectedWorksSection works={data.selectedWorks} />
+      <SelectedWorksSection heading={selectedWorksHeading} works={data.selectedWorks} />
 
       {testimonialItems.length > 0 && (
         <TestimonialsSection

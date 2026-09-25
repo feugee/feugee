@@ -704,6 +704,10 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
         hero: {
           title: "We're Feugee",
           subtitle: "Ambitious ideas for ambitious business",
+          leadInWord: "Into",
+          // No URL seeded — the cue demonstrates its default: scrolling to
+          // the content below the Hero.
+          scrollCue: { label: "Scroll to explore" },
           rotatingWords: [{ word: "Motion" }, { word: "Design" }, { word: "Experience" }],
           slides: heroSlides,
         },
@@ -713,7 +717,9 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
             "Feugee is a creative agency for ambitious business. One team directs, designs, and builds — carrying films, identities, and campaigns from first sketch to final frame.",
         },
         stats: landingNow.stats ?? [],
+        clientsHeading: "Clients Ideas We've Visualized",
         selectedWorks,
+        selectedWorksHeading: "Selected Works",
       },
     })
     payload.logger.info(
@@ -747,6 +753,51 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
     payload.logger.info("Seeded landing page hero rotating words: Motion, Design, Experience")
   } else {
     payload.logger.info("Landing page hero already has rotating words — skipping word seed")
+  }
+
+  // ---- Landing Page CMS copy (lead-in word, Scroll Cue, headings) --------
+  // Same independent-guard shape: an older database can predate the CMS copy
+  // fields entirely. Backfills only what is still empty — an editor-set value
+  // always wins. Partial update: untouched hero subfields stay as saved.
+  const landingForCopy = await payload.findGlobal({
+    slug: "landing-page",
+    draft: false,
+  })
+
+  const heroCopy: Record<string, unknown> = {}
+  if ((landingForCopy.hero?.leadInWord ?? "").trim() === "") {
+    heroCopy.leadInWord = "Into"
+  }
+  if ((landingForCopy.hero?.scrollCue?.label ?? "").trim() === "") {
+    // Carry any editor-set URL across — only the blank label is backfilled.
+    heroCopy.scrollCue = {
+      label: "Scroll to explore",
+      url: landingForCopy.hero?.scrollCue?.url ?? null,
+    }
+  }
+
+  const copyData: Record<string, unknown> = {}
+  if (Object.keys(heroCopy).length > 0) copyData.hero = heroCopy
+  if ((landingForCopy.clientsHeading ?? "").trim() === "") {
+    copyData.clientsHeading = "Clients Ideas We've Visualized"
+  }
+  if ((landingForCopy.selectedWorksHeading ?? "").trim() === "") {
+    copyData.selectedWorksHeading = "Selected Works"
+  }
+
+  if (Object.keys(copyData).length > 0) {
+    copyData._status = "published"
+    await payload.updateGlobal({
+      slug: "landing-page",
+      context: noRevalidate,
+      draft: false,
+      data: copyData,
+    })
+    payload.logger.info(
+      `Seeded landing page CMS copy: ${Object.keys(copyData).filter((key) => key !== "_status").join(", ")}`,
+    )
+  } else {
+    payload.logger.info("Landing page CMS copy already set — skipping copy seed")
   }
 
   // ---- Landing Page Testimonials ------------------------------------------

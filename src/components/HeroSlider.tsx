@@ -3,9 +3,18 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { accessibleHeroTitle, HERO_LEAD_IN } from "./heroTitle";
+import { accessibleHeroTitle } from "./heroTitle";
+import {
+  nextWordIndex,
+  WORD_BLUR_PX,
+  WORD_CYCLE_MS,
+} from "./rotatingWord";
+import type { ScrollCueAction } from "./scrollCue";
+import { getSmoothScroll } from "./SmoothScroll";
+import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -17,11 +26,10 @@ export interface HeroSlide {
 }
 
 const SLIDE_INTERVAL_MS = 8000;
-const WORD_INTERVAL_MS = 3000;
 const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 
-// One display line of the title: the mask, every word slot, and the strip's
-// travel distance all key off this single height.
+// One display line of the title: the word stack's every slot keys off this
+// single height.
 const TITLE_LINE_EM = 1.15;
 
 /**
@@ -32,17 +40,21 @@ const TITLE_LINE_EM = 1.15;
  * anchored to the section's bottom corners; the video stack counter-translates
  * against scroll so it stays visually still (the background-attachment: fixed
  * look) while the page scrolls over it and the next section slides up to
- * cover it. Nothing here is interactive: the videos and the track are
- * display-only.
+ * cover it. The videos and the track are display-only; the Scroll Cue is the
+ * one interactive piece.
  */
 export const HeroSlider = ({
+  cue,
+  leadInWord,
+  rotatingWords,
   slides,
   title,
-  rotatingWords,
 }: {
+  cue: ScrollCueAction;
+  leadInWord: string;
+  rotatingWords: string[];
   slides: HeroSlide[];
   title: string;
-  rotatingWords: string[];
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
@@ -70,8 +82,8 @@ export const HeroSlider = ({
   useEffect(() => {
     if (reducedMotion || rotatingWords.length <= 1) return;
     const timer = window.setInterval(() => {
-      setWordIndex((current) => (current + 1) % rotatingWords.length);
-    }, WORD_INTERVAL_MS);
+      setWordIndex((current) => nextWordIndex(current, rotatingWords.length));
+    }, WORD_CYCLE_MS);
     return () => window.clearInterval(timer);
   }, [reducedMotion, rotatingWords.length]);
 
@@ -137,6 +149,31 @@ export const HeroSlider = ({
     },
   );
 
+  // The cue's scroll branch: whatever follows the Hero — Who We Are, the
+  // Client Marquee, or Selected Works, whichever the page is showing. Lenis
+  // owns public-site scroll (ADR 0004), so it drives the travel — and
+  // honors reduced motion by jumping instantly. The native fallback (a
+  // missing instance) has to gate the smooth behavior itself.
+  const scrollBelowHero = () => {
+    const below = sectionRef.current?.nextElementSibling;
+    if (!(below instanceof HTMLElement)) return;
+    const smooth = getSmoothScroll();
+    if (smooth) smooth.scrollTo(below);
+    else
+      below.scrollIntoView({
+        behavior: reducedMotion ? "auto" : "smooth",
+      });
+  };
+
+  // Difference blending (ADR 0006) for the cue extends from text to a filled
+  // control: the white pill inverts the video behind it while the black label
+  // rides as the un-blended video (difference with black is identity). The
+  // blend and the pulse share the element — a wrapper's animated opacity
+  // would wall the blend off from the video.
+  const scrollCueClassName = `absolute bottom-6 right-6 z-20 rounded-full bg-white px-6 py-3 text-base font-medium tracking-wide text-black mix-blend-difference md:bottom-12 md:right-16 ${
+    reducedMotion ? "" : "animate-cue-pulse"
+  }`;
+
   return (
     <section
       aria-label="Featured videos"
@@ -168,10 +205,10 @@ export const HeroSlider = ({
         ))}
       </div>
 
-      {/* Difference Text (ADR 0006): the title, dashes, and cue are white with
+      {/* Difference Text (ADR 0006): the title and dashes are white with
           difference blending, so they read as the negative of the video. The
-          blend sits on this container and on the cue below — both are plain
-          children of the section, so their backdrop is the video stack. */}
+          blend sits on this container — a plain child of the section, so its
+          backdrop is the video stack. */}
       <div className="absolute bottom-6 left-6 z-20 flex flex-col gap-4 mix-blend-difference md:bottom-12 md:left-16 md:gap-6">
         {/* The visible lines are aria-hidden — the word swap would otherwise
             re-announce every few seconds — so a static sr-only twin carries
@@ -185,33 +222,40 @@ export const HeroSlider = ({
             {rotatingWords.length > 0 && (
               <>
                 <br />
-                {HERO_LEAD_IN}{" "}
-                {/* The mask clips the strip to one line; the strip slides a
-                    line at a time, so words exit upward as the next enters.
-                    The transition is dropped under reduced motion so the
-                    reset to the first word snaps instead of sliding. */}
-                <span className="inline-block h-(--title-line) overflow-hidden align-bottom">
-                  <span
-                    className={`block ${reducedMotion ? "" : "transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)]"}`}
-                    style={{
-                      transform: `translateY(calc(-1 * var(--title-line) * ${safeWordIndex}))`,
-                    }}
-                  >
-                    {rotatingWords.map((word, index) => (
-                      <span
-                        className="block h-(--title-line) text-secondary-500"
-                        key={`${word}-${index}`}
-                      >
-                        {word}
-                      </span>
-                    ))}
-                  </span>
+                {leadInWord}{" "}
+                {/* The softblur crossfade: every word stacked in one grid
+                    cell, the outgoing and incoming both fading while
+                    blurring to --word-blur on the shared swipe easing
+                    (duration-500 mirrors WORD_TRANSITION_MS). The stack's
+                    width holds the widest word, so the line never reflows
+                    mid-cycle. The transition is dropped under reduced
+                    motion so the reset to the first word snaps. */}
+                <span
+                  className="inline-grid h-(--title-line) align-bottom"
+                  style={{ ["--word-blur" as string]: `${WORD_BLUR_PX}px` }}
+                >
+                  {rotatingWords.map((word, index) => (
+                    <span
+                      className={`col-start-1 row-start-1 block h-(--title-line) text-secondary-500 ${
+                        index === safeWordIndex
+                          ? "opacity-100 [filter:blur(0px)]"
+                          : "opacity-0 [filter:blur(var(--word-blur))]"
+                      } ${
+                        reducedMotion
+                          ? ""
+                          : "transition-[opacity,filter] duration-500 ease-swipe"
+                      }`}
+                      key={`${word}-${index}`}
+                    >
+                      {word}
+                    </span>
+                  ))}
                 </span>
               </>
             )}
           </span>
           <span className="sr-only">
-            {accessibleHeroTitle(title, rotatingWords)}
+            {accessibleHeroTitle(title, rotatingWords, leadInWord)}
           </span>
         </h1>
 
@@ -231,14 +275,21 @@ export const HeroSlider = ({
         )}
       </div>
 
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute bottom-6 right-6 z-20 text-base tracking-wide text-white mix-blend-difference md:bottom-12 md:right-16 ${
-          reducedMotion ? "" : "animate-cue-pulse"
-        }`}
-      >
-        | Scroll to explore
-      </div>
+      {cue.kind === "link" ? (
+        <Link
+          className={scrollCueClassName}
+          href={cue.url}
+          onNavigate={(event) => navigateWithBlackout(event, cue.url)}
+        >
+          {cue.label}
+        </Link>
+      ) : (
+        cue.kind === "scroll" && (
+          <button className={scrollCueClassName} onClick={scrollBelowHero} type="button">
+            {cue.label}
+          </button>
+        )
+      )}
     </section>
   );
 };
