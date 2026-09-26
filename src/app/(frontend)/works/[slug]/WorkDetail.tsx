@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
@@ -9,6 +10,7 @@ import type { Work } from "@/payload-types";
 import { ArrowRight } from "@/components/ArrowRight";
 import { AutoVideo } from "@/components/AutoVideo";
 import { ScrollProgress } from "@/components/ScrollProgress";
+import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { workThumbnailOf } from "@/components/work";
 import { WorkSections, sectionAnchor } from "./WorkSections";
 
@@ -83,6 +85,16 @@ export const WorkDetail = ({ data }: { data: Work }) => {
           there instead. */}
       <aside className="self-start px-6 md:px-12 lg:pb-16 max-lg:pt-32 lg:sticky lg:top-32">
         <nav aria-label="Work sections" className="lg:space-y-12">
+          <Link
+            className="inline-flex items-center gap-3 hover:text-primary-500 transition px-4 py-2 rounded-sm border-neutral-800 border text-white"
+            href="/works"
+            onNavigate={(event) => navigateWithBlackout(event, "/works")}
+          >
+            <span aria-hidden="true" className="">
+              &lt;
+            </span>
+            back
+          </Link>
           <div className="w-full pb-12 border-b border-neutral-900 space-y-6">
             <h1 className="text-neutral-50 text-4xl font-bold block">
               {data.title}
