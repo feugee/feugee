@@ -3,6 +3,7 @@ import { albertSans } from "@/app/fonts";
 import { env } from "@/env";
 import "../globals.css";
 
+import { AnalyticsConsent } from "@/analytics/AnalyticsConsent";
 import { Cursor } from "@/components/Cursor";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
@@ -20,20 +21,26 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${albertSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-neutral-950">
-        <SmoothScroll>
-          <PageTransition />
-          {/* Outside the Blackout slab, so the Page Shift never drags it —
-              the Cursor stays viewport-pinned like the pointer it replaces. */}
-          <Cursor />
-          <Navbar />
-          {/* Every page's primary content sits in one main landmark; page
-              views contribute sections, not their own main. The data
-              attribute marks the Page Shift slab (ADR 0007). */}
-          <main className="flex flex-1 flex-col" data-blackout-slab>
-            {children}
-          </main>
-          <Footer />
-        </SmoothScroll>
+        <AnalyticsConsent
+          containerId={env.NEXT_PUBLIC_GTM_ID}
+          productionUrl={env.NEXT_PUBLIC_SERVER_URL}
+          production={process.env.NODE_ENV === "production"}
+        >
+          <SmoothScroll>
+            <PageTransition />
+            {/* Outside the Blackout slab, so the Page Shift never drags it —
+                the Cursor stays viewport-pinned like the pointer it replaces. */}
+            <Cursor />
+            <Navbar />
+            {/* Every page's primary content sits in one main landmark; page
+                views contribute sections, not their own main. The data
+                attribute marks the Page Shift slab (ADR 0007). */}
+            <main className="flex flex-1 flex-col" data-blackout-slab>
+              {children}
+            </main>
+            <Footer />
+          </SmoothScroll>
+        </AnalyticsConsent>
       </body>
     </html>
   );

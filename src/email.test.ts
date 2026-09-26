@@ -131,6 +131,28 @@ describe("envSchema — NEXT_PUBLIC_SERVER_URL", () => {
   })
 })
 
+describe("envSchema — NEXT_PUBLIC_GTM_ID", () => {
+  it("accepts a valid public GTM container ID", () => {
+    expect(
+      envSchema.safeParse({ ...smtpEnv, NEXT_PUBLIC_GTM_ID: "GTM-ABC123" })
+        .success,
+    ).toBe(true)
+  })
+
+  it("treats a blank ID as unset", () => {
+    const result = envSchema.safeParse({ ...smtpEnv, NEXT_PUBLIC_GTM_ID: "" })
+    expect(result.success).toBe(true)
+    if (result.success) expect(result.data.NEXT_PUBLIC_GTM_ID).toBeUndefined()
+  })
+
+  it("rejects values that are not GTM container IDs", () => {
+    expect(
+      envSchema.safeParse({ ...smtpEnv, NEXT_PUBLIC_GTM_ID: "G-ABC123" })
+        .success,
+    ).toBe(false)
+  })
+})
+
 describe("emailProviderOf", () => {
   it("picks SMTP when SMTP_HOST is set", () => {
     expect(emailProviderOf(envSchema.parse(smtpAuthEnv))).toBe("smtp")
