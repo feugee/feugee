@@ -58,7 +58,7 @@ A `HEALTHCHECK` probes `/api/health`, which answers 200 only once the app can qu
 
 ### Building the image
 
-`next build` loads the Payload config (which validates the entire env schema via `src/env.ts`) and prerenders the public pages against the database. The build stage therefore needs the same environment the runtime gets — declared as `ARG`s in the Dockerfile, which keeps the values out of the *final* image's layers (they do remain visible in the builder-stage history and build logs, so treat build logs as sensitive). The build also runs `payload migrate` first, so the schema exists even on a brand-new Postgres. Concretely: the database must be reachable, and `DATABASE_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SERVER_URL` (the production URL — it is inlined into the client bundle at build time), the `R2_*`, email, and `EMAIL_FROM_*` variables must all be present at build time.
+`next build` loads the Payload config (which validates the entire env schema via `src/env.ts`) and prerenders the public pages against the database. The build stage therefore needs the same environment the runtime gets — declared as `ARG`s in the Dockerfile, which keeps the values out of the _final_ image's layers (they do remain visible in the builder-stage history and build logs, so treat build logs as sensitive). The build also runs `payload migrate` first, so the schema exists even on a brand-new Postgres. Concretely: the database must be reachable, and `DATABASE_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SERVER_URL` (the production URL — it is inlined into the client bundle at build time), the `R2_*`, email, and `EMAIL_FROM_*` variables must all be present at build time.
 
 ```bash
 docker build \
