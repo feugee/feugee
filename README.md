@@ -8,10 +8,6 @@ The public website and CMS for [Feugee](https://feugee.com), a creative agency. 
 
 Vocabulary for the domain lives in `CONTEXT.md`; architecture decisions in `docs/adr/`.
 
-## Google Analytics and Search Console
-
-After the analytics integration has been deployed, run `scripts/setup-google-analytics.sh` from the repository root. It guides you through GA4 and GTM setup, saves the public GTM container ID to local `.env` and the GitHub Actions repository variable, verifies `feugee.com` in Search Console using a Cloudflare DNS TXT record, and submits `/sitemap.xml`. The wizard does not change registrar nameservers or deploy production; after it finishes, rebuild the image and redeploy it in Coolify as directed.
-
 ## Local development
 
 ```bash

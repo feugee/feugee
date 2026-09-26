@@ -62,7 +62,6 @@ jobs:
         env:
           PAYLOAD_SECRET: ${{ secrets.PAYLOAD_SECRET }}
           NEXT_PUBLIC_SERVER_URL: ${{ vars.NEXT_PUBLIC_SERVER_URL }}
-          NEXT_PUBLIC_GTM_ID: ${{ vars.NEXT_PUBLIC_GTM_ID }}
           R2_PUBLIC_URL: ${{ vars.R2_PUBLIC_URL }}
           R2_BUCKET: ${{ secrets.R2_BUCKET }}
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
@@ -89,7 +88,6 @@ jobs:
             echo "DATABASE_URL=postgres://build:build@172.17.0.1:5432/build"
             echo "PAYLOAD_SECRET=$PAYLOAD_SECRET"
             echo "NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL"
-            echo "NEXT_PUBLIC_GTM_ID=$NEXT_PUBLIC_GTM_ID"
             echo "R2_PUBLIC_URL=$R2_PUBLIC_URL"
             echo "R2_BUCKET=$R2_BUCKET"
             echo "R2_ACCOUNT_ID=$R2_ACCOUNT_ID"

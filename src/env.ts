@@ -5,10 +5,6 @@ export const envSchema = z
     DATABASE_URL: z.url(),
     PAYLOAD_SECRET: z.string().min(32),
     NEXT_PUBLIC_SERVER_URL: z.url(),
-    NEXT_PUBLIC_GTM_ID: z
-      .union([z.literal(""), z.string().regex(/^GTM-[A-Z0-9]+$/)])
-      .optional()
-      .transform((id) => id || undefined),
     R2_BUCKET: z.string().min(1),
     R2_ACCESS_KEY_ID: z.string().min(1),
     R2_SECRET_ACCESS_KEY: z.string().min(1),

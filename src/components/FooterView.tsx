@@ -6,7 +6,6 @@ import { lazy, Suspense } from "react";
 
 import type { Footer, Work } from "@/payload-types";
 
-import { useAnalyticsConsent } from "@/analytics/AnalyticsConsent";
 import { ArrowRight } from "./ArrowRight";
 import { AutoVideo } from "./AutoVideo";
 import { usePreviewRequested } from "./live-preview/usePreviewRequested";
@@ -105,16 +104,13 @@ const CtaButton = ({
   label: string;
   url: string | null;
   primary?: boolean;
-}) => {
-  const { track } = useAnalyticsConsent();
-
-  return url ? (
+}) =>
+  url ? (
     <Link
       className={
         ctaButtonClassName + (primary ? " bg-white text-black" : " text-white")
       }
       href={url}
-      onClick={() => track("contact_cta_click", url)}
       onNavigate={(event) => navigateWithBlackout(event, url)}
     >
       {label} <ArrowRight />
@@ -129,7 +125,6 @@ const CtaButton = ({
       {label} <ArrowRight />
     </button>
   );
-};
 
 export const FooterView = ({ initialData }: { initialData: Footer }) => {
   const livePreview = usePreviewRequested("footer");
@@ -147,7 +142,6 @@ export const FooterView = ({ initialData }: { initialData: Footer }) => {
 };
 
 export const FooterContent = ({ data }: { data: Footer }) => {
-  const { available, openSettings, track } = useAnalyticsConsent();
   const cta = toFooterCta(data.cta);
 
   const aboutHeading = data.about?.heading?.trim() || "About";
@@ -289,11 +283,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
                     <span className="text-base text-white">{callToAction}</span>
                   ))}
                 {email && (
-                  <a
-                    className="text-base text-white"
-                    href={`mailto:${email}`}
-                    onClick={() => track("email_click", `mailto:${email}`)}
-                  >
+                  <a className="text-base text-white" href={`mailto:${email}`}>
                     {email}
                   </a>
                 )}
@@ -301,9 +291,6 @@ export const FooterContent = ({ data }: { data: Footer }) => {
                   <a
                     className="text-base text-white"
                     href={`tel:${phone.replace(/\s+/g, "")}`}
-                    onClick={() =>
-                      track("phone_click", `tel:${phone.replace(/\s+/g, "")}`)
-                    }
                   >
                     {phone}
                   </a>
@@ -330,15 +317,6 @@ export const FooterContent = ({ data }: { data: Footer }) => {
               &copy; {new Date().getFullYear()} {copyrightName}. All Rights
               Reserved.
             </span>
-            {available && (
-              <button
-                className="text-sm text-neutral-500 transition-colors hover:text-white"
-                onClick={openSettings}
-                type="button"
-              >
-                Cookie settings
-              </button>
-            )}
             {data.location && (
               <div className="text-sm text-neutral-500 flex items-center justify-start gap-x-3">
                 <span>{data.location}</span>
