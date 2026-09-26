@@ -285,7 +285,7 @@ export const SelectedWorksSection = ({
             viewport ever overlap the two. The wrapper carries the
             difference blend — the sticky inner's parent stacking context
             is empty, so blending the inner would have no backdrop. */}
-        <div className="pointer-events-none absolute bottom-[50svh] right-0 top-[50svh] z-20 mix-blend-difference">
+        <div className="hidden pointer-events-none absolute bottom-[50svh] right-0 top-[50svh] z-20 mix-blend-difference">
           <div
             aria-hidden="true"
             className="sticky top-[50svh] -translate-y-1/2 hidden flex-col items-start gap-3 pr-24 md:flex"
@@ -325,15 +325,17 @@ export const SelectedWorksSection = ({
         <div className="grid">
           {items.map((item) => (
             <div
-              className="col-start-1 row-start-1 flex flex-col items-start justify-end gap-2 p-6 md:flex-row md:items-center md:justify-between md:p-24"
+              className="col-start-1 row-start-1 flex flex-col items-center justify-end gap-2 p-6 md:flex-row md:items-end md:justify-between lg:p-16"
               data-pinned-caption
               key={item.id}
             >
-              <h3 className="text-3xl font-medium text-white md:text-7xl">
+              <h3 className="text-3xl text-center lg:text-start font-medium text-white lg:text-4xl xl:text-5xl 2xl:text-7xl lg:max-w-[60%] ">
                 {item.title}
               </h3>
               {item.year !== null && (
-                <p className="text-base text-white md:text-2xl">{item.year}</p>
+                <p className="text-base text-white md:text-2xl lg:text-2xl xl:text-4xl 2xl:text-5xl">
+                  {item.year}
+                </p>
               )}
             </div>
           ))}

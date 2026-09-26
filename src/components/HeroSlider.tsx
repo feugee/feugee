@@ -172,7 +172,7 @@ export const HeroSlider = ({
   // rides as the un-blended video (difference with black is identity). The
   // blend and the pulse share the element — a wrapper's animated opacity
   // would wall the blend off from the video.
-  const scrollCueClassName = `absolute flex justify-center items-center gap-x-[8px] bottom-6 right-6 z-20 rounded-[4px] bg-white px-6 py-4 text-base font-medium tracking-wide text-black hover:text-primary-500 transtition- mix-blend-difference md:bottom-12 md:right-16 ${
+  const scrollCueClassName = `hidden lg:inline-flex absolute flex justify-center items-center gap-x-[8px] bottom-6 right-6 z-20 rounded-[4px] bg-white px-4 py-3 xl:px-6 xl:py-4 text-base font-medium tracking-wide text-black hover:text-primary-500 transtition- mix-blend-difference md:bottom-12 md:right-16 ${
     reducedMotion ? "" : "animate-cue-pulse"
   }`;
 
@@ -249,7 +249,7 @@ export const HeroSlider = ({
             re-announce every few seconds — so a static sr-only twin carries
             the full title to assistive tech and crawlers. */}
         <h1
-          className="text-7xl leading-[1.15] tracking-tight text-white"
+          className="text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl 3xl:text-7xl leading-[1.15] tracking-tight text-white"
           style={{ ["--title-line" as string]: `${TITLE_LINE_EM}em` }}
         >
           <span aria-hidden="true">
