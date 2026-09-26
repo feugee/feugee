@@ -42,12 +42,13 @@ export const NavbarBar = ({ children }: { children: ReactNode }) => {
       ...(hero instanceof HTMLElement
         ? { trigger: hero, start: "bottom top" }
         : { start: FROST_SCROLL_PX }),
-      end: "max",
-      onToggle: (self) => setFrosted(self.isActive),
+      end: "+=1",
+      onEnter: () => setFrosted(true),
+      onLeaveBack: () => setFrosted(false),
     });
     // A restored scroll position can start past the threshold — apply it
     // now rather than wait for the first toggle.
-    setFrosted(trigger.isActive);
+    setFrosted(trigger.scroll() >= trigger.start);
 
     return () => trigger.kill();
   }, [pathname]);
