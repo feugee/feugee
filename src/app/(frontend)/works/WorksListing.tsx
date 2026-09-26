@@ -3,7 +3,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
-import Image from "next/image";
 import Link from "next/link";
 import {
   useEffect,
@@ -14,6 +13,7 @@ import {
 } from "react";
 
 import { ArrowRight } from "@/components/ArrowRight";
+import { AssetImage } from "@/components/AssetImage";
 import { AutoVideo } from "@/components/AutoVideo";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -98,6 +98,7 @@ const WorkVisual = ({ item }: { item: WorksListItem }) =>
     <AutoVideo
       alt={item.visual.alt}
       className="h-auto w-full object-cover"
+      frameClassName="w-full"
       height={item.visual.height}
       poster={item.visual.posterUrl}
       src={item.visual.url}
@@ -105,9 +106,10 @@ const WorkVisual = ({ item }: { item: WorksListItem }) =>
     />
   ) : (
     /* A sized Payload variant — the optimizer would only re-encode it. */
-    <Image
+    <AssetImage
       alt={item.visual.alt}
       className="h-auto w-full object-cover"
+      frameClassName="w-full"
       height={item.visual.height}
       src={item.visual.url}
       width={item.visual.width}

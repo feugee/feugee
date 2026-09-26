@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { lazy, Suspense } from "react";
 
 import type { Footer, Work } from "@/payload-types";
 
+import { AssetImage } from "./AssetImage";
 import { ArrowRight } from "./ArrowRight";
 import { AutoVideo } from "./AutoVideo";
 import { usePreviewRequested } from "./live-preview/usePreviewRequested";
@@ -62,6 +62,7 @@ const WorkCard = ({
         <AutoVideo
           alt={item.visual.alt}
           className="h-full w-full object-cover"
+          frameClassName="h-full w-full"
           height={item.visual.height}
           poster={item.visual.posterUrl}
           src={item.visual.url}
@@ -69,9 +70,10 @@ const WorkCard = ({
         />
       ) : (
         /* A sized Payload variant — the optimizer would only re-encode it. */
-        <Image
+        <AssetImage
           alt={item.visual.alt}
           className="h-full w-full object-cover"
+          frameClassName="h-full w-full"
           height={item.visual.height}
           src={item.visual.url}
           width={item.visual.width}

@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import type { Work } from "@/payload-types";
 
+import { AssetImage } from "@/components/AssetImage";
 import { ArrowRight } from "@/components/ArrowRight";
 import { AutoVideo } from "@/components/AutoVideo";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -143,6 +143,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                 <AutoVideo
                   alt={heroThumbnail.alt}
                   className="absolute inset-0 h-full w-full object-cover"
+                  frameClassName="h-full w-full"
                   height={heroThumbnail.height}
                   poster={heroThumbnail.posterUrl}
                   src={heroThumbnail.url}
@@ -151,11 +152,12 @@ export const WorkDetail = ({ data }: { data: Work }) => {
               ) : (
                 /* A sized Payload variant — the optimizer would only
                    re-encode it. */
-                <Image
+                <AssetImage
                   src={heroThumbnail.url}
                   alt={heroThumbnail.alt}
                   fill
                   className="object-cover"
+                  frameClassName="h-full w-full"
                 />
               )}
             </div>
