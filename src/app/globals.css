@@ -19,6 +19,10 @@
  * and arbitrary-value styles read these variables directly.
  */
 @theme static {
+  /* Breakpoints — 2xl moved down to 1440px; 3xl keeps Tailwind's default 2xl (1536px) */
+  --breakpoint-2xl: 90rem;
+  --breakpoint-3xl: 96rem;
+
   /* Primary */
   --color-primary-50: #feefe8;
   --color-primary-100: #fce0d2;
@@ -158,7 +162,6 @@
       display: none;
     }
   }
-
 }
 
 /* The Cursor (CONTEXT.md) hides the system pointer — but only once the
@@ -176,7 +179,8 @@
   cursor: none;
 }
 
-[data-custom-cursor] input:is(
+[data-custom-cursor]
+  input:is(
     [type="email"],
     [type="password"],
     [type="search"],
