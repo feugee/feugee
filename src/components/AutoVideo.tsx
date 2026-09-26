@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 /**
  * Ambient video in the koto.com style: muted, looping, inline, no controls.
@@ -16,7 +16,6 @@ export const AutoVideo = ({
   poster,
   src,
   width,
-  frameClassName,
 }: {
   alt: string;
   className?: string;
@@ -24,62 +23,8 @@ export const AutoVideo = ({
   poster?: string | null;
   src: string;
   width: number;
-  frameClassName?: string;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [mediaState, setMediaState] = useState<{
-    src: string;
-    poster: string | null;
-    posterReady: boolean;
-    posterFailed: boolean;
-    frameReady: boolean;
-    videoFailed: boolean;
-  } | null>(null);
-  const currentState =
-    mediaState?.src === src && mediaState.poster === (poster ?? null)
-      ? mediaState
-      : {
-          src,
-          poster: poster ?? null,
-          posterReady: false,
-          posterFailed: false,
-          frameReady: false,
-          videoFailed: false,
-        };
-  const ready = currentState.posterReady || currentState.frameReady;
-  const failed =
-    !ready &&
-    (currentState.posterFailed || (!poster && currentState.videoFailed));
-
-  const updateMediaState = useCallback(
-    (update: (state: typeof currentState) => typeof currentState) => {
-      setMediaState((state) => {
-        const current =
-          state?.src === src && state.poster === (poster ?? null)
-            ? state
-            : {
-                src,
-                poster: poster ?? null,
-                posterReady: false,
-                posterFailed: false,
-                frameReady: false,
-                videoFailed: false,
-              };
-        return update(current);
-      });
-    },
-    [poster, src],
-  );
-
-  useEffect(() => {
-    if (!poster) return;
-    const image = new window.Image();
-    image.onload = () =>
-      updateMediaState((state) => ({ ...state, posterReady: true }));
-    image.onerror = () =>
-      updateMediaState((state) => ({ ...state, posterFailed: true }));
-    image.src = poster;
-  }, [poster, src, updateMediaState]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -113,41 +58,18 @@ export const AutoVideo = ({
   }, []);
 
   return (
-    <span
-      className={`relative isolate block overflow-hidden bg-neutral-900 ${frameClassName ?? ""}`}
-      data-asset-frame
-      data-asset-state={ready ? "loaded" : failed ? "error" : "loading"}
-      style={{ aspectRatio: `${width} / ${height}` }}
-    >
-      <video
-        aria-hidden={failed}
-        aria-label={alt}
-        className={`${className ?? ""} transition-opacity duration-500 motion-reduce:transition-none ${ready ? "opacity-100" : "opacity-0"}`}
-        height={height}
-        loop
-        muted
-        onError={() =>
-          updateMediaState((state) => ({ ...state, videoFailed: true }))
-        }
-        onLoadedData={() =>
-          updateMediaState((state) => ({ ...state, frameReady: true }))
-        }
-        playsInline
-        poster={poster ?? undefined}
-        preload="none"
-        ref={videoRef}
-        src={src}
-        width={width}
-      />
-      {failed && (
-        <span
-          aria-label={alt}
-          className="absolute inset-0 flex items-center justify-center p-4 text-center text-sm text-neutral-500"
-          role="img"
-        >
-          Unavailable
-        </span>
-      )}
-    </span>
+    <video
+      aria-label={alt}
+      className={className}
+      height={height}
+      loop
+      muted
+      playsInline
+      poster={poster ?? undefined}
+      preload="none"
+      ref={videoRef}
+      src={src}
+      width={width}
+    />
   );
 };

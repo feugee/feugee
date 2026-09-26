@@ -1,4 +1,5 @@
-import { AssetImage } from "./AssetImage";
+import Image from "next/image";
+
 import { SectionHeading } from "./SectionHeading";
 
 export interface MarqueeClient {
@@ -15,7 +16,7 @@ export interface MarqueeClient {
  * are often SVGs the image optimizer refuses.
  */
 const LogoImage = ({ client }: { client: MarqueeClient }) => (
-  <AssetImage
+  <Image
     alt={client.logo.alt}
     className="h-8 w-auto max-w-40 object-contain opacity-60 transition-opacity duration-300 hover:opacity-100 filter-[grayscale(1)_brightness(0)_invert(1)] md:h-10"
     height={client.logo.height}

@@ -1,8 +1,8 @@
+import Image from "next/image";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 
 import type { Asset } from "@/payload-types";
 
-import { AssetImage } from "@/components/AssetImage";
 import { AutoVideo } from "@/components/AutoVideo";
 import {
   sizedUrlOf,
@@ -37,7 +37,6 @@ const AssetFigure = ({
         <AutoVideo
           alt={asset.alt}
           className="h-full w-full object-cover"
-          frameClassName="h-full w-full"
           height={poster?.height ?? VIDEO_ASPECT_FALLBACK.height}
           poster={poster ? sizedUrlOf(poster, size) : null}
           src={asset.url}
@@ -50,11 +49,10 @@ const AssetFigure = ({
   return (
     <figure className="h-full w-full">
       {/* A sized Payload variant — the optimizer would only re-encode it. */}
-      <AssetImage
+      <Image
         src={sizedUrlOf(asset, size) ?? asset.url}
         alt={asset.alt}
         className="w-full h-full object-cover"
-        frameClassName="h-full w-full"
         width={asset.width ?? 1}
         height={asset.height ?? 1}
       />

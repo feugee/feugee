@@ -3,12 +3,12 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 
 import type { Work } from "@/payload-types";
 
-import { AssetImage } from "@/components/AssetImage";
 import { ArrowRight } from "@/components/ArrowRight";
 import { AutoVideo } from "@/components/AutoVideo";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
@@ -44,7 +44,6 @@ const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
         <AutoVideo
           alt={item.visual.alt}
           className="h-full w-full object-cover"
-          frameClassName="h-full w-full"
           height={item.visual.height}
           poster={item.visual.posterUrl}
           src={item.visual.url}
@@ -52,10 +51,9 @@ const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
         />
       ) : (
         /* A sized Payload variant — the optimizer would only re-encode it. */
-        <AssetImage
+        <Image
           alt={item.visual.alt}
           className="h-full w-full object-cover"
-          frameClassName="h-full w-full"
           height={item.visual.height}
           src={item.visual.url}
           width={item.visual.width}

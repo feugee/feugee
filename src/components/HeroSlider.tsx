@@ -12,7 +12,6 @@ import type { ScrollCueAction } from "./scrollCue";
 import { getSmoothScroll } from "./SmoothScroll";
 import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
 import { ArrowRight } from "./ArrowRight";
-import { AssetImage } from "./AssetImage";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -57,10 +56,6 @@ export const HeroSlider = ({
   const [activeIndex, setActiveIndex] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [readyVideos, setReadyVideos] = useState<Set<string>>(() => new Set());
-  const [failedVideos, setFailedVideos] = useState<Set<string>>(
-    () => new Set(),
-  );
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
   const videoStackRef = useRef<HTMLDivElement>(null);
@@ -186,39 +181,16 @@ export const HeroSlider = ({
       <div className="absolute inset-0" ref={videoStackRef}>
         {slides.map((slide, index) => (
           <div
-            aria-hidden={index !== safeActiveIndex}
             className={`absolute inset-0 transition-opacity duration-700 ${
               index === safeActiveIndex ? "z-10 opacity-100" : "z-0 opacity-0"
             }`}
             key={slide.id || index}
           >
-            {slide.posterUrl && (
-              <AssetImage
-                alt={slide.alt}
-                className="absolute inset-0 h-full w-full object-cover"
-                fill
-                frameClassName="h-full w-full"
-                src={slide.posterUrl}
-              />
-            )}
             <video
-              aria-hidden={
-                Boolean(slide.posterUrl) || failedVideos.has(slide.url)
-              }
-              className={`pointer-events-none relative z-10 h-full w-full object-cover transition-opacity duration-500 motion-reduce:transition-none ${readyVideos.has(slide.url) ? "opacity-100" : "opacity-0"}`}
-              aria-label={
-                slide.posterUrl || failedVideos.has(slide.url)
-                  ? undefined
-                  : slide.alt
-              }
+              aria-label={slide.alt}
+              className="pointer-events-none h-full w-full object-cover"
               loop
               muted
-              onError={() =>
-                setFailedVideos((current) => new Set(current).add(slide.url))
-              }
-              onLoadedData={() =>
-                setReadyVideos((current) => new Set(current).add(slide.url))
-              }
               playsInline
               poster={slide.posterUrl ?? undefined}
               preload={index === 0 ? "auto" : "none"}
@@ -227,15 +199,6 @@ export const HeroSlider = ({
               }}
               src={slide.url}
             />
-            {!slide.posterUrl && failedVideos.has(slide.url) && (
-              <span
-                aria-label={slide.alt}
-                className="absolute inset-0 flex items-center justify-center text-sm text-neutral-500"
-                role="img"
-              >
-                Unavailable
-              </span>
-            )}
           </div>
         ))}
       </div>
