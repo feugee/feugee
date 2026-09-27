@@ -166,12 +166,14 @@ const WorkCard = ({
         its children, and the blend would never reach the media. The text
         keeps its own opacity fade because blend and opacity compose on the
         same element. */}
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-1/2 items-end">
+    <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end">
       <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-300 max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
-      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 opacity-0 transition-opacity duration-300 mix-blend-difference max-lg:opacity-100 group-hover/card:opacity-100">
-        <h2 className="text-3xl text-white font-bold">{item.title}</h2>
+      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 opacity-0 transition-opacity duration-300 max-lg:opacity-100 group-hover/card:opacity-100">
+        <h2 className="text-2xl text-white">{item.title}</h2>
         {item.firstExpertise && (
-          <span className="text-xl text-white">{item.firstExpertise}</span>
+          <span className="text-xl text-neutral-100">
+            {item.firstExpertise}
+          </span>
         )}
       </div>
     </div>
