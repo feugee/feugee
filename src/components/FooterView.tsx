@@ -113,7 +113,7 @@ const CtaButton = ({
       href={url}
       onNavigate={(event) => navigateWithBlackout(event, url)}
     >
-      {label} <ArrowRight />
+      {label} {primary && <ArrowRight />}
     </Link>
   ) : (
     <button
@@ -122,7 +122,7 @@ const CtaButton = ({
       }
       type="button"
     >
-      {label} <ArrowRight />
+      {label} {primary && <ArrowRight />}
     </button>
   );
 
@@ -271,29 +271,31 @@ export const FooterContent = ({ data }: { data: Footer }) => {
                 {callToAction &&
                   (callToActionUrl ? (
                     <Link
-                      className="text-base text-white"
+                      className="text-base text-white group"
                       href={callToActionUrl}
-                      onNavigate={(event) =>
-                        navigateWithBlackout(event, callToActionUrl)
-                      }
                     >
-                      {callToAction}
+                      <SwipeText>{callToAction}</SwipeText>
                     </Link>
                   ) : (
-                    <span className="text-base text-white">{callToAction}</span>
+                    <Link className="text-base text-white group" href={"#"}>
+                      <SwipeText>{callToAction}</SwipeText>
+                    </Link>
                   ))}
                 {email && (
-                  <a className="text-base text-white" href={`mailto:${email}`}>
-                    {email}
-                  </a>
+                  <Link
+                    className="text-base text-white group"
+                    href={`mailto:${email}`}
+                  >
+                    <SwipeText>{email}</SwipeText>
+                  </Link>
                 )}
                 {phone && (
-                  <a
-                    className="text-base text-white"
+                  <Link
+                    className="text-base text-white group"
                     href={`tel:${phone.replace(/\s+/g, "")}`}
                   >
-                    {phone}
-                  </a>
+                    <SwipeText>{phone}</SwipeText>
+                  </Link>
                 )}
               </address>
             </div>
@@ -312,18 +314,18 @@ export const FooterContent = ({ data }: { data: Footer }) => {
         </div>
         <div className="relative z-10 pb-16 md:absolute md:inset-x-0 md:bottom-0">
           <div className="mb-16 h-px w-full bg-neutral-900" />
-          <div className="w-full flex flex-wrap justify-between items-center gap-x-6 gap-y-3">
-            <span className="text-sm text-neutral-500">
+          <div className="w-full grid grid-rows-3 lg:grid-rows-1 lg:grid-cols-3 justify-between items-center gap-x-6 gap-y-3">
+            <span className="text-sm text-neutral-500 text-center lg:text-left">
               &copy; {new Date().getFullYear()} {copyrightName}. All Rights
               Reserved.
             </span>
             {data.location && (
-              <div className="text-sm text-neutral-500 flex items-center justify-start gap-x-3">
+              <div className="text-sm text-neutral-500 flex items-center justify-center gap-x-3 text-center">
                 <span>{data.location}</span>
               </div>
             )}
             {socialLinks.length > 0 && (
-              <div className="flex justify-end items-center gap-x-3">
+              <div className="flex justify-center lg:justify-end items-center gap-x-3">
                 {socialLinks.map(({ id, url, label, Icon }) => (
                   <a
                     aria-label={label}
