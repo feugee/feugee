@@ -111,7 +111,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                 const active = activeSection === anchor;
                 return (
                   <li key={section.id ?? index}>
-                    <a
+                    <Link
                       aria-current={active ? "true" : undefined}
                       className={`flex items-center gap-2 text-xl transition-colors ${
                         active ? "text-primary-500" : "text-neutral-800"
@@ -123,7 +123,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                         {active ? <ArrowRight /> : null}
                       </span>
                       {section.title}
-                    </a>
+                    </Link>
                   </li>
                 );
               })}
