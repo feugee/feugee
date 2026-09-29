@@ -15,13 +15,18 @@ export {
   otherWorksSelect,
   selectedWorksSelect,
   type SelectShape,
+  videoSourceSelect,
 } from "./cardSelect";
 export {
+  populatedAssetOf,
   sizedUrlOf,
   VIDEO_ASPECT_FALLBACK,
   videoPosterOf,
+  videoSourceVisualOf,
   workFeatureVisualOf,
   workThumbnailOf,
   type AssetSizeName,
+  type CardVideoSource,
   type CardVisual,
+  type VideoSourceField,
 } from "./visual";

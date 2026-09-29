@@ -9,6 +9,7 @@ import type { Work } from "@/payload-types";
 
 import { ArrowRight } from "@/components/ArrowRight";
 import { AutoVideo } from "@/components/AutoVideo";
+import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { workThumbnailOf } from "@/components/work";
@@ -140,14 +141,25 @@ export const WorkDetail = ({ data }: { data: Work }) => {
           {heroThumbnail && (
             <div className="relative w-full h-screen">
               {heroThumbnail.kind === "video" ? (
-                <AutoVideo
-                  alt={heroThumbnail.alt}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  height={heroThumbnail.height}
-                  poster={heroThumbnail.posterUrl}
-                  src={heroThumbnail.url}
-                  width={heroThumbnail.width}
-                />
+                heroThumbnail.source.type === "youtube" ? (
+                  <AmbientYouTube
+                    alt={heroThumbnail.alt}
+                    frameClassName="absolute inset-0 h-full w-full"
+                    height={heroThumbnail.height}
+                    poster={heroThumbnail.posterUrl}
+                    videoId={heroThumbnail.source.videoId}
+                    width={heroThumbnail.width}
+                  />
+                ) : (
+                  <AutoVideo
+                    alt={heroThumbnail.alt}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    height={heroThumbnail.height}
+                    poster={heroThumbnail.posterUrl}
+                    src={heroThumbnail.source.url}
+                    width={heroThumbnail.width}
+                  />
+                )
               ) : (
                 /* A sized Payload variant — the optimizer would only
                    re-encode it. */

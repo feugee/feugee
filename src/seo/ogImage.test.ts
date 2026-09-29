@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import type { Asset, LandingPage } from "@/payload-types";
+import type { Asset, LandingPage, Work } from "@/payload-types";
 
-import { ogImageOf, heroOgImage } from "./ogImage";
+import { ogImageOf, heroOgImage, videoSourceOgOf } from "./ogImage";
 
 const imageAsset = (overrides: Partial<Asset> = {}): Asset =>
   ({
@@ -33,6 +33,27 @@ const videoAsset = (overrides: Partial<Asset> = {}): Asset =>
 const hero = (
   slides: (LandingPage["hero"] & object)["slides"],
 ): LandingPage["hero"] => ({ slides });
+
+/** The Video Source group set to its upload side. */
+function upload(asset: Asset | number | null): Work["thumbnail"] {
+  return { source: "asset", asset };
+}
+
+/** The Video Source group set to its embed side. */
+function embed(
+  overrides: Partial<NonNullable<Work["thumbnail"]>["embed"]> = {},
+): Work["thumbnail"] {
+  return {
+    source: "embed",
+    embed: {
+      provider: "youtube",
+      url: "https://youtu.be/dQw4w9WgXcQ",
+      alt: "An embedded video",
+      videoId: "dQw4w9WgXcQ",
+      ...overrides,
+    },
+  };
+}
 
 describe("ogImageOf", () => {
   it("picks the desktop variant of an image Asset", () => {
@@ -94,6 +115,43 @@ describe("ogImageOf", () => {
   });
 });
 
+describe("videoSourceOgOf", () => {
+  it("uses the upload branch's own image face", () => {
+    expect(videoSourceOgOf(upload(imageAsset()))).toEqual({
+      url: "/api/files/assets/original.png",
+      width: 1600,
+      height: 900,
+      alt: "An image",
+    });
+  });
+
+  it("stands an embed's ingested poster in as the image", () => {
+    const poster = imageAsset({
+      id: 3,
+      url: "/api/files/assets/youtube.jpg",
+      sizes: { desktop: { url: "/youtube-d.webp", width: 1600, height: 900 } },
+    });
+
+    expect(videoSourceOgOf(embed({ poster }))).toEqual({
+      url: "/youtube-d.webp",
+      width: 1600,
+      height: 900,
+      alt: "An image",
+    });
+  });
+
+  it("drops an embed without a populated poster", () => {
+    expect(videoSourceOgOf(embed({ poster: 99 }))).toBeNull();
+    expect(videoSourceOgOf(embed({ poster: null }))).toBeNull();
+  });
+
+  it("drops null, undefined, and an empty group", () => {
+    expect(videoSourceOgOf(null)).toBeNull();
+    expect(videoSourceOgOf(undefined)).toBeNull();
+    expect(videoSourceOgOf({})).toBeNull();
+  });
+});
+
 describe("heroOgImage", () => {
   it("uses the first Slide's video poster", () => {
     const poster = imageAsset({
@@ -101,7 +159,9 @@ describe("heroOgImage", () => {
       sizes: { desktop: { url: "/slide-d.webp", width: 1600, height: 900 } },
     });
 
-    expect(heroOgImage(hero([{ video: videoAsset({ poster }) }]))).toEqual({
+    expect(
+      heroOgImage(hero([{ video: upload(videoAsset({ poster })) }])),
+    ).toEqual({
       url: "/slide-d.webp",
       width: 1600,
       height: 900,
@@ -117,7 +177,10 @@ describe("heroOgImage", () => {
     });
 
     const result = heroOgImage(
-      hero([{ video: videoAsset() }, { video: videoAsset({ poster }) }]),
+      hero([
+        { video: upload(videoAsset()) },
+        { video: upload(videoAsset({ poster })) },
+      ]),
     );
 
     expect(result).toEqual({
@@ -128,14 +191,16 @@ describe("heroOgImage", () => {
     });
   });
 
-  it("drops a Slide whose video is only shallow-populated", () => {
+  it("drops a Slide whose video's upload is only shallow-populated", () => {
     const poster = imageAsset({
       id: 5,
       url: "/api/files/assets/second.png",
       sizes: { desktop: { url: "/second-d.webp", width: 1600, height: 900 } },
     });
 
-    const result = heroOgImage(hero([{ video: 12 }, { video: videoAsset({ poster }) }]));
+    const result = heroOgImage(
+      hero([{ video: upload(12) }, { video: upload(videoAsset({ poster })) }]),
+    );
 
     expect(result).toEqual({
       url: "/second-d.webp",
@@ -145,10 +210,26 @@ describe("heroOgImage", () => {
     });
   });
 
+  it("uses an embedded Slide's ingested poster", () => {
+    const poster = imageAsset({
+      id: 6,
+      url: "/api/files/assets/embed.jpg",
+      sizes: { desktop: { url: "/embed-d.webp", width: 1600, height: 900 } },
+    });
+
+    expect(heroOgImage(hero([{ video: embed({ poster }) }]))).toEqual({
+      url: "/embed-d.webp",
+      width: 1600,
+      height: 900,
+      alt: "An image",
+    });
+  });
+
   it("is null with no Slides or no usable poster among them", () => {
     expect(heroOgImage(hero(null))).toBeNull();
     expect(heroOgImage(hero([]))).toBeNull();
-    expect(heroOgImage(hero([{ video: videoAsset() }]))).toBeNull();
+    expect(heroOgImage(hero([{ video: upload(videoAsset()) }]))).toBeNull();
+    expect(heroOgImage(hero([{ video: embed({ poster: null }) }]))).toBeNull();
     expect(heroOgImage(undefined)).toBeNull();
   });
 });

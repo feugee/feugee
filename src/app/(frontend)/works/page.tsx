@@ -7,7 +7,7 @@ import type { Sector, Work } from "@/payload-types";
 
 import { toCardWork, workThumbnailOf, asWorkSelect, listingWorksSelect } from "@/components/work";
 import { getFooterGlobal } from "@/components/footer-data";
-import { type OgImage, ogImageOf } from "@/seo/ogImage";
+import { type OgImage, videoSourceOgOf } from "@/seo/ogImage";
 import { pageMetadata } from "@/seo/metadata";
 import {
   WorksListing,
@@ -98,7 +98,7 @@ const getWorksPageData = cache(
     // request the tablet variant for their tighter slots).
     const ogImage =
       worksResult.docs
-        .map((work) => ogImageOf(work.thumbnail))
+        .map((work) => videoSourceOgOf(work.thumbnail))
         .find((image): image is OgImage => image !== null) ?? null;
 
     return {

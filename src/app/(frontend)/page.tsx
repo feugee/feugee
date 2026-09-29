@@ -56,21 +56,27 @@ const rehydrateLandingPage = async (
   payload: Payload,
   landingPage: LandingPage,
 ): Promise<LandingPage> => {
-  const heroVideoIds = (landingPage.hero?.slides ?? []).flatMap((slide) =>
-    typeof slide.video === "number" ? [slide.video] : [],
-  );
+  // A slide's Video Source group can reference Assets on either side of the
+  // either/or — the upload itself, or the embed's ingested poster.
+  const heroAssetIds = (landingPage.hero?.slides ?? []).flatMap((slide) => {
+    const video = slide.video;
+    if (typeof video !== "object" || video === null) return [];
+    const ids = typeof video.asset === "number" ? [video.asset] : [];
+    const posterId = video.embed?.poster;
+    return typeof posterId === "number" ? [...ids, posterId] : ids;
+  });
   const selectedWorkIds = (landingPage.selectedWorks ?? []).flatMap((work) =>
     typeof work === "number" ? [work] : [],
   );
 
-  const [heroVideos, selectedWorks] = await Promise.all([
-    heroVideoIds.length === 0
+  const [heroAssets, selectedWorks] = await Promise.all([
+    heroAssetIds.length === 0
       ? { docs: [] as Asset[] }
       : payload.find({
           collection: "assets",
           // Depth 1 populates a video's poster.
           depth: 1,
-          where: { id: { in: heroVideoIds } },
+          where: { id: { in: heroAssetIds } },
           select: asAssetsSelect(cardAssetSelect),
         }),
     selectedWorkIds.length === 0
@@ -86,7 +92,7 @@ const rehydrateLandingPage = async (
         }),
   ]);
 
-  const assetById = new Map(heroVideos.docs.map((asset) => [asset.id, asset]));
+  const assetById = new Map(heroAssets.docs.map((asset) => [asset.id, asset]));
   const workById = new Map(selectedWorks.docs.map((work) => [work.id, work]));
 
   // An ID the finds could not populate (a now-draft Work, a deleted Asset)
@@ -94,13 +100,29 @@ const rehydrateLandingPage = async (
   const hero = landingPage.hero
     ? {
         ...landingPage.hero,
-        slides: (landingPage.hero.slides ?? []).map((slide) => ({
-          ...slide,
-          video:
-            typeof slide.video === "number"
-              ? (assetById.get(slide.video) ?? slide.video)
-              : slide.video,
-        })),
+        slides: (landingPage.hero.slides ?? []).map((slide) => {
+          const video = slide.video;
+          if (typeof video !== "object" || video === null) return slide;
+          return {
+            ...slide,
+            video: {
+              ...video,
+              asset:
+                typeof video.asset === "number"
+                  ? (assetById.get(video.asset) ?? video.asset)
+                  : video.asset,
+              embed:
+                video.embed && typeof video.embed.poster === "number"
+                  ? {
+                      ...video.embed,
+                      poster:
+                        assetById.get(video.embed.poster) ??
+                        video.embed.poster,
+                    }
+                  : video.embed,
+            },
+          };
+        }),
       }
     : landingPage.hero;
 

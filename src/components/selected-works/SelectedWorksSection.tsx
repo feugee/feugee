@@ -10,6 +10,7 @@ import { useRef } from "react";
 import type { Work } from "@/payload-types";
 
 import { ArrowRight } from "@/components/ArrowRight";
+import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { AutoVideo } from "@/components/AutoVideo";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { SectionHeading } from "@/components/SectionHeading";
@@ -41,14 +42,25 @@ const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
         static, fully covered frame. */}
     <div data-work-media style={{ height: `${MEDIA_OVERSHOOT * 100}%` }}>
       {item.visual.kind === "video" ? (
-        <AutoVideo
-          alt={item.visual.alt}
-          className="h-full w-full object-cover"
-          height={item.visual.height}
-          poster={item.visual.posterUrl}
-          src={item.visual.url}
-          width={item.visual.width}
-        />
+        item.visual.source.type === "youtube" ? (
+          <AmbientYouTube
+            alt={item.visual.alt}
+            frameClassName="h-full w-full"
+            height={item.visual.height}
+            poster={item.visual.posterUrl}
+            videoId={item.visual.source.videoId}
+            width={item.visual.width}
+          />
+        ) : (
+          <AutoVideo
+            alt={item.visual.alt}
+            className="h-full w-full object-cover"
+            height={item.visual.height}
+            poster={item.visual.posterUrl}
+            src={item.visual.source.url}
+            width={item.visual.width}
+          />
+        )
       ) : (
         /* A sized Payload variant — the optimizer would only re-encode it. */
         <Image

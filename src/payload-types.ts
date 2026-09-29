@@ -164,14 +164,70 @@ export interface Work {
    * The heading above the Description on the Work Detail Page. Empty shows the Description with no heading.
    */
   descriptionLabel?: string | null;
-  /**
-   * The primary visual for this Work, shown at the top of the Work Detail Page.
-   */
-  thumbnail?: (number | null) | Asset;
-  /**
-   * Shown in place of the Thumbnail as this Work's card in the Landing Page's Selected Works. Image or video. Falls back to the Thumbnail when empty.
-   */
-  featureVisual?: (number | null) | Asset;
+  thumbnail?: {
+    source?: ('asset' | 'embed') | null;
+    /**
+     * The primary visual for this Work, shown at the top of the Work Detail Page.
+     */
+    asset?: (number | null) | Asset;
+    /**
+     * An external video referenced by URL instead of an upload — long videos without storage cost. Plays on the public site like any video: muted, looping, without controls.
+     */
+    embed?: {
+      /**
+       * YouTube is the first provider; the storage shape already carries any other.
+       */
+      provider: 'youtube';
+      /**
+       * Paste the video's address (watch link, youtu.be, shorts) or its 11-character ID.
+       */
+      url?: string | null;
+      /**
+       * Describes the video for screen readers and search engines.
+       */
+      alt?: string | null;
+      /**
+       * Derived from the URL on save — the public player embeds by this.
+       */
+      videoId?: string | null;
+      /**
+       * Ingested from YouTube on save; replace it to override the preview frame and the aspect ratio it carries.
+       */
+      poster?: (number | null) | Asset;
+    };
+  };
+  featureVisual?: {
+    source?: ('asset' | 'embed') | null;
+    /**
+     * Shown in place of the Thumbnail as this Work's card in the Landing Page's Selected Works. Image or video. Falls back to the Thumbnail when empty.
+     */
+    asset?: (number | null) | Asset;
+    /**
+     * An external video referenced by URL instead of an upload — long videos without storage cost. Plays on the public site like any video: muted, looping, without controls.
+     */
+    embed?: {
+      /**
+       * YouTube is the first provider; the storage shape already carries any other.
+       */
+      provider: 'youtube';
+      /**
+       * Paste the video's address (watch link, youtu.be, shorts) or its 11-character ID.
+       */
+      url?: string | null;
+      /**
+       * Describes the video for screen readers and search engines.
+       */
+      alt?: string | null;
+      /**
+       * Derived from the URL on save — the public player embeds by this.
+       */
+      videoId?: string | null;
+      /**
+       * Ingested from YouTube on save; replace it to override the preview frame and the aspect ratio it carries.
+       */
+      poster?: (number | null) | Asset;
+    };
+  };
   client?: string | null;
   sector?: (number | null) | Sector;
   /**
@@ -276,7 +332,35 @@ export interface Work {
                             blockType: 'text';
                           }
                         | {
-                            asset: number | Asset;
+                            asset?: {
+                              source?: ('asset' | 'embed') | null;
+                              asset?: (number | null) | Asset;
+                              /**
+                               * An external video referenced by URL instead of an upload — long videos without storage cost. Plays on the public site like any video: muted, looping, without controls.
+                               */
+                              embed?: {
+                                /**
+                                 * YouTube is the first provider; the storage shape already carries any other.
+                                 */
+                                provider: 'youtube';
+                                /**
+                                 * Paste the video's address (watch link, youtu.be, shorts) or its 11-character ID.
+                                 */
+                                url?: string | null;
+                                /**
+                                 * Describes the video for screen readers and search engines.
+                                 */
+                                alt?: string | null;
+                                /**
+                                 * Derived from the URL on save — the public player embeds by this.
+                                 */
+                                videoId?: string | null;
+                                /**
+                                 * Ingested from YouTube on save; replace it to override the preview frame and the aspect ratio it carries.
+                                 */
+                                poster?: (number | null) | Asset;
+                              };
+                            };
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'asset';
@@ -355,7 +439,35 @@ export interface Work {
                             blockType: 'text';
                           }
                         | {
-                            asset: number | Asset;
+                            asset?: {
+                              source?: ('asset' | 'embed') | null;
+                              asset?: (number | null) | Asset;
+                              /**
+                               * An external video referenced by URL instead of an upload — long videos without storage cost. Plays on the public site like any video: muted, looping, without controls.
+                               */
+                              embed?: {
+                                /**
+                                 * YouTube is the first provider; the storage shape already carries any other.
+                                 */
+                                provider: 'youtube';
+                                /**
+                                 * Paste the video's address (watch link, youtu.be, shorts) or its 11-character ID.
+                                 */
+                                url?: string | null;
+                                /**
+                                 * Describes the video for screen readers and search engines.
+                                 */
+                                alt?: string | null;
+                                /**
+                                 * Derived from the URL on save — the public player embeds by this.
+                                 */
+                                videoId?: string | null;
+                                /**
+                                 * Ingested from YouTube on save; replace it to override the preview frame and the aspect ratio it carries.
+                                 */
+                                poster?: (number | null) | Asset;
+                              };
+                            };
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'asset';
@@ -434,7 +546,35 @@ export interface Work {
                             blockType: 'text';
                           }
                         | {
-                            asset: number | Asset;
+                            asset?: {
+                              source?: ('asset' | 'embed') | null;
+                              asset?: (number | null) | Asset;
+                              /**
+                               * An external video referenced by URL instead of an upload — long videos without storage cost. Plays on the public site like any video: muted, looping, without controls.
+                               */
+                              embed?: {
+                                /**
+                                 * YouTube is the first provider; the storage shape already carries any other.
+                                 */
+                                provider: 'youtube';
+                                /**
+                                 * Paste the video's address (watch link, youtu.be, shorts) or its 11-character ID.
+                                 */
+                                url?: string | null;
+                                /**
+                                 * Describes the video for screen readers and search engines.
+                                 */
+                                alt?: string | null;
+                                /**
+                                 * Derived from the URL on save — the public player embeds by this.
+                                 */
+                                videoId?: string | null;
+                                /**
+                                 * Ingested from YouTube on save; replace it to override the preview frame and the aspect ratio it carries.
+                                 */
+                                poster?: (number | null) | Asset;
+                              };
+                            };
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'asset';
@@ -513,7 +653,35 @@ export interface Work {
                             blockType: 'text';
                           }
                         | {
-                            asset: number | Asset;
+                            asset?: {
+                              source?: ('asset' | 'embed') | null;
+                              asset?: (number | null) | Asset;
+                              /**
+                               * An external video referenced by URL instead of an upload — long videos without storage cost. Plays on the public site like any video: muted, looping, without controls.
+                               */
+                              embed?: {
+                                /**
+                                 * YouTube is the first provider; the storage shape already carries any other.
+                                 */
+                                provider: 'youtube';
+                                /**
+                                 * Paste the video's address (watch link, youtu.be, shorts) or its 11-character ID.
+                                 */
+                                url?: string | null;
+                                /**
+                                 * Describes the video for screen readers and search engines.
+                                 */
+                                alt?: string | null;
+                                /**
+                                 * Derived from the URL on save — the public player embeds by this.
+                                 */
+                                videoId?: string | null;
+                                /**
+                                 * Ingested from YouTube on save; replace it to override the preview frame and the aspect ratio it carries.
+                                 */
+                                poster?: (number | null) | Asset;
+                              };
+                            };
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'asset';
@@ -592,7 +760,35 @@ export interface Work {
                             blockType: 'text';
                           }
                         | {
-                            asset: number | Asset;
+                            asset?: {
+                              source?: ('asset' | 'embed') | null;
+                              asset?: (number | null) | Asset;
+                              /**
+                               * An external video referenced by URL instead of an upload — long videos without storage cost. Plays on the public site like any video: muted, looping, without controls.
+                               */
+                              embed?: {
+                                /**
+                                 * YouTube is the first provider; the storage shape already carries any other.
+                                 */
+                                provider: 'youtube';
+                                /**
+                                 * Paste the video's address (watch link, youtu.be, shorts) or its 11-character ID.
+                                 */
+                                url?: string | null;
+                                /**
+                                 * Describes the video for screen readers and search engines.
+                                 */
+                                alt?: string | null;
+                                /**
+                                 * Derived from the URL on save — the public player embeds by this.
+                                 */
+                                videoId?: string | null;
+                                /**
+                                 * Ingested from YouTube on save; replace it to override the preview frame and the aspect ratio it carries.
+                                 */
+                                poster?: (number | null) | Asset;
+                              };
+                            };
                             id?: string | null;
                             blockName?: string | null;
                             blockType: 'asset';
@@ -836,8 +1032,36 @@ export interface WorksSelect<T extends boolean = true> {
   subtitle?: T;
   description?: T;
   descriptionLabel?: T;
-  thumbnail?: T;
-  featureVisual?: T;
+  thumbnail?:
+    | T
+    | {
+        source?: T;
+        asset?: T;
+        embed?:
+          | T
+          | {
+              provider?: T;
+              url?: T;
+              alt?: T;
+              videoId?: T;
+              poster?: T;
+            };
+      };
+  featureVisual?:
+    | T
+    | {
+        source?: T;
+        asset?: T;
+        embed?:
+          | T
+          | {
+              provider?: T;
+              url?: T;
+              alt?: T;
+              videoId?: T;
+              poster?: T;
+            };
+      };
   client?: T;
   sector?: T;
   year?: T;
@@ -903,7 +1127,21 @@ export interface WorksSelect<T extends boolean = true> {
                           asset?:
                             | T
                             | {
-                                asset?: T;
+                                asset?:
+                                  | T
+                                  | {
+                                      source?: T;
+                                      asset?: T;
+                                      embed?:
+                                        | T
+                                        | {
+                                            provider?: T;
+                                            url?: T;
+                                            alt?: T;
+                                            videoId?: T;
+                                            poster?: T;
+                                          };
+                                    };
                                 id?: T;
                                 blockName?: T;
                               };
@@ -953,7 +1191,21 @@ export interface WorksSelect<T extends boolean = true> {
                           asset?:
                             | T
                             | {
-                                asset?: T;
+                                asset?:
+                                  | T
+                                  | {
+                                      source?: T;
+                                      asset?: T;
+                                      embed?:
+                                        | T
+                                        | {
+                                            provider?: T;
+                                            url?: T;
+                                            alt?: T;
+                                            videoId?: T;
+                                            poster?: T;
+                                          };
+                                    };
                                 id?: T;
                                 blockName?: T;
                               };
@@ -1003,7 +1255,21 @@ export interface WorksSelect<T extends boolean = true> {
                           asset?:
                             | T
                             | {
-                                asset?: T;
+                                asset?:
+                                  | T
+                                  | {
+                                      source?: T;
+                                      asset?: T;
+                                      embed?:
+                                        | T
+                                        | {
+                                            provider?: T;
+                                            url?: T;
+                                            alt?: T;
+                                            videoId?: T;
+                                            poster?: T;
+                                          };
+                                    };
                                 id?: T;
                                 blockName?: T;
                               };
@@ -1053,7 +1319,21 @@ export interface WorksSelect<T extends boolean = true> {
                           asset?:
                             | T
                             | {
-                                asset?: T;
+                                asset?:
+                                  | T
+                                  | {
+                                      source?: T;
+                                      asset?: T;
+                                      embed?:
+                                        | T
+                                        | {
+                                            provider?: T;
+                                            url?: T;
+                                            alt?: T;
+                                            videoId?: T;
+                                            poster?: T;
+                                          };
+                                    };
                                 id?: T;
                                 blockName?: T;
                               };
@@ -1103,7 +1383,21 @@ export interface WorksSelect<T extends boolean = true> {
                           asset?:
                             | T
                             | {
-                                asset?: T;
+                                asset?:
+                                  | T
+                                  | {
+                                      source?: T;
+                                      asset?: T;
+                                      embed?:
+                                        | T
+                                        | {
+                                            provider?: T;
+                                            url?: T;
+                                            alt?: T;
+                                            videoId?: T;
+                                            poster?: T;
+                                          };
+                                    };
                                 id?: T;
                                 blockName?: T;
                               };
@@ -1307,10 +1601,38 @@ export interface LandingPage {
       | null;
     slides?:
       | {
-          /**
-           * Video only. Set the poster on the Asset itself — it is the slide's preview frame.
-           */
-          video: number | Asset;
+          video?: {
+            source?: ('asset' | 'embed') | null;
+            /**
+             * Video only. Set the poster on the Asset itself — it is the slide's preview frame.
+             */
+            asset?: (number | null) | Asset;
+            /**
+             * An external video referenced by URL instead of an upload — long videos without storage cost. Plays on the public site like any video: muted, looping, without controls.
+             */
+            embed?: {
+              /**
+               * YouTube is the first provider; the storage shape already carries any other.
+               */
+              provider: 'youtube';
+              /**
+               * Paste the video's address (watch link, youtu.be, shorts) or its 11-character ID.
+               */
+              url?: string | null;
+              /**
+               * Describes the video for screen readers and search engines.
+               */
+              alt?: string | null;
+              /**
+               * Derived from the URL on save — the public player embeds by this.
+               */
+              videoId?: string | null;
+              /**
+               * Ingested from YouTube on save; replace it to override the preview frame and the aspect ratio it carries.
+               */
+              poster?: (number | null) | Asset;
+            };
+          };
           id?: string | null;
         }[]
       | null;
@@ -1480,7 +1802,21 @@ export interface LandingPageSelect<T extends boolean = true> {
         slides?:
           | T
           | {
-              video?: T;
+              video?:
+                | T
+                | {
+                    source?: T;
+                    asset?: T;
+                    embed?:
+                      | T
+                      | {
+                          provider?: T;
+                          url?: T;
+                          alt?: T;
+                          videoId?: T;
+                          poster?: T;
+                        };
+                  };
               id?: T;
             };
       };

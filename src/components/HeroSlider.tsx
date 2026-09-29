@@ -12,12 +12,15 @@ import type { ScrollCueAction } from "./scrollCue";
 import { getSmoothScroll } from "./SmoothScroll";
 import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
 import { ArrowRight } from "./ArrowRight";
+import { AmbientYouTube } from "./AmbientYouTube";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export interface HeroSlide {
   id: string;
-  url: string;
+  video:
+    | { type: "file"; url: string }
+    | { type: "youtube"; videoId: string };
   posterUrl: string | null;
   alt: string;
 }
@@ -186,19 +189,33 @@ export const HeroSlider = ({
             }`}
             key={slide.id || index}
           >
-            <video
-              aria-label={slide.alt}
-              className="pointer-events-none h-full w-full object-cover"
-              loop
-              muted
-              playsInline
-              poster={slide.posterUrl ?? undefined}
-              preload={index === 0 ? "auto" : "none"}
-              ref={(element) => {
-                videoRefs.current[index] = element;
-              }}
-              src={slide.url}
-            />
+            {slide.video.type === "youtube" ? (
+              /* An Embedded Video manages its own poster and fade-in — the
+                 slider only tells it which slide is playing. */
+              <AmbientYouTube
+                alt={slide.alt}
+                frameClassName="h-full w-full"
+                height={9}
+                playing={index === safeActiveIndex}
+                poster={slide.posterUrl}
+                videoId={slide.video.videoId}
+                width={16}
+              />
+            ) : (
+              <video
+                aria-label={slide.alt}
+                className="pointer-events-none h-full w-full object-cover"
+                loop
+                muted
+                playsInline
+                poster={slide.posterUrl ?? undefined}
+                preload={index === 0 ? "auto" : "none"}
+                ref={(element) => {
+                  videoRefs.current[index] = element;
+                }}
+                src={slide.video.url}
+              />
+            )}
           </div>
         ))}
       </div>

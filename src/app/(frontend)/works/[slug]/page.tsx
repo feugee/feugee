@@ -5,7 +5,7 @@ import { getPayload } from "payload"
 
 import { publishedWhere } from "@/access/publishedRead"
 import type { Work } from "@/payload-types"
-import { ogImageOf } from "@/seo/ogImage"
+import { videoSourceOgOf } from "@/seo/ogImage"
 import { pageMetadata } from "@/seo/metadata"
 
 import { WorkDetail } from "./WorkDetail"
@@ -62,6 +62,6 @@ export async function generateMetadata({ params }: PageProps<"/works/[slug]">) {
     title: `${work.title} — Feugee`,
     description: work.subtitle,
     url: `/works/${work.slug}`,
-    image: ogImageOf(work.thumbnail),
+    image: videoSourceOgOf(work.thumbnail),
   })
 }

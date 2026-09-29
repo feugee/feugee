@@ -1,47 +1,60 @@
 import Image from "next/image";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 
-import type { Asset } from "@/payload-types";
-
+import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { AutoVideo } from "@/components/AutoVideo";
 import {
-  sizedUrlOf,
-  VIDEO_ASPECT_FALLBACK,
-  videoPosterOf,
+  videoSourceVisualOf,
   type AssetSizeName,
 } from "@/components/work";
 import type { WorkLayout } from "./WorkSections";
 
 export type WorkItem = NonNullable<NonNullable<WorkLayout["items"]>[number]>;
 
+/** The asset Item's Video Source group — the upload-or-embed either/or. */
+export type AssetItemSource = Extract<WorkItem, { blockType: "asset" }>["asset"];
+
 const AssetFigure = ({
-  asset,
+  source,
   size,
 }: {
-  asset: number | Asset;
+  source: AssetItemSource;
   size: AssetSizeName;
 }) => {
-  // The relationship can be empty or unpopulated while a Live Preview edit
-  // is mid-flight — render nothing rather than crash.
-  if (typeof asset !== "object" || asset === null || !asset.url) {
+  // The Video Source group resolves to one render-ready visual — upload or
+  // embed. A relationship can be empty or unpopulated while a Live Preview
+  // edit is mid-flight, and an embed without its derived video ID is the
+  // same kind of half-state — render nothing rather than crash.
+  const visual = videoSourceVisualOf(source, size);
+  if (visual === null) {
     return null;
   }
 
   // Video Items autoplay muted like the rest of the page's video; the poster
   // image sizes the grid cell until playback starts — its dimensions, not a
   // variant's, keep that slot honest.
-  if (asset.mimeType?.startsWith("video/")) {
-    const poster = videoPosterOf(asset);
+  if (visual.kind === "video") {
     return (
       <figure className="h-full w-full">
-        <AutoVideo
-          alt={asset.alt}
-          className="h-full w-full object-cover"
-          height={poster?.height ?? VIDEO_ASPECT_FALLBACK.height}
-          poster={poster ? sizedUrlOf(poster, size) : null}
-          src={asset.url}
-          width={poster?.width ?? VIDEO_ASPECT_FALLBACK.width}
-        />
+        {visual.source.type === "youtube" ? (
+          <AmbientYouTube
+            alt={visual.alt}
+            frameClassName="h-full w-full"
+            height={visual.height}
+            poster={visual.posterUrl}
+            videoId={visual.source.videoId}
+            width={visual.width}
+          />
+        ) : (
+          <AutoVideo
+            alt={visual.alt}
+            className="h-full w-full object-cover"
+            height={visual.height}
+            poster={visual.posterUrl}
+            src={visual.source.url}
+            width={visual.width}
+          />
+        )}
       </figure>
     );
   }
@@ -50,11 +63,11 @@ const AssetFigure = ({
     <figure className="h-full w-full">
       {/* A sized Payload variant — the optimizer would only re-encode it. */}
       <Image
-        src={sizedUrlOf(asset, size) ?? asset.url}
-        alt={asset.alt}
+        src={visual.url}
+        alt={visual.alt}
         className="w-full h-full object-cover"
-        width={asset.width ?? 1}
-        height={asset.height ?? 1}
+        width={visual.width}
+        height={visual.height}
       />
     </figure>
   );
@@ -117,6 +130,6 @@ export const WorkItemView = ({
         </div>
       );
     case "asset":
-      return <AssetFigure asset={item.asset} size={assetSize} />;
+      return <AssetFigure source={item.asset} size={assetSize} />;
   }
 };

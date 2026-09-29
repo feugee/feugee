@@ -59,18 +59,34 @@ export const sizedUrlOf = (
 export const VIDEO_ASPECT_FALLBACK = { width: 16, height: 9 };
 
 /**
+ * A populated Asset, or null. Any relationship field can hold a bare ID (a
+ * shallow populate, mid-flight Live Preview edit) — treat that as "not
+ * usable yet" and let the caller fall back.
+ */
+export const populatedAssetOf = (
+  value: Asset | number | null | undefined,
+): Asset | null =>
+  typeof value === "object" && value !== null ? value : null;
+
+/**
  * The populated poster Asset of a video Asset, or null. The field can hold a
  * bare ID (shallow populate, mid-flight Live Preview edit) — treat that as
  * "no poster" and let the caller fall back.
  */
 export const videoPosterOf = (asset: Asset): Asset | null =>
-  typeof asset.poster === "object" && asset.poster !== null
-    ? asset.poster
-    : null;
+  populatedAssetOf(asset.poster);
+
+/**
+ * How a video plays: an uploaded file at its URL, or an embedded external
+ * video by its provider video ID.
+ */
+export type CardVideoSource =
+  | { type: "file"; url: string }
+  | { type: "youtube"; videoId: string };
 
 /**
  * A Work's visual — its Thumbnail or its Feature Visual — as a render-ready
- * discriminated union, or null when the Asset is not usable (none set, or a
+ * discriminated union, or null when it is not usable (none set, or a
  * shallow-populated bare ID). Every card surface — Selected Works, the Works
  * Page masonry, the Footer — discriminates on this one shape instead of
  * re-deriving it.
@@ -85,7 +101,7 @@ export type CardVisual =
     }
   | {
       kind: "video";
-      url: string;
+      source: CardVideoSource;
       posterUrl: string | null;
       width: number;
       height: number;
@@ -110,7 +126,7 @@ const assetVisualOf = (
     const poster = videoPosterOf(asset);
     return {
       kind: "video",
-      url,
+      source: { type: "file", url },
       posterUrl: poster && size ? sizedUrlOf(poster, size) : (poster?.url ?? null),
       width: poster?.width ?? VIDEO_ASPECT_FALLBACK.width,
       height: poster?.height ?? VIDEO_ASPECT_FALLBACK.height,
@@ -127,14 +143,63 @@ const assetVisualOf = (
   };
 };
 
+/**
+ * The Video Source group's stored shape (CONTEXT.md) — the either/or every
+ * video-consuming field presents. The generated types inline it per site
+ * (Work Thumbnail/Feature Visual, a Hero Slide's video, an asset Item), all
+ * identical, so it is named once here.
+ */
+export type VideoSourceField = NonNullable<Work["thumbnail"]>;
+
+const embedVisualOf = (
+  embed: NonNullable<VideoSourceField["embed"]>,
+  size?: AssetSizeName,
+): CardVisual | null => {
+  const videoId = embed.videoId;
+  if (embed.provider !== "youtube" || typeof videoId !== "string" || videoId === "") {
+    return null;
+  }
+  const poster = populatedAssetOf(embed.poster);
+  return {
+    kind: "video",
+    source: { type: "youtube", videoId },
+    posterUrl:
+      poster === null
+        ? null
+        : ((size ? sizedUrlOf(poster, size) : null) ??
+          poster.url ??
+          null),
+    width: poster?.width ?? VIDEO_ASPECT_FALLBACK.width,
+    height: poster?.height ?? VIDEO_ASPECT_FALLBACK.height,
+    alt: embed.alt?.trim() || `YouTube video ${videoId}`,
+  };
+};
+
+/**
+ * A Video Source group as a render-ready CardVisual — the one resolver for
+ * both sides of the either/or. A group still mid-edit (an unpopulated
+ * upload, an embed without its derived video ID) resolves to null and the
+ * caller drops it like any unusable visual.
+ */
+export const videoSourceVisualOf = (
+  source: VideoSourceField | null | undefined,
+  size?: AssetSizeName,
+): CardVisual | null => {
+  if (source == null) return null;
+  if (source.source === "embed") {
+    return source.embed ? embedVisualOf(source.embed, size) : null;
+  }
+  return assetVisualOf(source.asset, size);
+};
+
 /** A Work's Thumbnail as a render-ready CardVisual, or null when unusable. */
 export const workThumbnailOf = (
   work: Work,
   size?: AssetSizeName,
-): CardVisual | null => assetVisualOf(work.thumbnail, size);
+): CardVisual | null => videoSourceVisualOf(work.thumbnail, size);
 
 /** A Work's Feature Visual as a render-ready CardVisual, or null when unusable. */
 export const workFeatureVisualOf = (
   work: Work,
   size?: AssetSizeName,
-): CardVisual | null => assetVisualOf(work.featureVisual, size);
+): CardVisual | null => videoSourceVisualOf(work.featureVisual, size);

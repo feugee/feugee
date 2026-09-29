@@ -1,5 +1,7 @@
 import type { Block } from "payload"
 
+import { videoSourceField } from "../fields/videoSource"
+
 export const titleItem: Block = {
   slug: "title",
   labels: { singular: "Title", plural: "Titles" },
@@ -73,11 +75,10 @@ export const assetItem: Block = {
   slug: "asset",
   labels: { singular: "Asset", plural: "Assets" },
   fields: [
-    {
+    videoSourceField({
       name: "asset",
-      type: "upload",
-      relationTo: "assets",
+      label: "Asset",
       required: true,
-    },
+    }),
   ],
 }

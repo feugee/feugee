@@ -13,7 +13,7 @@ import {
   TestimonialsSection,
   type TestimonialItem,
 } from "@/components/testimonials/TestimonialsSection";
-import { sizedUrlOf, videoPosterOf } from "@/components/work";
+import { populatedAssetOf, sizedUrlOf, videoPosterOf } from "@/components/work";
 import {
   DEFAULT_CLIENTS_HEADING,
   DEFAULT_SELECTED_WORKS_HEADING,
@@ -56,22 +56,49 @@ export const LandingPageContent = ({
   clients: MarqueeClient[];
   data: LandingPage;
 }) => {
-  // The video field is video-only by config; a shallow populate mid-edit
-  // (bare ID) just leaves the slide out until it resolves again. Slides are
-  // full-bleed, so their posters request the wide variant.
+  // Each slide is a Video Source group: an uploaded video Asset or an
+  // Embedded Video. Either can be mid-edit shallow (a bare ID, an embed
+  // without its derived video ID) — the slide drops out until it resolves,
+  // like a half-uploaded one always has. Slides are full-bleed, so their
+  // posters request the wide variant.
   const slides = useMemo<HeroSlide[]>(
     () =>
-      (data.hero?.slides ?? []).flatMap((slide) => {
-        if (typeof slide.video !== "object" || slide.video === null)
-          return [];
-        if (typeof slide.video.url !== "string") return [];
-        const poster = videoPosterOf(slide.video);
+      (data.hero?.slides ?? []).flatMap((slide): HeroSlide[] => {
+        const video = slide.video;
+        if (typeof video !== "object" || video === null) return [];
+
+        if (video.source === "embed") {
+          const embed = video.embed;
+          const videoId = embed?.videoId;
+          if (
+            !embed ||
+            embed.provider !== "youtube" ||
+            typeof videoId !== "string" ||
+            videoId === ""
+          ) {
+            return [];
+          }
+          const poster = populatedAssetOf(embed.poster);
+          return [
+            {
+              id: slide.id ?? "",
+              video: { type: "youtube", videoId },
+              posterUrl: poster ? sizedUrlOf(poster, "wide") : null,
+              alt: embed.alt?.trim() || `YouTube video ${videoId}`,
+            },
+          ];
+        }
+
+        const asset = video.asset;
+        if (typeof asset !== "object" || asset === null) return [];
+        if (typeof asset.url !== "string") return [];
+        const poster = videoPosterOf(asset);
         return [
           {
             id: slide.id ?? "",
-            url: slide.video.url,
+            video: { type: "file", url: asset.url },
             posterUrl: poster ? sizedUrlOf(poster, "wide") : null,
-            alt: slide.video.alt,
+            alt: asset.alt,
           },
         ];
       }),

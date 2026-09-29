@@ -13,11 +13,11 @@ The site's front page a visitor lands on first.
 _Avoid_: Home, homepage
 
 **Hero**:
-The opening, full-screen section of the Landing Page: a slider of autoplaying video Assets that stays visually still while the page scrolls over it, the title stacked in its bottom-left, and a Scroll Cue in its bottom-right.
+The opening, full-screen section of the Landing Page: a slider of autoplaying videos that stays visually still while the page scrolls over it, the title stacked in its bottom-left, and a Scroll Cue in its bottom-right.
 _Avoid_: Banner, header, carousel
 
 **Slide**:
-A single video Asset in the Hero's slider, shown full-screen one at a time.
+A single video — an Asset or an Embedded Video — in the Hero's slider, shown full-screen one at a time.
 _Avoid_: Frame, panel
 
 **Lead-In Word**:
@@ -65,11 +65,11 @@ A single portfolio piece the agency presents publicly. Richly detailed — not a
 _Avoid_: Project, portfolio item, case study
 
 **Thumbnail**:
-The primary visual representing a Work — shown at the top of the Work Detail Page, as its card on the Works Page and the Footer's Other Works, and as its card in Selected Works when the Work has no Feature Visual. An Asset — image or video. A video Thumbnail plays muted, looping, and without controls, like every video on the public site.
+The primary visual representing a Work — shown at the top of the Work Detail Page, as its card on the Works Page and the Footer's Other Works, and as its card in Selected Works when the Work has no Feature Visual. An image Asset, a video Asset, or an Embedded Video. A video Thumbnail plays muted, looping, and without controls, like every video on the public site.
 _Avoid_: Cover, hero image, featured image
 
 **Feature Visual**:
-The optional Asset — image or video — shown in place of a Work's Thumbnail as its card in Selected Works. Absent one, the Work falls back to its Thumbnail there; every other surface keeps the Thumbnail regardless.
+The optional visual — an image Asset, a video Asset, or an Embedded Video — shown in place of a Work's Thumbnail as its card in Selected Works. Absent one, the Work falls back to its Thumbnail there; every other surface keeps the Thumbnail regardless.
 _Avoid_: Feature video, selected works video, landing video
 
 **Section**:
@@ -81,7 +81,7 @@ A named arrangement from a fixed vocabulary that positions Items on a grid. Each
 _Avoid_: Grid, row, layout type
 
 **Item**:
-A single content cell within a Layout — a standalone title, a set of paragraphs (titled or plain), or an Asset.
+A single content cell within a Layout — a standalone title, a set of paragraphs (titled or plain), or an Asset or Embedded Video.
 _Avoid_: Cell, block, element
 
 **Scroll Progress Bar**:
@@ -144,8 +144,16 @@ _Avoid_: Customer, brand, partner
 An uploaded image or video file managed by the CMS and referenced by site content.
 _Avoid_: Media, file, upload
 
+**Embedded Video**:
+An external video — YouTube today — that the CMS references by URL instead of storing as an uploaded file. Behaves on the public site like any video Asset: ambient, with a Poster.
+_Avoid_: YouTube video, external video, video link
+
+**Video Source**:
+The either/or every video-consuming field presents: an uploaded video Asset or an Embedded Video. Exactly one is set — never both.
+_Avoid_: Video type, media type, video kind
+
 **Poster**:
-The image Asset standing in for a video Asset before it plays. Serves as the preview frame and — because Payload measures no dimensions for videos — as the video's aspect ratio in the Works masonry and Layouts.
+The image Asset standing in for a video before it plays. Serves as the preview frame and — because Payload measures no dimensions for videos — as the video's aspect ratio in the Works masonry and Layouts. An Embedded Video's Poster is the provider's own thumbnail, brought in as an image Asset.
 _Avoid_: Still frame, preview image, thumbnail frame
 
 **Size ladder**:

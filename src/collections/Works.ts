@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 
 import { publishedRead } from "../access/publishedRead";
 import { layoutBlocks } from "../blocks/layouts";
+import { videoSourceField } from "../fields/videoSource";
 import {
   revalidateWorkAfterChange,
   revalidateWorkAfterDelete,
@@ -76,23 +77,18 @@ export const Works: CollectionConfig = {
           "The heading above the Description on the Work Detail Page. Empty shows the Description with no heading.",
       },
     },
-    {
+    videoSourceField({
       name: "thumbnail",
-      type: "upload",
-      relationTo: "assets",
-      admin: {
-        description: "The primary visual for this Work, shown at the top of the Work Detail Page.",
-      },
-    },
-    {
+      label: "Thumbnail",
+      assetDescription:
+        "The primary visual for this Work, shown at the top of the Work Detail Page.",
+    }),
+    videoSourceField({
       name: "featureVisual",
-      type: "upload",
-      relationTo: "assets",
-      admin: {
-        description:
-          "Shown in place of the Thumbnail as this Work's card in the Landing Page's Selected Works. Image or video. Falls back to the Thumbnail when empty.",
-      },
-    },
+      label: "Feature Visual",
+      assetDescription:
+        "Shown in place of the Thumbnail as this Work's card in the Landing Page's Selected Works. Image or video. Falls back to the Thumbnail when empty.",
+    }),
     {
       name: "client",
       type: "text",

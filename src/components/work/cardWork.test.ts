@@ -41,9 +41,30 @@ const work = (overrides: Partial<Work> = {}): Work =>
     slug: "fest-for-music",
     title: "Fest for Music",
     _status: "published",
-    thumbnail: imageAsset(),
+    thumbnail: upload(imageAsset()),
     ...overrides,
   }) as unknown as Work;
+
+/** The Video Source group set to its upload side. */
+function upload(asset: Asset | number | null): Work["thumbnail"] {
+  return { source: "asset", asset };
+}
+
+/** The Video Source group set to its embed side. */
+function embed(
+  overrides: Partial<NonNullable<Work["thumbnail"]>["embed"]> = {},
+): Work["thumbnail"] {
+  return {
+    source: "embed",
+    embed: {
+      provider: "youtube",
+      url: "https://youtu.be/dQw4w9WgXcQ",
+      alt: "An embedded video",
+      videoId: "dQw4w9WgXcQ",
+      ...overrides,
+    },
+  };
+}
 
 describe("toCardWork", () => {
   it("drops a shallow-populated relationship (bare number)", () => {
@@ -59,12 +80,12 @@ describe("toCardWork", () => {
     expect(toCardWork(work({ _status: "draft" }))).toBeNull();
   });
 
-  it("drops a Work whose Thumbnail is only shallow-populated", () => {
-    expect(toCardWork(work({ thumbnail: 7 }))).toBeNull();
+  it("drops a Work whose Thumbnail's upload is only shallow-populated", () => {
+    expect(toCardWork(work({ thumbnail: upload(7) }))).toBeNull();
   });
 
   it("drops a Work with no Thumbnail at all", () => {
-    expect(toCardWork(work({ thumbnail: null }))).toBeNull();
+    expect(toCardWork(work({ thumbnail: undefined }))).toBeNull();
   });
 
   it("maps a published image-thumbnail Work to the card core", () => {
@@ -84,18 +105,18 @@ describe("toCardWork", () => {
 
   it("falls back to 1×1 for an image Thumbnail Payload could not measure", () => {
     const card = toCardWork(
-      work({ thumbnail: imageAsset({ width: null, height: null }) }),
+      work({ thumbnail: upload(imageAsset({ width: null, height: null })) }),
     );
 
     expect(card?.visual).toMatchObject({ kind: "image", width: 1, height: 1 });
   });
 
   it("carries the poster's dimensions for a video Thumbnail", () => {
-    const card = toCardWork(work({ thumbnail: videoAsset() }));
+    const card = toCardWork(work({ thumbnail: upload(videoAsset()) }));
 
     expect(card?.visual).toEqual({
       kind: "video",
-      url: "/assets/vid.mp4",
+      source: { type: "file", url: "/assets/vid.mp4" },
       posterUrl: "/assets/poster.png",
       width: 640,
       height: 360,
@@ -104,16 +125,59 @@ describe("toCardWork", () => {
   });
 
   it("falls back to the 16:9 aspect slot for a video without a poster", () => {
-    const card = toCardWork(work({ thumbnail: videoAsset({ poster: 99 }) }));
+    const card = toCardWork(
+      work({ thumbnail: upload(videoAsset({ poster: 99 })) }),
+    );
 
     expect(card?.visual).toEqual({
       kind: "video",
-      url: "/assets/vid.mp4",
+      source: { type: "file", url: "/assets/vid.mp4" },
       posterUrl: null,
       width: VIDEO_ASPECT_FALLBACK.width,
       height: VIDEO_ASPECT_FALLBACK.height,
       alt: "A video",
     });
+  });
+
+  it("maps an embedded video Thumbnail to its YouTube source and ingested poster", () => {
+    const card = toCardWork(
+      work({
+        thumbnail: embed({
+          poster: imageAsset({
+            id: 5,
+            url: "/assets/youtube-poster.jpg",
+            width: 1280,
+            height: 720,
+          }),
+        }),
+      }),
+    );
+
+    expect(card?.visual).toEqual({
+      kind: "video",
+      source: { type: "youtube", videoId: "dQw4w9WgXcQ" },
+      posterUrl: "/assets/youtube-poster.jpg",
+      width: 1280,
+      height: 720,
+      alt: "An embedded video",
+    });
+  });
+
+  it("falls back to the 16:9 aspect slot for an embed without a poster", () => {
+    const card = toCardWork(work({ thumbnail: embed({ poster: null }) }));
+
+    expect(card?.visual).toEqual({
+      kind: "video",
+      source: { type: "youtube", videoId: "dQw4w9WgXcQ" },
+      posterUrl: null,
+      width: VIDEO_ASPECT_FALLBACK.width,
+      height: VIDEO_ASPECT_FALLBACK.height,
+      alt: "An embedded video",
+    });
+  });
+
+  it("drops an embed whose video ID has not been derived yet", () => {
+    expect(toCardWork(work({ thumbnail: embed({ videoId: null }) }))).toBeNull();
   });
 
   it("maps a missing slug to the empty string", () => {

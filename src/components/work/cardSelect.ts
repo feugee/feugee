@@ -38,6 +38,24 @@ export const cardAssetSelect = {
   poster: { url: true, width: true, height: true, sizes: true },
 } satisfies SelectShape;
 
+/**
+ * The Video Source group's fields every card visual, hero slide, and OG
+ * image consumes: which side of the either/or, the upload's own card fields,
+ * and the embed's identity plus its ingested poster (a posterless embed
+ * still plays — the 16:9 fallback sizes its slot).
+ */
+export const videoSourceSelect = {
+  source: true,
+  asset: cardAssetSelect,
+  embed: {
+    provider: true,
+    url: true,
+    alt: true,
+    videoId: true,
+    poster: { url: true, width: true, height: true, sizes: true },
+  },
+} satisfies SelectShape;
+
 /** The card core plus the Year the Selected Works caption shows, with the
  *  Feature Visual that section prefers over the Thumbnail. */
 export const selectedWorksSelect = {
@@ -46,8 +64,8 @@ export const selectedWorksSelect = {
   title: true,
   year: true,
   _status: true,
-  thumbnail: cardAssetSelect,
-  featureVisual: cardAssetSelect,
+  thumbnail: videoSourceSelect,
+  featureVisual: videoSourceSelect,
 } satisfies SelectShape;
 
 /** The card core plus the Subtitle the Footer's Other Works cards show. */
@@ -57,7 +75,7 @@ export const otherWorksSelect = {
   title: true,
   subtitle: true,
   _status: true,
-  thumbnail: cardAssetSelect,
+  thumbnail: videoSourceSelect,
 } satisfies SelectShape;
 
 /** The card core plus the Works Page masonry's filter facets. */
@@ -68,7 +86,7 @@ export const listingWorksSelect = {
   _status: true,
   expertise: true,
   sector: { id: true, name: true, slug: true },
-  thumbnail: cardAssetSelect,
+  thumbnail: videoSourceSelect,
 } satisfies SelectShape;
 
 /** The Client fields the marquee consumes — name, link, and a usable logo. */

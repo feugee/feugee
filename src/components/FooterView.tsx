@@ -7,6 +7,7 @@ import { lazy, Suspense } from "react";
 import type { Footer, Work } from "@/payload-types";
 
 import { ArrowRight } from "./ArrowRight";
+import { AmbientYouTube } from "./AmbientYouTube";
 import { AutoVideo } from "./AutoVideo";
 import { usePreviewRequested } from "./live-preview/usePreviewRequested";
 import { hasFooterCtaContent, toFooterCta } from "./footerCta";
@@ -59,14 +60,25 @@ const WorkCard = ({
       } w-full overflow-hidden rounded bg-neutral-800`}
     >
       {item.visual.kind === "video" ? (
-        <AutoVideo
-          alt={item.visual.alt}
-          className="h-full w-full object-cover"
-          height={item.visual.height}
-          poster={item.visual.posterUrl}
-          src={item.visual.url}
-          width={item.visual.width}
-        />
+        item.visual.source.type === "youtube" ? (
+          <AmbientYouTube
+            alt={item.visual.alt}
+            frameClassName="h-full w-full"
+            height={item.visual.height}
+            poster={item.visual.posterUrl}
+            videoId={item.visual.source.videoId}
+            width={item.visual.width}
+          />
+        ) : (
+          <AutoVideo
+            alt={item.visual.alt}
+            className="h-full w-full object-cover"
+            height={item.visual.height}
+            poster={item.visual.posterUrl}
+            src={item.visual.source.url}
+            width={item.visual.width}
+          />
+        )
       ) : (
         /* A sized Payload variant — the optimizer would only re-encode it. */
         <Image

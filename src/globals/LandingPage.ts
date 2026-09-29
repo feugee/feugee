@@ -1,6 +1,7 @@
 import type { GlobalConfig } from "payload"
 
 import { publishedRead } from "../access/publishedRead"
+import { videoSourceField } from "../fields/videoSource"
 import { revalidateGlobalAfterChange } from "../hooks/revalidateSite"
 
 export const LandingPage: GlobalConfig = {
@@ -110,17 +111,14 @@ export const LandingPage: GlobalConfig = {
           },
           minRows: 1,
           fields: [
-            {
+            videoSourceField({
               name: "video",
-              type: "upload",
-              relationTo: "assets",
+              label: "Video",
               required: true,
-              filterOptions: () => ({ mimeType: { like: "video/" } }),
-              admin: {
-                description:
-                  "Video only. Set the poster on the Asset itself — it is the slide's preview frame.",
-              },
-            },
+              assetFilterOptions: () => ({ mimeType: { like: "video/" } }),
+              assetDescription:
+                "Video only. Set the poster on the Asset itself — it is the slide's preview frame.",
+            }),
           ],
         },
       ],

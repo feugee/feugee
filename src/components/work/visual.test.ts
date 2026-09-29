@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Asset, Work } from "@/payload-types";
 
-import { sizedUrlOf, workThumbnailOf } from "./visual";
+import { sizedUrlOf, videoSourceVisualOf, workThumbnailOf } from "./visual";
 
 const ladder = (prefix: string, ratio = 400 / 640) => ({
   thumbnail: {
@@ -58,6 +58,11 @@ const work = (thumbnail: Work["thumbnail"]): Work =>
     _status: "published",
     thumbnail,
   }) as unknown as Work;
+
+/** The Video Source group set to its upload side. */
+function upload(asset: Asset | number | null): Work["thumbnail"] {
+  return { source: "asset", asset };
+}
 
 describe("sizedUrlOf", () => {
   it("returns the requested size's variant when generated", () => {
@@ -120,7 +125,7 @@ describe("sizedUrlOf", () => {
 
 describe("workThumbnailOf with a size", () => {
   it("serves the size's variant but keeps the original dimensions for layout", () => {
-    const visual = workThumbnailOf(work(sizedAsset()), "desktop");
+    const visual = workThumbnailOf(work(upload(sizedAsset())), "desktop");
 
     expect(visual).toMatchObject({
       kind: "image",
@@ -148,14 +153,99 @@ describe("workThumbnailOf with a size", () => {
       }),
     }) as unknown as Asset;
 
-    const visual = workThumbnailOf(work(video), "wide");
+    const visual = workThumbnailOf(work(upload(video)), "wide");
 
     expect(visual).toMatchObject({
       kind: "video",
-      url: "/api/assets/file/video.mp4",
+      source: { type: "file", url: "/api/assets/file/video.mp4" },
       posterUrl: "/api/assets/file/poster-2400x1350.webp",
       width: 1920,
       height: 1080,
     });
+  });
+});
+
+describe("videoSourceVisualOf (embed branch)", () => {
+  it("carries the video ID, sized poster, and poster dimensions", () => {
+    const visual = videoSourceVisualOf(
+      {
+        source: "embed",
+        embed: {
+          provider: "youtube",
+          url: "https://youtu.be/dQw4w9WgXcQ",
+          alt: "An embedded video",
+          videoId: "dQw4w9WgXcQ",
+          poster: sizedAsset({
+            id: 4,
+            url: "/api/assets/file/youtube.jpg",
+            width: 1280,
+            height: 720,
+            sizes: ladder("youtube", 720 / 1280),
+          }),
+        },
+      },
+      "tablet",
+    );
+
+    expect(visual).toEqual({
+      kind: "video",
+      source: { type: "youtube", videoId: "dQw4w9WgXcQ" },
+      posterUrl: "/api/assets/file/youtube-1024x576.webp",
+      width: 1280,
+      height: 720,
+      alt: "An embedded video",
+    });
+  });
+
+  it("falls back to the 16:9 aspect slot and no poster without one", () => {
+    const visual = videoSourceVisualOf({
+      source: "embed",
+      embed: {
+        provider: "youtube",
+        url: "https://youtu.be/dQw4w9WgXcQ",
+        alt: "An embedded video",
+        videoId: "dQw4w9WgXcQ",
+        poster: 99,
+      },
+    });
+
+    expect(visual).toEqual({
+      kind: "video",
+      source: { type: "youtube", videoId: "dQw4w9WgXcQ" },
+      posterUrl: null,
+      width: 16,
+      height: 9,
+      alt: "An embedded video",
+    });
+  });
+
+  it("derives a placeholder alt when the editor left it blank", () => {
+    const visual = videoSourceVisualOf({
+      source: "embed",
+      embed: {
+        provider: "youtube",
+        url: "https://youtu.be/dQw4w9WgXcQ",
+        alt: "  ",
+        videoId: "dQw4w9WgXcQ",
+      },
+    });
+
+    expect(visual?.alt).toBe("YouTube video dQw4w9WgXcQ");
+  });
+
+  it("drops an embed without its derived video ID", () => {
+    expect(
+      videoSourceVisualOf({
+        source: "embed",
+        embed: {
+          provider: "youtube",
+          url: "https://youtu.be/dQw4w9WgXcQ",
+          alt: "An embedded video",
+          videoId: null,
+        },
+      }),
+    ).toBeNull();
+    // A group still mid-edit — no embed object at all.
+    expect(videoSourceVisualOf({ source: "embed" })).toBeNull();
   });
 });

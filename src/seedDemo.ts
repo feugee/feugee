@@ -366,7 +366,7 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
         slug: "solstice-denim-rebrand",
         subtitle: "A denim house re-cut for the archive era",
         year: workYears["solstice-denim-rebrand"],
-        thumbnail: assetIds.solsticeFeature,
+        thumbnail: { source: "asset", asset: assetIds.solsticeFeature },
         client: "Solstice",
         sector: sectorIds["Fashion"],
         associate: "Amara Diallo",
@@ -415,9 +415,9 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
               {
                 blockType: "feature-left",
                 items: [
-                  { blockType: "asset", asset: assetIds.solsticeFeature },
-                  { blockType: "asset", asset: assetIds.solsticeStationery },
-                  { blockType: "asset", asset: assetIds.solsticeStorefront },
+                  { blockType: "asset", asset: { source: "asset", asset: assetIds.solsticeFeature } },
+                  { blockType: "asset", asset: { source: "asset", asset: assetIds.solsticeStationery } },
+                  { blockType: "asset", asset: { source: "asset", asset: assetIds.solsticeStorefront } },
                 ],
               },
             ],
@@ -462,7 +462,10 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
         year: workYears["pulse-festival-identity"],
         // The video teaser doubles as the Thumbnail and a gallery Item when
         // ffmpeg generated it; image-only environments fall back.
-        thumbnail: videoAssetIds.pulseTeaser ?? assetIds.pulseStageWide,
+        thumbnail: {
+          source: "asset",
+          asset: videoAssetIds.pulseTeaser ?? assetIds.pulseStageWide,
+        },
         client: "Pulse Festival",
         sector: sectorIds["Music"],
         associate: "Jonas Weber",
@@ -484,9 +487,9 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
               {
                 blockType: "three-column",
                 items: [
-                  { blockType: "asset", asset: assetIds.pulsePoster1 },
-                  { blockType: "asset", asset: assetIds.pulsePoster2 },
-                  { blockType: "asset", asset: assetIds.pulsePoster3 },
+                  { blockType: "asset", asset: { source: "asset", asset: assetIds.pulsePoster1 } },
+                  { blockType: "asset", asset: { source: "asset", asset: assetIds.pulsePoster2 } },
+                  { blockType: "asset", asset: { source: "asset", asset: assetIds.pulsePoster3 } },
                 ],
               },
               {
@@ -494,9 +497,12 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
                 items: [
                   {
                     blockType: "asset",
-                    asset: videoAssetIds.pulseTeaser ?? assetIds.pulseStageWide,
+                    asset: {
+                      source: "asset",
+                      asset: videoAssetIds.pulseTeaser ?? assetIds.pulseStageWide,
+                    },
                   },
-                  { blockType: "asset", asset: assetIds.pulseStagePortrait },
+                  { blockType: "asset", asset: { source: "asset", asset: assetIds.pulseStagePortrait } },
                 ],
               },
             ],
@@ -690,7 +696,10 @@ export async function seedDemoContent(payload: Payload): Promise<void> {
     // Hero slides are the ffmpeg gradient loops; image-only environments seed
     // no slides and the Hero stays hidden until real videos are uploaded.
     const heroSlides = (["heroEmber", "heroTide", "heroInk"] as const).flatMap(
-      (key) => (videoAssetIds[key] ? [{ video: videoAssetIds[key] }] : []),
+      (key) =>
+        (videoAssetIds[key]
+          ? [{ video: { source: "asset" as const, asset: videoAssetIds[key] } }]
+          : []),
     )
 
     await payload.updateGlobal({

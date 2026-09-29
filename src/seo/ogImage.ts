@@ -1,6 +1,12 @@
 import type { Asset, LandingPage } from "@/payload-types";
 
-import { sizedUrlOf, videoPosterOf, type AssetSizeName } from "@/components/work";
+import {
+  populatedAssetOf,
+  sizedUrlOf,
+  videoPosterOf,
+  type AssetSizeName,
+  type VideoSourceField,
+} from "@/components/work";
 
 /**
  * The social-share face of a page: an image URL plus whatever dimensions and
@@ -56,8 +62,25 @@ export const ogImageOf = (
  */
 export const heroOgImage = (hero: LandingPage["hero"]): OgImage | null => {
   for (const slide of hero?.slides ?? []) {
-    const image = ogImageOf(slide.video);
+    const image = videoSourceOgOf(slide.video);
     if (image !== null) return image;
   }
   return null;
+};
+
+/**
+ * A Video Source group's still face: the upload branch stands in via
+ * ogImageOf (video Assets via their Poster), the embed branch via its
+ * ingested poster. Crawlers don't play videos, and a posterless video —
+ * uploaded or embedded — has no still face to offer.
+ */
+export const videoSourceOgOf = (
+  source: VideoSourceField | null | undefined,
+): OgImage | null => {
+  if (source == null) return null;
+  if (source.source === "embed") {
+    const poster = populatedAssetOf(source.embed?.poster);
+    return poster === null ? null : imageOg(poster);
+  }
+  return ogImageOf(source.asset);
 };

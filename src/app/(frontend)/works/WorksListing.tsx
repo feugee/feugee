@@ -15,6 +15,7 @@ import {
 
 import { ArrowRight } from "@/components/ArrowRight";
 import { AutoVideo } from "@/components/AutoVideo";
+import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import type { CardWork } from "@/components/work";
@@ -93,16 +94,29 @@ const balanceColumns = (items: WorksListItem[]): WorksListItem[][] => {
 
 const WorkVisual = ({ item }: { item: WorksListItem }) =>
   item.visual.kind === "video" ? (
-    // Video thumbnails autoplay muted while on screen; the poster-derived
-    // width/height keep the card's slot identical to an image card's.
-    <AutoVideo
-      alt={item.visual.alt}
-      className="h-auto w-full object-cover"
-      height={item.visual.height}
-      poster={item.visual.posterUrl}
-      src={item.visual.url}
-      width={item.visual.width}
-    />
+    item.visual.source.type === "youtube" ? (
+      // Embedded thumbnails autoplay muted like uploaded ones; the ingested
+      // poster-derived width/height keep the card's slot identical.
+      <AmbientYouTube
+        alt={item.visual.alt}
+        frameClassName="w-full"
+        height={item.visual.height}
+        poster={item.visual.posterUrl}
+        videoId={item.visual.source.videoId}
+        width={item.visual.width}
+      />
+    ) : (
+      // Video thumbnails autoplay muted while on screen; the poster-derived
+      // width/height keep the card's slot identical to an image card's.
+      <AutoVideo
+        alt={item.visual.alt}
+        className="h-auto w-full object-cover"
+        height={item.visual.height}
+        poster={item.visual.posterUrl}
+        src={item.visual.source.url}
+        width={item.visual.width}
+      />
+    )
   ) : (
     /* A sized Payload variant — the optimizer would only re-encode it. */
     <Image
