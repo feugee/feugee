@@ -150,6 +150,20 @@
 }
 
 @layer base {
+  /* The viewport scrollbar is hidden across the public site — scroll
+     feedback comes from each page's own affordances (the Navbar's frost,
+     the Work Detail Page's Scroll Progress bar). The CMS Dashboard keeps
+     its scrollbar: it loads Payload's stylesheet, not this one. The
+     -webkit- rule is the legacy pair of the standard property, matching
+     the listing page's filter-row pattern. */
+  html {
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
   }
