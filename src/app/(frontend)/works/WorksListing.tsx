@@ -13,7 +13,7 @@ import {
   useSyncExternalStore,
 } from "react";
 
-import { ArrowRight } from "@/components/ArrowRight";
+import { ArrowPush } from "@/components/ArrowPush";
 import { AutoVideo } from "@/components/AutoVideo";
 import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
@@ -156,7 +156,7 @@ const WorkCard = ({
   onHoverEnd: () => void;
 }) => (
   <Link
-    className="group/card relative block"
+    className="group/card relative block rounded-md overflow-hidden"
     data-work-card
     data-work-card-id={item.id}
     href={`/works/${item.slug}`}
@@ -180,9 +180,9 @@ const WorkCard = ({
         its children, and the blend would never reach the media. The text
         keeps its own opacity fade because blend and opacity compose on the
         same element. */}
-    <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end">
+    <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end rounded-md overflow-hidden">
       <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-300 max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
-      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 opacity-0 transition-opacity duration-300 max-lg:opacity-100 group-hover/card:opacity-100">
+      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 opacity-0 transition-opacity duration-300 max-lg:opacity-100 group-hover/card:opacity-100 rounded-md overflow-hidden">
         <h2 className="text-2xl text-white">{item.title}</h2>
         {item.firstExpertise && (
           <span className="text-xl text-neutral-100">
@@ -404,7 +404,7 @@ export const WorksListing = ({
   const mainRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="mx-auto min-h-screen grid w-full lg:grid-cols-[360px_1fr]">
+    <div className="mx-auto min-h-screen grid w-full lg:grid-cols-[minmax(0,min(25%,500px))_1fr]">
       <ScrollProgress scope={mainRef} />
       {/* The lg+ sticky top already seats the aside clear of the overlaid
           navbar (sticky pushes down to its offset); below lg it is static
@@ -417,35 +417,37 @@ export const WorksListing = ({
             <h1 className="block text-4xl font-bold text-neutral-50">
               Our Works
             </h1>
-            <p className="block text-lg text-neutral-500">
+            <p className="block text-xl text-neutral-500">
               Ambitious ideas for ambitious business
             </p>
           </div>
-          {filterable && (
-            <ul className="max-lg:hidden space-y-2">
-              {[null, ...sectorOptions].map((sector) => {
-                const active = activeSector === (sector?.slug ?? null);
-                return (
-                  <li key={sector?.slug ?? "all"}>
-                    <button
-                      aria-pressed={active}
-                      className={`flex w-full items-center gap-2 text-left text-xl transition-colors ${
-                        active ? "text-primary-500" : "text-neutral-800"
-                      }`}
-                      onClick={() => selectSector(sector?.slug ?? null)}
-                      type="button"
-                    >
-                      {/* Reserved slot keeps labels steady as the arrow toggles. */}
-                      <span className="inline-flex w-5 shrink-0 justify-center">
-                        {active ? <ArrowRight /> : null}
-                      </span>
-                      {sector?.name ?? "All"}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
+          <div className="space-y-8">
+            <p className="text-white text-base">Filter Works</p>
+            {filterable && (
+              <ul className="max-lg:hidden space-y-4">
+                {[null, ...sectorOptions].map((sector) => {
+                  const active = activeSector === (sector?.slug ?? null);
+                  return (
+                    <li key={sector?.slug ?? "all"}>
+                      <button
+                        aria-pressed={active}
+                        className={`group flex w-full items-center text-left text-xl transition-colors ${
+                          active
+                            ? "text-primary-500"
+                            : "text-neutral-800 hover:text-white focus-visible:text-white"
+                        }`}
+                        onClick={() => selectSector(sector?.slug ?? null)}
+                        type="button"
+                      >
+                        <ArrowPush active={active} />
+                        {sector?.name ?? "All"}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
         </div>
       </aside>
 
@@ -464,7 +466,7 @@ export const WorksListing = ({
             own start. */}
         {filterable && (
           <div className="flex justify-center px-6 py-3 sticky top-(--navbar-height) z-30 lg:hidden">
-            <ul className="flex w-fit gap-2 overflow-x-auto rounded border border-neutral-700 bg-neutral-950/70 p-2 backdrop-blur [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <ul className="flex w-fit gap-2 overflow-x-auto rounded border border-neutral-700 bg-neutral-950/70 p-2 backdrop-blur scrollbar-none [&::-webkit-scrollbar]:hidden">
               {[null, ...sectorOptions].map((sector) => {
                 const active = activeSector === (sector?.slug ?? null);
                 return (

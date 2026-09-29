@@ -3,16 +3,16 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 
 import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { AutoVideo } from "@/components/AutoVideo";
-import {
-  videoSourceVisualOf,
-  type AssetSizeName,
-} from "@/components/work";
+import { videoSourceVisualOf, type AssetSizeName } from "@/components/work";
 import type { WorkLayout } from "./WorkSections";
 
 export type WorkItem = NonNullable<NonNullable<WorkLayout["items"]>[number]>;
 
 /** The asset Item's Video Source group — the upload-or-embed either/or. */
-export type AssetItemSource = Extract<WorkItem, { blockType: "asset" }>["asset"];
+export type AssetItemSource = Extract<
+  WorkItem,
+  { blockType: "asset" }
+>["asset"];
 
 const AssetFigure = ({
   source,
@@ -35,7 +35,7 @@ const AssetFigure = ({
   // variant's, keep that slot honest.
   if (visual.kind === "video") {
     return (
-      <figure className="h-full w-full">
+      <figure className="h-full w-full rounded-md overflow-hidden">
         {visual.source.type === "youtube" ? (
           <AmbientYouTube
             alt={visual.alt}
@@ -60,7 +60,7 @@ const AssetFigure = ({
   }
 
   return (
-    <figure className="h-full w-full">
+    <figure className="h-full w-full rounded-md overflow-hidden">
       {/* A sized Payload variant — the optimizer would only re-encode it. */}
       <Image
         src={visual.url}
@@ -91,7 +91,7 @@ export const WorkItemView = ({
     case "title":
       return (
         <div className="p-8">
-          <h2 className="text-[16px] font-semibold text-neutral-50">
+          <h2 className="text-xl font-semibold text-neutral-50">
             {item.title}
           </h2>
         </div>
@@ -101,10 +101,10 @@ export const WorkItemView = ({
         <div className="space-y-8 p-8">
           {(item.entries ?? []).map((entry, index) => (
             <div key={entry.id ?? index} className="space-y-2">
-              <h3 className="text-[16px] text-neutral-600">{entry.title}</h3>
+              <h3 className="text-xl text-neutral-600">{entry.title}</h3>
               <RichText
                 data={entry.text}
-                className="text-xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                className="text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
               />
             </div>
           ))}
@@ -123,7 +123,7 @@ export const WorkItemView = ({
             <div key={entry.id ?? index} className=" text-xl text-white">
               <RichText
                 data={entry.text}
-                className="text-xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                className="text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
               />
             </div>
           ))}

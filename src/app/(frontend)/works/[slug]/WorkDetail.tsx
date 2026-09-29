@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 
 import type { Work } from "@/payload-types";
 
-import { ArrowRight } from "@/components/ArrowRight";
+import { ArrowPush } from "@/components/ArrowPush";
 import { AutoVideo } from "@/components/AutoVideo";
 import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { ScrollProgress } from "@/components/ScrollProgress";
@@ -78,7 +78,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
   }, [sections]);
 
   return (
-    <div className="mx-auto grid w-full lg:grid-cols-[360px_1fr]">
+    <div className="mx-auto grid w-full lg:grid-cols-[minmax(0,min(25%,500px))_1fr]">
       <ScrollProgress />
       {/* The lg+ sticky top already seats the aside clear of the overlaid
           navbar (sticky pushes down to its offset); below lg it is static
@@ -96,17 +96,17 @@ export const WorkDetail = ({ data }: { data: Work }) => {
             </span>
             back
           </Link>
-          <div className="w-full pb-12 border-b border-neutral-900 space-y-6">
+          <div className="w-full pb-12 border-b border-neutral-900 space-y-4">
             <h1 className="text-neutral-50 text-4xl font-bold block">
               {data.title}
             </h1>
-            <p className="text-neutral-500 text-lg block">{data.subtitle}</p>
+            <p className="text-neutral-500 text-xl block">{data.subtitle}</p>
           </div>
           <div className="space-y-6 hidden lg:block">
             {/* inline keeps the span-era layout: space-y-6's margin-bottom is
                 ignored on inline boxes, so the ul's mt-4 still sets the gap. */}
             <h2 className="inline text-lg text-white">Contents</h2>
-            <ul className="mt-4 space-y-2">
+            <ul className="mt-4 space-y-4">
               {sections.map((section, index) => {
                 const anchor = sectionAnchor(index);
                 const active = activeSection === anchor;
@@ -114,15 +114,14 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                   <li key={section.id ?? index}>
                     <Link
                       aria-current={active ? "true" : undefined}
-                      className={`flex items-center gap-2 text-xl transition-colors ${
-                        active ? "text-primary-500" : "text-neutral-800"
+                      className={`group flex items-center text-xl transition-colors ${
+                        active
+                          ? "text-primary-500"
+                          : "text-neutral-800 hover:text-white focus-visible:text-white"
                       }`}
                       href={`#${anchor}`}
                     >
-                      {/* Reserved slot keeps labels steady as the arrow toggles. */}
-                      <span className="inline-flex w-5 shrink-0 justify-center">
-                        {active ? <ArrowRight /> : null}
-                      </span>
+                      <ArrowPush active={active} />
                       {section.title}
                     </Link>
                   </li>
@@ -139,7 +138,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
           className="scroll-mt-[calc(var(--navbar-height)+0.5rem)] "
         >
           {heroThumbnail && (
-            <div className="relative w-full h-screen">
+            <div className="relative w-full h-screen rounded-md overflow-hidden">
               {heroThumbnail.kind === "video" ? (
                 heroThumbnail.source.type === "youtube" ? (
                   <AmbientYouTube
@@ -249,10 +248,10 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                   {/* One figcaption per figure; the two lines keep their own
                       classes inside it. */}
                   <figcaption className="space-y-1.5">
-                    <div className="text-md text-primary-500">
+                    <div className="text-xl text-primary-500">
                       {testimonial.name}
                     </div>
-                    <div className="text-xs text-neutral-300">
+                    <div className="text-base text-neutral-300">
                       {testimonial.job}
                       {testimonial.company && `, ${testimonial.company}`}
                     </div>
