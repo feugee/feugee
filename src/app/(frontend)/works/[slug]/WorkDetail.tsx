@@ -94,7 +94,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
             <span aria-hidden="true" className="">
               &lt;
             </span>
-            back
+            Back
           </Link>
           <div className="w-full pb-12 border-b border-neutral-900 space-y-4">
             <h1 className="text-neutral-50 text-4xl font-bold block">

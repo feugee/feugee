@@ -341,7 +341,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
                 {socialLinks.map(({ id, url, label, Icon }) => (
                   <a
                     aria-label={label}
-                    className="border border-neutral-700 rounded p-2 text-neutral-500 transition-colors hover:text-white"
+                    className="border border-neutral-700 rounded p-2 text-neutral-500 transition-colors hover:text-primary-500 hover:border-primary-500"
                     href={url}
                     key={id}
                     rel="noopener noreferrer"
