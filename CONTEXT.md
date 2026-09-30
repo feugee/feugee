@@ -56,6 +56,10 @@ _Avoid_: Reviews, quotes wall, testimonials section
 The public page listing every published Work.
 _Avoid_: Portfolio page, projects page
 
+**Back to Top**:
+The circular control pinned to the Works Page's bottom-right corner that returns the visitor to the top of the listing — shown only while the page lists many Works and the visitor has scrolled away from the top.
+_Avoid_: Scroll-to-top button, up button, top button
+
 **Work Detail Page**:
 The public page presenting one Work in depth.
 _Avoid_: Case study page, project page

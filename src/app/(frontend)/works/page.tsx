@@ -9,15 +9,17 @@ import { toCardWork, workThumbnailOf, asWorkSelect, listingWorksSelect } from "@
 import { getFooterGlobal } from "@/components/footer-data";
 import { type OgImage, videoSourceOgOf } from "@/seo/ogImage";
 import { pageMetadata } from "@/seo/metadata";
+import { BackToTop } from "./BackToTop";
 import {
   WorksListing,
   type SectorOption,
   type WorksListItem,
 } from "./WorksListing";
 
-// Below this many published Works the Filter Projects block stays hidden and
-// the page just lists everything.
-const FILTER_THRESHOLD = 15;
+// Below this many published Works the page reads as short: the Filter Works
+// block stays hidden and the page just lists everything — and the Back to
+// Top control stays hidden with it.
+const LONG_LIST_THRESHOLD = 15;
 
 const sectorSlugOf = (
   sector: Work["sector"] | Sector,
@@ -49,6 +51,7 @@ const getWorksPageData = cache(
     items: WorksListItem[];
     sectorOptions: SectorOption[];
     showFilter: boolean;
+    showBackToTop: boolean;
     ogImage: OgImage | null;
   }> => {
     const payload = await getPayload({ config: configPromise });
@@ -101,24 +104,33 @@ const getWorksPageData = cache(
         .map((work) => videoSourceOgOf(work.thumbnail))
         .find((image): image is OgImage => image !== null) ?? null;
 
+    // One verdict admits both long-list features; the filter still needs
+    // Sectors to show, client-side, while the Back to Top control doesn't.
+    const longList = worksResult.docs.length > LONG_LIST_THRESHOLD;
+
     return {
       items,
       sectorOptions,
-      showFilter: worksResult.docs.length > FILTER_THRESHOLD,
+      showFilter: longList,
+      showBackToTop: longList,
       ogImage,
     };
   },
 );
 
 export default async function Page() {
-  const { items, sectorOptions, showFilter } = await getWorksPageData();
+  const { items, sectorOptions, showFilter, showBackToTop } =
+    await getWorksPageData();
 
   return (
-    <WorksListing
-      items={items}
-      sectorOptions={sectorOptions}
-      showFilter={showFilter}
-    />
+    <>
+      <WorksListing
+        items={items}
+        sectorOptions={sectorOptions}
+        showFilter={showFilter}
+      />
+      {showBackToTop && <BackToTop />}
+    </>
   );
 }
 
