@@ -105,7 +105,7 @@ The strip at the top of every public page: the logo and the Menu control. Transp
 _Avoid_: Header, top bar, navigation bar
 
 **Menu**:
-The public site's primary navigation, opened on every viewport as a full-height panel sliding in from the right edge — pushing the Navbar left to sit beside it rather than lying over it, while the rest of the page stills under a dimmed veil. Its control is a two-line icon (the second line shorter and right-justified) that grows its lines to equal length and rotates them into an X while open. Its links are the Footer's menu links — managed once in the CMS.
+The public site's primary navigation, opened on every viewport as a full-height panel sliding in from the right edge — the Navbar's bar giving up the panel's column while keeping its left anchor, so the logo stays in place and the bar's right edge rides flush with the panel's left — while the rest of the page stills under a dimmed veil. Its control is a two-line icon (the second line shorter and right-justified) that grows its lines to equal length and rotates them into an X while open. Its links are the Footer's menu links — managed once in the CMS.
 _Avoid_: Nav, hamburger, overlay menu, dropdown, sidebar
 
 **Footer**:

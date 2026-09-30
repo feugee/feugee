@@ -26,10 +26,10 @@ const FROST_SCROLL_PX = 24;
  * Landing Page, or past the small threshold above on hero-less pages.
  *
  * The header also carries [data-menu-open] while the Menu is open, which
- * slides the bar left out of the panel's column (globals.css) — the Menu
- * panel and its veil render as the header's siblings, so the header itself
- * carries no transform a CSS transition could fight the Blackout's Page
- * Shift with.
+ * retracts the bar's right edge out of the panel's column (globals.css) —
+ * the logo keeps its anchor at the left — while the Menu panel and its
+ * veil render as the header's siblings, so the header itself carries no
+ * transform a CSS transition could fight the Blackout's Page Shift with.
  */
 export const NavbarBar = ({ links }: { links: MenuLink[] }) => {
   const headerRef = useRef<HTMLElement>(null);

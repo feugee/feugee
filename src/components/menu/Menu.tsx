@@ -13,10 +13,11 @@ import { menuPanelTransition, menuVeilTransition } from "./menuPanelTransition";
 
 /**
  * The Menu itself (CONTEXT.md): the panel sliding full-height from the
- * viewport's right edge — pushing the Navbar's bar out of its column (same
- * ride, so the two stay edge-adjacent; see globals.css) — wearing the
- * frosted glass the scrolled Navbar wears, above the dimmed veil that
- * stills the page beneath it (Navbar above the veil, content below it;
+ * viewport's right edge — the Navbar's bar giving up the panel's column
+ * while keeping its left anchor, the logo stays put (same ride, so the
+ * bar's right edge stays flush with the panel's left; see globals.css) —
+ * wearing the frosted glass the scrolled Navbar wears, above the dimmed
+ * veil that stills the page beneath it (Navbar above the veil, content below it;
  * the Blackout and Cursor still outrank both). Escape and a press outside
  * the panel close it — the control's own press excepted, its click toggles
  * — a link click closes ahead of the navigation, a history traversal

@@ -237,16 +237,24 @@ header[data-frosted] .navbar-bar {
   backdrop-filter: blur(8px);
 }
 
-/* The Menu's push (CONTEXT.md): while the Menu is open, the bar vacates the
-   panel's column. The header box stays put — page flow and every
-   --navbar-height clearance hang off it — and only the floating bar
-   translates. The panel rides the same 400ms swipe curve from its own
-   classes, so bar and panel stay edge-adjacent the whole way in: the panel
-   pushes the bar, never slides over it. On close the panel exits fast
-   (200ms) and the bar settles home over this frost-length ride, the same
-   trailing settle the Page Shift lands with. */
+/* The Menu's clearance (CONTEXT.md): while the Menu is open, the bar
+   gives up the panel's column — anchored at its left edge, so the logo
+   stays put, its right edge retracting along the panel's own left edge on
+   the same 400ms swipe curve: edge-adjacent the whole way, the panel
+   shaves the bar down rather than sliding over it. On close the panel
+   exits fast (200ms) and the bar regrows over this frost-length ride, the
+   same trailing settle the Page Shift lands with. Frosted, the bar keeps
+   its 24px gutter from the panel (the frost's own inset); max-content
+   floors the bar at its contents, so a very narrow viewport — the panel
+   at 85vw — starves the column but never crams the logo and control
+   together. */
 header[data-menu-open] .navbar-bar {
-  translate: calc(var(--menu-width) * -1) 0;
+  inset-inline-end: var(--menu-width);
+  min-width: max-content;
+}
+
+header[data-frosted][data-menu-open] .navbar-bar {
+  inset-inline-end: calc(var(--menu-width) + 24px);
 }
 
 /* The ~400ms frost ride on the site's swipe curve. The insets transition
@@ -258,8 +266,7 @@ header[data-menu-open] .navbar-bar {
     inset-inline 400ms var(--ease-swipe),
     background-color 400ms var(--ease-swipe),
     border-color 400ms var(--ease-swipe),
-    backdrop-filter 400ms var(--ease-swipe),
-    translate 400ms var(--ease-swipe);
+    backdrop-filter 400ms var(--ease-swipe);
 }
 
 @media (prefers-reduced-motion: reduce) {
