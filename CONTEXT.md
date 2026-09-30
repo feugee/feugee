@@ -60,6 +60,10 @@ _Avoid_: Portfolio page, projects page
 The circular control pinned to the Works Page's bottom-right corner that returns the visitor to the top of the listing — shown only while the page lists many Works and the visitor has scrolled away from the top.
 _Avoid_: Scroll-to-top button, up button, top button
 
+**Work Card**:
+A card in the Works Page's listing presenting one Work — its Thumbnail, title, and first Expertise — linking to the Work Detail Page. Distinct from the Footer's Other Works cards and Selected Works' full-viewport cards.
+_Avoid_: Portfolio tile, project card, work tile
+
 **Work Detail Page**:
 The public page presenting one Work in depth.
 _Avoid_: Case study page, project page

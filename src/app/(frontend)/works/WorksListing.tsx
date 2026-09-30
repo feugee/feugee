@@ -165,7 +165,7 @@ const WorkCard = ({
     onMouseLeave={canHover ? onHoverEnd : undefined}
   >
     <div
-      className={`transition-[filter] duration-300 ${dimmed ? "grayscale" : ""}`}
+      className={`motion-safe:transition-[filter] motion-safe:duration-[600ms] motion-safe:ease-swipe ${dimmed ? "grayscale" : ""}`}
     >
       <WorkVisual item={item} />
     </div>
@@ -178,11 +178,14 @@ const WorkCard = ({
         Difference Text (ADR 0006) and a sibling of the underlay, not its
         child: a parent carrying backdrop-filter or a fading opacity isolates
         its children, and the blend would never reach the media. The text
-        keeps its own opacity fade because blend and opacity compose on the
-        same element. */}
+        keeps its own fade-and-rise — opacity and translate as one
+        transition, so the slide cannot drift out of step with the fade —
+        because blend and opacity compose on the same element. Timings ride
+        the site-wide swipe curve: the grayscale dimming at 600ms, the
+        caption's arrival and mirrored exit at 400ms. */}
     <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end rounded-md overflow-hidden">
-      <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-300 max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
-      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 opacity-0 transition-opacity duration-300 max-lg:opacity-100 group-hover/card:opacity-100 rounded-md overflow-hidden">
+      <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] motion-safe:transition-[opacity,backdrop-filter] motion-safe:duration-[400ms] motion-safe:ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
+      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 translate-y-3 opacity-0 motion-safe:transition-[opacity,translate] motion-safe:duration-[400ms] motion-safe:ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 rounded-md overflow-hidden">
         <h2 className="text-2xl text-white">{item.title}</h2>
         {item.firstExpertise && (
           <span className="text-xl text-neutral-100">
