@@ -237,3 +237,7 @@ _Avoid_: Negative text, inverted text, knockout text, blend text
 **Swipe Text**:
 A control's label exchanging two clipped copies on hover — the resting copy swipes up out of view while an identical primary-500 copy swipes up from below into its place. Used on the Menu's items and the Footer's menu links.
 _Avoid_: Rolling text, text swap, slide-up hover
+
+**Arrow Push**:
+A sidebar item — the Works Page's Sector filter or the Work Detail Page's Contents — whose label sits flush left at rest; on hover or when current, a primary arrow slides in from the left, pushing the label right. The hovered label turns white; the current one stays primary.
+_Avoid_: Arrow slide, push-in, arrow reveal
