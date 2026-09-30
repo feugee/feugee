@@ -12,6 +12,10 @@
   /* Layout dimension, not a Design Token: navbar-driven clearances across
    * the public site (sticky offsets, scroll margins) hang off this value. */
   --navbar-height: 4.5rem;
+  /* Layout dimension, not a Design Token: the Menu panel's width — the
+   * column the Navbar's bar vacates while the Menu is open. Near-full-width
+   * on phones, capped on desktop. */
+  --menu-width: min(85vw, 30rem);
 }
 
 /*
@@ -233,6 +237,18 @@ header[data-frosted] .navbar-bar {
   backdrop-filter: blur(8px);
 }
 
+/* The Menu's push (CONTEXT.md): while the Menu is open, the bar vacates the
+   panel's column. The header box stays put — page flow and every
+   --navbar-height clearance hang off it — and only the floating bar
+   translates. The panel rides the same 400ms swipe curve from its own
+   classes, so bar and panel stay edge-adjacent the whole way in: the panel
+   pushes the bar, never slides over it. On close the panel exits fast
+   (200ms) and the bar settles home over this frost-length ride, the same
+   trailing settle the Page Shift lands with. */
+header[data-menu-open] .navbar-bar {
+  translate: calc(var(--menu-width) * -1) 0;
+}
+
 /* The ~400ms frost ride on the site's swipe curve. The insets transition
    by their logical name — the frosted state sets inset-inline — rather than
    trusting the physical `inset` shorthand to map. */
@@ -242,7 +258,8 @@ header[data-frosted] .navbar-bar {
     inset-inline 400ms var(--ease-swipe),
     background-color 400ms var(--ease-swipe),
     border-color 400ms var(--ease-swipe),
-    backdrop-filter 400ms var(--ease-swipe);
+    backdrop-filter 400ms var(--ease-swipe),
+    translate 400ms var(--ease-swipe);
 }
 
 @media (prefers-reduced-motion: reduce) {

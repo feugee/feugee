@@ -2,7 +2,7 @@
 export const MENU_ITEM_STAGGER_MS = 60;
 
 /**
- * The per-item open/close motion of the Menu's dropdown. Opening staggers:
+ * The per-item open/close motion of the Menu's panel. Opening staggers:
  * each item swipes up into place one stagger step behind the one above it,
  * riding the site's swipe curve. Closing drops every item out together —
  * full offset, a fifth of a second, no delay — because dismissal shouldn't
