@@ -3,11 +3,17 @@ import { NavbarBar } from "./NavbarBar";
 import { toMenuLinks } from "./menu";
 
 // Mounted in the frontend root layout, so every public page shares it. The
-// Menu's links come from the Footer global — one CMS list drives both —
-// passed into the client shell as plain data.
+// Menu's links come from the Footer global — one CMS list drives both — and
+// its foot's Social Links ride the same read. Both go down as plain data:
+// the Social Link icons resolve inside the Menu, since components can't
+// cross the server/client boundary.
 export const Navbar = async () => {
   const footer = await getFooterGlobal();
-  const menuLinks = toMenuLinks(footer?.menuLinks);
 
-  return <NavbarBar links={menuLinks} />;
+  return (
+    <NavbarBar
+      links={toMenuLinks(footer?.menuLinks)}
+      socialLinks={footer?.socialLinks}
+    />
+  );
 };

@@ -117,7 +117,7 @@ The strip at the top of every public page: the logo and the Menu control. Transp
 _Avoid_: Header, top bar, navigation bar
 
 **Menu**:
-The public site's primary navigation, opened on every viewport as a full-height panel sliding in from the right edge — the Navbar's bar giving up the panel's column while keeping its left anchor, so the logo stays in place and the bar's right edge rides flush with the panel's left — while the rest of the page stills under a dimmed veil. Its control is a two-line icon (the second line shorter and right-justified) that grows its lines to equal length and rotates them into an X while open. Its links are the Footer's menu links — managed once in the CMS.
+The public site's primary navigation, opened on every viewport. On desktop it is a full-height panel sliding in from the right edge — the Navbar's bar giving up the panel's column while keeping its left anchor, so the logo stays in place and the bar's right edge rides flush with the panel's left — while the rest of the page stills under a dimmed veil. On a phone or tablet it is a full-screen layer at the front of the page, the Navbar keeping its shape untouched beneath it, closed by an X of its own at the top right. Its control is a two-line icon (the second line shorter and right-justified) that grows its lines to equal length and rotates them into an X while open. Its items are edge-to-edge rows, flush one atop the next, that highlight under the pointer while Arrow Push's arrow slides in — no notion of a current item. Its links are the Footer's menu links, and below a divider its foot carries the Footer's Social Links — all managed once in the CMS.
 _Avoid_: Nav, hamburger, overlay menu, dropdown, sidebar
 
 **Footer**:
@@ -129,7 +129,7 @@ The Works shown as cards in the Footer, in display order. Distinct from the Land
 _Avoid_: Other projects, featured works
 
 **Social Link**:
-A social media profile linked from the Footer's bottom bar — a platform (which picks the icon) and its URL.
+A social media profile linked from the Footer's bottom bar and the Menu's foot — a platform (which picks the icon) and its URL.
 _Avoid_: Social icon, social media button
 
 **Wordmark**:
@@ -251,7 +251,7 @@ Text the Public site renders white with difference blending over an image or vid
 _Avoid_: Negative text, inverted text, knockout text, blend text
 
 **Swipe Text**:
-A control's label exchanging two clipped copies on hover — the resting copy swipes up out of view while an identical primary-500 copy swipes up from below into its place. Used on the Menu's items and the Footer's menu links.
+A control's label exchanging two clipped copies on hover — the resting copy swipes up out of view while an identical primary-500 copy swipes up from below into its place. Used on the Footer's menu links.
 _Avoid_: Rolling text, text swap, slide-up hover
 
 **Arrow Push**:

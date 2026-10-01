@@ -5,6 +5,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import type { Footer } from "@/payload-types";
+
 import { LogoLink } from "./LogoLink";
 import { Menu, MenuControl, type MenuLink } from "./menu";
 
@@ -25,13 +27,20 @@ const FROST_SCROLL_PX = 24;
  * component toggles when the visitor scrolls: past the Hero's bottom on the
  * Landing Page, or past the small threshold above on hero-less pages.
  *
- * The header also carries [data-menu-open] while the Menu is open, which
- * retracts the bar's right edge out of the panel's column (globals.css) —
- * the logo keeps its anchor at the left — while the Menu panel and its
+ * The header also carries [data-menu-open] while the Menu is open — on
+ * desktop it retracts the bar's right edge out of the panel's column
+ * (globals.css), the logo keeping its anchor at the left; below lg the
+ * full-screen Menu covers the bar untouched — while the Menu panel and its
  * veil render as the header's siblings, so the header itself carries no
  * transform a CSS transition could fight the Blackout's Page Shift with.
  */
-export const NavbarBar = ({ links }: { links: MenuLink[] }) => {
+export const NavbarBar = ({
+  links,
+  socialLinks,
+}: {
+  links: MenuLink[];
+  socialLinks: Footer["socialLinks"];
+}) => {
   const headerRef = useRef<HTMLElement>(null);
   const controlRef = useRef<HTMLButtonElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -105,6 +114,7 @@ export const NavbarBar = ({ links }: { links: MenuLink[] }) => {
           links={links}
           onClose={closeMenu}
           open={menuOpen}
+          socialLinks={socialLinks}
         />
       )}
     </>
