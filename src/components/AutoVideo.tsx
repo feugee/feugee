@@ -58,6 +58,8 @@ export const AutoVideo = ({
     <video
       aria-label={alt}
       className={className}
+      controlsList="nodownload"
+      disablePictureInPicture
       height={height}
       loop
       muted

@@ -266,3 +266,15 @@ header[data-frosted][data-menu-open] .navbar-bar {
 .navbar-bar > * {
   pointer-events: auto;
 }
+
+/* Asset Guard (ADR 0012), the pointer-level half the document listeners
+   can't reach: media can't be dragged out of the page, long-press saved on
+   touch screens, or selected. The Hero's Slide videos take no pointer
+   events at all, so no menu ever targets them; the context menu on the
+   rest is suppressed by AssetGuard.tsx. */
+img,
+video {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+}

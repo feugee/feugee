@@ -182,6 +182,8 @@ export const HeroSlider = ({
               <video
                 aria-label={slide.alt}
                 className="pointer-events-none h-full w-full object-cover"
+                controlsList="nodownload"
+                disablePictureInPicture
                 loop
                 muted
                 playsInline

@@ -3,6 +3,7 @@ import { albertSans } from "@/app/fonts";
 import { env } from "@/env";
 import "../globals.css";
 
+import { AssetGuard } from "@/components/AssetGuard";
 import { Cursor } from "@/components/Cursor";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
@@ -25,6 +26,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {/* Outside the Blackout slab, so the Page Shift never drags it —
               the Cursor stays viewport-pinned like the pointer it replaces. */}
           <Cursor />
+          {/* Renders nothing — its listeners live on the document (ADR 0012). */}
+          <AssetGuard />
           <Navbar />
           {/* Every page's primary content sits in one main landmark; page
               views contribute sections, not their own main. The data

@@ -132,6 +132,10 @@ _Avoid_: Social icon, social media button
 The Agency's FEUGEE logo artwork stretched edge-to-edge behind the Footer's bottom bar as a quiet monochrome watermark — the same artwork the Navbar shows small at full color. Part of the site's code, not CMS content.
 _Avoid_: Giant logo, footer logo, display wordmark
 
+**Asset Guard**:
+The Public site behavior denying visitors the casual save paths for rendered Assets — no browser context menu, no dragging an image out of the page, no long-press save on touch screens. Deliberate deterrence only: a determined visitor (screenshots, devtools, the Asset's own URL) still gets the file.
+_Avoid_: Image protection, right-click blocking, no-download mode, DRM
+
 ### CMS
 
 The authenticated area where the agency manages public site content.
