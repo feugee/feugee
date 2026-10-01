@@ -90,10 +90,10 @@ const WorkCard = ({
         />
       )}
     </div>
-    <div className="mt-3 space-y-1">
-      <p className="text-base text-white font-bold">{item.title}</p>
+    <div className="mt-4 space-y-3">
+      <p className="text-xl text-white font-bold">{item.title}</p>
       {item.subtitle && (
-        <span className="text-sm text-neutral-500">{item.subtitle}</span>
+        <span className="text-base text-neutral-500">{item.subtitle}</span>
       )}
     </div>
   </Link>
@@ -233,7 +233,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
       <div className="w-full flex flex-col gap-y-12 md:gap-y-16">
         <div className={columnRowClassName}>
           {aboutDescription && (
-            <div className="space-y-3 w-full">
+            <div className="space-y-6 w-full">
               <h2 className="text-base text-neutral-500">{aboutHeading}</h2>
               <p className="text-2xl text-white w-full md:w-[80%]">
                 {aboutDescription}
@@ -241,7 +241,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
             </div>
           )}
           {otherWorks.length > 0 && (
-            <div className="space-y-3 w-full">
+            <div className="space-y-6 w-full">
               <h2 className="text-base text-neutral-500">
                 {otherWorksHeading}
               </h2>
@@ -255,7 +255,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
         </div>
         <div className={columnRowClassName}>
           {menuLinks.length > 0 && (
-            <div className="space-y-4 w-full">
+            <div className="space-y-6 w-full">
               <h2 className="text-base text-neutral-500">{menuHeading}</h2>
               <ul className="flex flex-col justify-start items-start gap-y-2">
                 {menuLinks.map((link) => (
@@ -275,7 +275,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
             </div>
           )}
           {showContact && (
-            <div className="space-y-4 w-full">
+            <div className="space-y-6 w-full">
               <h2 className="text-base text-neutral-500">{contactHeading}</h2>
               {/* address marks the agency's own contact details; preflight
                   doesn't un-italicize it, so not-italic keeps the look. */}

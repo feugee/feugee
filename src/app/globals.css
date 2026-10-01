@@ -68,27 +68,27 @@
 
   /* Type scale — the doc's "md" step is Tailwind's "base" */
   --text-xs: 0.75rem;
-  --text-xs--line-height: 1.125rem;
+  --text-xs--line-height: 1.2em;
   --text-sm: 0.875rem;
-  --text-sm--line-height: 1.25rem;
+  --text-sm--line-height: 1.2em;
   --text-base: 1rem;
-  --text-base--line-height: 1.5rem;
+  --text-base--line-height: 1.2em;
   --text-lg: 1.125rem;
-  --text-lg--line-height: 1.75rem;
+  --text-lg--line-height: 1.2em;
   --text-xl: 1.25rem;
-  --text-xl--line-height: 1.875rem;
+  --text-xl--line-height: 1.2em;
   --text-2xl: 1.5rem;
-  --text-2xl--line-height: 2rem;
+  --text-2xl--line-height: 1.2em;
   --text-3xl: 1.875rem;
-  --text-3xl--line-height: 2.375rem;
+  --text-3xl--line-height: 1.2em;
   --text-4xl: 2.25rem;
-  --text-4xl--line-height: 2.75rem;
+  --text-4xl--line-height: 1.2em;
   --text-5xl: 3rem;
-  --text-5xl--line-height: 3.75rem;
+  --text-5xl--line-height: 1.2em;
   --text-6xl: 3.75rem;
-  --text-6xl--line-height: 4.5rem;
+  --text-6xl--line-height: 1.2em;
   --text-7xl: 4.5rem;
-  --text-7xl--line-height: 5.625rem;
+  --text-7xl--line-height: 1.2em;
 }
 
 @theme inline {

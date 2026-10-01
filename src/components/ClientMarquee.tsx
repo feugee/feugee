@@ -18,7 +18,7 @@ export interface MarqueeClient {
 const LogoImage = ({ client }: { client: MarqueeClient }) => (
   <Image
     alt={client.logo.alt}
-    className="h-8 w-auto max-w-40 object-contain opacity-60 transition-opacity duration-300 hover:opacity-100 filter-[grayscale(1)_brightness(0)_invert(1)] md:h-10"
+    className="h-14 w-auto object-contain opacity-60 transition-opacity duration-300 hover:opacity-100 filter-[grayscale(1)_brightness(0)_invert(1)] md:h-18"
     height={client.logo.height}
     src={client.logo.url}
     unoptimized
@@ -35,7 +35,7 @@ const LogoList = ({
 }) => (
   <ul
     aria-hidden={hidden || undefined}
-    className="flex shrink-0 items-center gap-x-10 pr-10 md:gap-x-20 md:pr-20"
+    className="flex shrink-0 items-center gap-x-12 pr-10 md:gap-x-32 md:pr-20"
   >
     {clients.map((client) => (
       <li key={client.id}>
