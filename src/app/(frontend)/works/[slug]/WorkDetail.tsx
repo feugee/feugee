@@ -121,7 +121,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
                       }`}
                       href={`#${anchor}`}
                     >
-                      <ArrowPush active={active} />
+                      <ArrowPush active={active} hover="slide" />
                       {section.title}
                     </Link>
                   </li>

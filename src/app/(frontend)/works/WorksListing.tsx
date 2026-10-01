@@ -463,7 +463,7 @@ export const WorksListing = ({
                         onClick={() => selectSector(sector?.slug ?? null)}
                         type="button"
                       >
-                        <ArrowPush active={active} />
+                        <ArrowPush active={active} hover="slide" />
                         {sector?.name ?? "All"}
                       </button>
                     </li>

@@ -255,5 +255,5 @@ A control's label exchanging two clipped copies on hover — the resting copy sw
 _Avoid_: Rolling text, text swap, slide-up hover
 
 **Arrow Push**:
-A sidebar item — the Works Page's Sector filter or the Work Detail Page's Contents — whose label sits flush left at rest; on hover or when current, a primary arrow slides in from the left, pushing the label right. The hovered label turns white; the current one stays primary.
+A control's current affordance and the Menu's items' hover: a primary arrow slides in from the left, pushing the label right. The hovered label turns white; the current one stays primary. On the Works Page's Sector filter and the Work Detail Page's Contents the arrow is current-only — their hover keeps the label's slide but shows no arrow.
 _Avoid_: Arrow slide, push-in, arrow reveal
