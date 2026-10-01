@@ -9,14 +9,14 @@
  * classes it can read in source.
  */
 export const menuPanelTransition = (open: boolean): string =>
-  `transition-[translate,visibility] ease-swipe motion-reduce:transition-none ${
+  `transition-[translate,visibility] ease-swipe ${
     open
       ? "duration-[400ms] translate-x-0 visible"
       : "duration-[200ms] translate-x-full invisible"
   }`;
 
 export const menuVeilTransition = (open: boolean): string =>
-  `transition-[opacity,visibility] ease-swipe motion-reduce:transition-none ${
+  `transition-[opacity,visibility] ease-swipe ${
     open
       ? "duration-[400ms] opacity-100 visible"
       : "duration-[200ms] opacity-0 invisible"

@@ -6,7 +6,7 @@ export const MENU_ITEM_STAGGER_MS = 60;
  * each item swipes up into place one stagger step behind the one above it,
  * riding the site's swipe curve. Closing drops every item out together —
  * full offset, a fifth of a second, no delay — because dismissal shouldn't
- * make the visitor wait. Reduced motion skips the travel entirely.
+ * make the visitor wait.
  */
 export const menuItemTransition = (
   open: boolean,
@@ -15,7 +15,7 @@ export const menuItemTransition = (
   // The durations stay literal on purpose: Tailwind only generates the
   // classes it can read in source, so they can't ride an interpolated template.
   className: open
-    ? "transition ease-swipe motion-reduce:transition-none duration-[400ms] translate-y-0 opacity-100"
-    : "transition ease-swipe motion-reduce:transition-none duration-[200ms] translate-y-full opacity-0",
+    ? "transition ease-swipe duration-[400ms] translate-y-0 opacity-100"
+    : "transition ease-swipe duration-[200ms] translate-y-full opacity-0",
   transitionDelay: open ? `${index * MENU_ITEM_STAGGER_MS}ms` : "0ms",
 });

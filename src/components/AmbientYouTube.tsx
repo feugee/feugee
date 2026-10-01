@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Ambient playback for an Embedded Video (CONTEXT.md) — the YouTube twin of
  * AutoVideo's contract: muted, looping, controls-free, plays only while on
- * screen (or while its slide is active), poster frame under reduced motion.
+ * screen (or while its slide is active).
  * The player mounts lazily — nothing touches Google's servers until the
  * video actually scrolls into view — and runs against youtube-nocookie.com
  * without consent gating (ADR 0010). YouTube's own overlays (pause button,
@@ -121,10 +121,9 @@ export const AmbientYouTube = ({
   const revealTimeoutRef = useRef<number | undefined>(undefined);
   const [activated, setActivated] = useState(false);
   const [inView, setInView] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [showing, setShowing] = useState(false);
 
-  const shouldPlay = (playing ?? inView) && !reducedMotion;
+  const shouldPlay = playing ?? inView;
 
   // The player mounts on the first frame it is actually wanted — derived
   // during render rather than in an effect, so activation is a plain
@@ -135,14 +134,6 @@ export const AmbientYouTube = ({
     altRef.current = alt;
     shouldPlayRef.current = shouldPlay;
   });
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReducedMotion(mediaQuery.matches);
-    sync();
-    mediaQuery.addEventListener("change", sync);
-    return () => mediaQuery.removeEventListener("change", sync);
-  }, []);
 
   // Self-managed mode mirrors AutoVideo: begin slightly before the video
   // scrolls into view so it is already moving when it arrives.
@@ -311,21 +302,19 @@ export const AmbientYouTube = ({
           width={width}
         />
       )}
-      {!reducedMotion && (
-        <div
-          aria-hidden={Boolean(poster)}
-          className={`pointer-events-none absolute inset-0 [&>iframe]:absolute [&>iframe]:inset-0 [&>iframe]:h-full [&>iframe]:w-full ${
-            showing
-              ? // Revealing fades in over the poster.
-                "opacity-100 transition-opacity duration-500 motion-reduce:transition-none"
-              : // Hiding is instant — YouTube paints its paused face inside
-                // the iframe before the state event crosses the origin
-                // boundary, so a fade here would show it through.
-                "opacity-0"
-          }`}
-          ref={hostRef}
-        />
-      )}
+      <div
+        aria-hidden={Boolean(poster)}
+        className={`pointer-events-none absolute inset-0 [&>iframe]:absolute [&>iframe]:inset-0 [&>iframe]:h-full [&>iframe]:w-full ${
+          showing
+            ? // Revealing fades in over the poster.
+              "opacity-100 transition-opacity duration-500"
+            : // Hiding is instant — YouTube paints its paused face inside
+              // the iframe before the state event crosses the origin
+              // boundary, so a fade here would show it through.
+              "opacity-0"
+        }`}
+        ref={hostRef}
+      />
     </span>
   );
 };

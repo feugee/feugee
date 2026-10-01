@@ -165,7 +165,7 @@ const WorkCard = ({
     onMouseLeave={canHover ? onHoverEnd : undefined}
   >
     <div
-      className={`motion-safe:transition-[filter] motion-safe:duration-[600ms] motion-safe:ease-swipe ${dimmed ? "grayscale" : ""}`}
+      className={`transition-[filter] duration-[600ms] ease-swipe ${dimmed ? "grayscale" : ""}`}
     >
       <WorkVisual item={item} />
     </div>
@@ -184,13 +184,11 @@ const WorkCard = ({
         the site-wide swipe curve: the grayscale dimming at 600ms, the
         caption's arrival and mirrored exit at 400ms. */}
     <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end rounded-md overflow-hidden">
-      <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] motion-safe:transition-[opacity,backdrop-filter] motion-safe:duration-[400ms] motion-safe:ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
-      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 translate-y-3 opacity-0 motion-safe:transition-[opacity,translate] motion-safe:duration-[400ms] motion-safe:ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 rounded-md overflow-hidden">
-        <h2 className="text-2xl text-white">{item.title}</h2>
+      <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-400 ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
+      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 rounded-md overflow-hidden">
+        <h2 className="text-2xl text-white font-medium">{item.title}</h2>
         {item.firstExpertise && (
-          <span className="text-xl text-neutral-100">
-            {item.firstExpertise}
-          </span>
+          <span className="text-[18px] text-white">{item.firstExpertise}</span>
         )}
       </div>
     </div>
@@ -312,9 +310,6 @@ export const WorksListing = ({
     () => {
       const list = listRef.current;
       if (!list) return;
-      const reduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
 
       // The exit: ghosts step back from the page while letting go — a touch
       // quicker than the survivors' slide, so the stage clears first.
@@ -322,19 +317,17 @@ export const WorksListing = ({
         list.querySelectorAll<HTMLElement>("[data-work-ghost]"),
       );
       if (ghostEls.length > 0) {
-        if (reduced) setGhosts([]);
-        else
-          gsap.fromTo(
-            ghostEls,
-            { opacity: 1, scale: 1 },
-            {
-              opacity: 0,
-              scale: 0.97,
-              duration: 0.3,
-              ease: "power2.out",
-              onComplete: () => setGhosts([]),
-            },
-          );
+        gsap.fromTo(
+          ghostEls,
+          { opacity: 1, scale: 1 },
+          {
+            opacity: 0,
+            scale: 0.97,
+            duration: 0.3,
+            ease: "power2.out",
+            onComplete: () => setGhosts([]),
+          },
+        );
       }
 
       const grid = gridRef.current;
@@ -373,8 +366,6 @@ export const WorksListing = ({
         }
       }
       cardSpotsRef.current = spots;
-
-      if (reduced) return;
 
       // Everyone travels at once — exits, slides, and entries start on the
       // same frame; only the enterers' stagger varies, since a movement
@@ -416,7 +407,7 @@ export const WorksListing = ({
       <aside className="self-start lg:pb-6 md:px-12 px-6 max-lg:pt-32 lg:sticky lg:top-32">
         {/* A div, not a nav: the filter buttons are controls, not links. */}
         <div className="lg:space-y-12">
-          <div className="w-full space-y-6 border-b border-neutral-900 pb-12">
+          <div className="w-full space-y-4 border-b border-neutral-900 pb-12">
             <h1 className="block text-4xl font-bold text-neutral-50">
               Our Works
             </h1>

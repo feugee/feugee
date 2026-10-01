@@ -10,14 +10,13 @@ import { ArrowRight } from "@/components/ArrowRight";
  * slot rides max-width so the label's shift is real layout — the push —
  * while the arrow rides translate inside the clipped slot; both ride
  * group-hover and group-focus-visible, 400ms on the site's swipe curve.
- * Under prefers-reduced-motion the arrow snaps and only the recolor
- * animates. The 28px slot (max-w-7) is the arrow plus its trailing gap,
+ * The 28px slot (max-w-7) is the arrow plus its trailing gap,
  * so the wrapping element carries no gap of its own.
  */
 export const ArrowPush = ({ active }: { active: boolean }) => (
   <span
     className={`inline-flex shrink-0 overflow-hidden text-primary-500
-      motion-safe:transition-[max-width] motion-safe:duration-[400ms] motion-safe:ease-swipe
+      transition-[max-width] duration-[400ms] ease-swipe
       ${
         active
           ? "max-w-7"
@@ -26,7 +25,7 @@ export const ArrowPush = ({ active }: { active: boolean }) => (
   >
     <span
       className={`mr-3 inline-flex
-        motion-safe:transition-transform motion-safe:duration-[400ms] motion-safe:ease-swipe
+        transition-transform duration-[400ms] ease-swipe
         ${
           active
             ? "translate-x-0"

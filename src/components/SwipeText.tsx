@@ -7,25 +7,22 @@ import type { ReactNode } from "react";
  * element that wraps this owns the state, so it must carry the `group`
  * class (forgetting it means a silent no-op hover); the swap rides
  * group-hover and group-focus-visible, 400ms on the site's swipe curve.
- * Under prefers-reduced-motion the copies stay put and hover simply
- * recolors the label. Typography is inherited from the wrapping element;
- * the primary-500 copy overrides the inherited color itself.
+ * Typography is inherited from the wrapping element; the primary-500 copy
+ * overrides the inherited color itself.
  */
 export const SwipeText = ({ children }: { children: ReactNode }) => (
   <span className="relative inline-block overflow-hidden">
     <span
-      className={`block motion-safe:transition-transform motion-safe:duration-[400ms] motion-safe:ease-swipe
-        motion-safe:group-hover:-translate-y-full motion-safe:group-focus-visible:-translate-y-full
-        motion-reduce:transition-colors motion-reduce:group-hover:text-primary-500 motion-reduce:group-focus-visible:text-primary-500`}
+      className={`block transition-transform duration-[400ms] ease-swipe
+        group-hover:-translate-y-full group-focus-visible:-translate-y-full`}
     >
       {children}
     </span>
     <span
       aria-hidden="true"
       className={`absolute inset-0 block translate-y-full text-primary-500
-        motion-safe:transition-transform motion-safe:duration-[400ms] motion-safe:ease-swipe
-        motion-safe:group-hover:translate-y-0 motion-safe:group-focus-visible:translate-y-0
-        motion-reduce:hidden`}
+        transition-transform duration-[400ms] ease-swipe
+        group-hover:translate-y-0 group-focus-visible:translate-y-0`}
     >
       {children}
     </span>

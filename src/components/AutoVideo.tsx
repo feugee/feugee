@@ -34,9 +34,6 @@ export const AutoVideo = ({
     // policies check the attribute, so set the property here before play().
     video.muted = true;
 
-    // Reduced-motion visitors keep the poster frame; nothing autoplays.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

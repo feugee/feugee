@@ -137,7 +137,7 @@
 
 /*
  * Scroll Cue idle pulse — page behavior, not a Design Token: the Hero's
- * "| Scroll to explore" text breathes softly until reduced motion says no.
+ * "| Scroll to explore" text breathes softly.
  */
 @theme {
   --animate-cue-pulse: cue-pulse 2.4s ease-in-out infinite;
@@ -171,20 +171,11 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
-
-  /* The Blackout (ADR 0007) never shows for reduced-motion visitors —
-     navigation swaps instantly, first paint included. The no-JS case hides
-     it via a <noscript> style next to the overlay itself. */
-  @media (prefers-reduced-motion: reduce) {
-    [data-blackout-overlay] {
-      display: none;
-    }
-  }
 }
 
 /* The Cursor (CONTEXT.md) hides the system pointer — but only once the
-   Cursor component itself is live on <html>, so touch, no-JS, and
-   reduced-motion visitors keep the pointer they came with. Deliberately
+   Cursor component itself is live on <html>, so touch and no-JS visitors
+   keep the pointer they came with. Deliberately
    unlayered: Tailwind utilities live in @layer utilities, which outranks
    @layer base, so a base-layer cursor: none lost to any element carrying
    cursor-pointer and the system pointer surfaced next to the Cursor pill.
@@ -267,12 +258,6 @@ header[data-frosted][data-menu-open] .navbar-bar {
     background-color 400ms var(--ease-swipe),
     border-color 400ms var(--ease-swipe),
     backdrop-filter 400ms var(--ease-swipe);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .navbar-bar {
-    transition: none;
-  }
 }
 
 /* The bar overhangs its header's box by the 24px top inset, so it must not

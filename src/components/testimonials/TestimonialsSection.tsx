@@ -65,8 +65,7 @@ const TestimonialList = ({
  * One marquee column. The track carries two identical lists and shifts by
  * exactly one list's height (its own -50%), so the loop is seamless — the
  * Client Marquee trick, stood upright. Each list's trailing padding matches
- * the item gap so the seam lands mid-rhythm, not mid-card. Reduced-motion
- * visitors get still columns.
+ * the item gap so the seam lands mid-rhythm, not mid-card.
  */
 const MarqueeColumn = ({
   direction,
@@ -77,7 +76,7 @@ const MarqueeColumn = ({
 }) => (
   <div className="group/col h-120 flex-1 overflow-hidden mask-[linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] md:h-[75svh]">
     <div
-      className={`flex flex-col motion-reduce:animate-none ${
+      className={`flex flex-col ${
         direction === "up" ? "animate-marquee-up" : "animate-marquee-down"
       }`}
     >

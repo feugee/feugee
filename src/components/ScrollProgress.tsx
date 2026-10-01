@@ -46,8 +46,7 @@ export const ScrollProgress = ({
             start: 0,
             end: "max",
             scrub: true,
-            // Direct mapping — Lenis already smooths the scroll position, and
-            // under reduced motion instant tracking is exactly what we want.
+            // Direct mapping — Lenis already smooths the scroll position.
           },
     });
 

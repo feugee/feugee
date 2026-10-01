@@ -61,8 +61,7 @@ const LogoList = ({
  * The Client Marquee: its heading — the same sticky chip the Selected Works
  * heading rides — above an endless horizontal scroll built from two identical
  * lists. The track translates left by exactly one list's width (its own
- * -50%), so the seam is invisible. Hovering pauses the scroll; reduced-motion
- * visitors get a static, single-list row.
+ * -50%), so the seam is invisible. Hovering pauses the scroll.
  */
 export const ClientMarquee = ({
   clients,
@@ -77,7 +76,7 @@ export const ClientMarquee = ({
   >
     <SectionHeading>{heading}</SectionHeading>
     <div className="overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-      <div className="flex w-max animate-marquee motion-reduce:animate-none">
+      <div className="flex w-max animate-marquee">
         <LogoList clients={clients} />
         <LogoList clients={clients} hidden />
       </div>

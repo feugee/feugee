@@ -30,12 +30,11 @@ describe("menuItemTransition", () => {
     expect(transitionDelay).toBe("0ms");
   });
 
-  it("rides the site's swipe curve and skips motion under reduced motion", () => {
+  it("rides the site's swipe curve in both directions", () => {
     for (const open of [true, false]) {
       const { className } = menuItemTransition(open, 0);
 
       expect(className).toContain("ease-swipe");
-      expect(className).toContain("motion-reduce:transition-none");
     }
   });
 });

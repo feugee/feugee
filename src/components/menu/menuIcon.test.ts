@@ -19,16 +19,13 @@ describe("menuIconLine", () => {
     );
   });
 
-  it("rides the site's swipe curve at ~300ms and snaps under reduced motion", () => {
+  it("rides the site's swipe curve at ~300ms", () => {
     for (const open of [true, false]) {
       for (const first of [true, false]) {
         const className = menuIconLine(open, first);
 
         expect(className).toContain("duration-300");
         expect(className).toContain("ease-swipe");
-        expect(className).toContain(
-          "motion-reduce:transition-[background-color]",
-        );
       }
     }
   });

@@ -23,12 +23,11 @@ describe("menuPanelTransition", () => {
     expect(className).toContain("duration-[200ms]");
   });
 
-  it("rides only translate and visibility, and skips motion under reduced motion", () => {
+  it("rides only translate and visibility", () => {
     for (const open of [true, false]) {
       const className = menuPanelTransition(open);
 
       expect(className).toContain("transition-[translate,visibility]");
-      expect(className).toContain("motion-reduce:transition-none");
     }
   });
 });
@@ -50,12 +49,11 @@ describe("menuVeilTransition", () => {
     expect(className).toContain("duration-[200ms]");
   });
 
-  it("rides only opacity and visibility, and skips motion under reduced motion", () => {
+  it("rides only opacity and visibility", () => {
     for (const open of [true, false]) {
       const className = menuVeilTransition(open);
 
       expect(className).toContain("transition-[opacity,visibility]");
-      expect(className).toContain("motion-reduce:transition-none");
     }
   });
 });

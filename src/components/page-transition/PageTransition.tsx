@@ -77,9 +77,6 @@ export const PageTransition = () => {
       Array.from(
         document.querySelectorAll<HTMLElement>("[data-blackout-slab]"),
       );
-    const reduced = () =>
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
     const timers = new Set<ReturnType<typeof setTimeout>>();
     const tweens: gsap.core.Tween[] = [];
     const after = (ms: number, run: () => void) => {
@@ -222,7 +219,6 @@ export const PageTransition = () => {
     };
 
     const onNavigate = (event: { preventDefault: () => void }, href: string) => {
-      if (reduced()) return;
       // Input is locked while the Blackout is up: further link clicks are
       // eaten rather than queued.
       if (machine.phase !== "idle") {
@@ -237,7 +233,7 @@ export const PageTransition = () => {
     const onPopState = () => {
       const from = lastUrl.current ?? window.location.href;
       lastUrl.current = window.location.href;
-      if (reduced() || machine.phase !== "idle") return;
+      if (machine.phase !== "idle") return;
       if (!shouldBlackout(from, window.location.href)) return;
       cover(null);
     };
@@ -248,23 +244,19 @@ export const PageTransition = () => {
     // First load: the SSR markup ships covering and the reveal plays over a
     // static page — no Page Shift until the planned preload animation
     // replaces this wholesale.
-    if (reduced()) {
-      gsap.set(overlay, { xPercent: -101, visibility: "hidden" });
-    } else {
-      tweens.push(
-        gsap.fromTo(
-          overlay,
-          { xPercent: 0, visibility: "visible" },
-          {
-            xPercent: 101,
-            duration: REVEAL_DURATION,
-            delay: INITIAL_REVEAL_DELAY,
-            ease: EASE,
-            onComplete: cleanup,
-          },
-        ),
-      );
-    }
+    tweens.push(
+      gsap.fromTo(
+        overlay,
+        { xPercent: 0, visibility: "visible" },
+        {
+          xPercent: 101,
+          duration: REVEAL_DURATION,
+          delay: INITIAL_REVEAL_DELAY,
+          ease: EASE,
+          onComplete: cleanup,
+        },
+      ),
+    );
 
     return () => {
       window.removeEventListener("popstate", onPopState);

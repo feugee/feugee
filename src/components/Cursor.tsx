@@ -19,11 +19,10 @@ const FOLLOW_DURATION = 0.18;
 const PILL_REST_WIDTH = 40;
 const ARROW_WIDTH = 18;
 
-// The Cursor replaces the system pointer only where a real pointer exists
-// and motion is welcome. Both gates re-sync live: docking a keyboard or
-// toggling reduced motion mid-session hands the system pointer back.
+// The Cursor replaces the system pointer only where a real pointer exists.
+// The gate re-syncs live: docking a keyboard mid-session hands the system
+// pointer back.
 const pointerQuery = "(hover: hover) and (pointer: fine)";
-const motionQuery = "(prefers-reduced-motion: no-preference)";
 
 const subscribeMediaQuery =
   (query: string) =>
@@ -35,9 +34,6 @@ const subscribeMediaQuery =
 
 const subscribePointer = subscribeMediaQuery(pointerQuery);
 const getPointerSnapshot = () => window.matchMedia(pointerQuery).matches;
-
-const subscribeMotion = subscribeMediaQuery(motionQuery);
-const getMotionSnapshot = () => window.matchMedia(motionQuery).matches;
 
 const getServerSnapshot = () => false;
 
@@ -54,8 +50,8 @@ type CursorMode = "default" | "see-more" | "hidden";
  * cards (`data-cursor="see-more"`). Entirely decorative: aria-hidden,
  * pointer-events-none, and clicks always land on whatever it floats over.
  * The [data-custom-cursor] flag it sets on <html> hides the system pointer
- * via globals.css — only once this component is actually driving, so no-JS,
- * touch, and reduced-motion visitors keep the pointer they came with.
+ * via globals.css — only once this component is actually driving, so no-JS
+ * and touch visitors keep the pointer they came with.
  */
 export const Cursor = () => {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -63,17 +59,11 @@ export const Cursor = () => {
   const labelRef = useRef<HTMLSpanElement>(null);
   const arrowRef = useRef<SVGSVGElement>(null);
 
-  const hasPointer = useSyncExternalStore(
+  const canShow = useSyncExternalStore(
     subscribePointer,
     getPointerSnapshot,
     getServerSnapshot,
   );
-  const motionOk = useSyncExternalStore(
-    subscribeMotion,
-    getMotionSnapshot,
-    getServerSnapshot,
-  );
-  const canShow = hasPointer && motionOk;
 
   useGSAP(
     () => {

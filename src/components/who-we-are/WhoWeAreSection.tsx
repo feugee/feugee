@@ -39,40 +39,31 @@ export const WhoWeAreSection = ({
   // edits swap them out.
   useGSAP(
     () => {
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
       const paragraph = textRef.current;
       if (paragraph) {
         const wordEls = paragraph.querySelectorAll("[data-reveal-word]");
-        if (reducedMotion) {
-          // Skip the sweep but still land on the readable end state.
-          gsap.set(wordEls, { color: "#ffffff" });
-        } else {
-          gsap.fromTo(
-            wordEls,
-            { color: "#525252" }, // neutral-600
-            {
-              color: "#ffffff",
-              ease: "none",
-              duration: 1,
-              // One word at a time, so the sweep tracks scroll progress
-              // word by word across the whole trigger range.
-              stagger: 1,
-              scrollTrigger: {
-                trigger: paragraph,
-                start: "top 80%",
-                end: "bottom 45%",
-                scrub: true,
-              },
+        gsap.fromTo(
+          wordEls,
+          { color: "#525252" }, // neutral-600
+          {
+            color: "#ffffff",
+            ease: "none",
+            duration: 1,
+            // One word at a time, so the sweep tracks scroll progress
+            // word by word across the whole trigger range.
+            stagger: 1,
+            scrollTrigger: {
+              trigger: paragraph,
+              start: "top 80%",
+              end: "bottom 45%",
+              scrub: true,
             },
-          );
-        }
+          },
+        );
       }
 
       const list = statsRef.current;
-      if (list && !reducedMotion && items.length > 0) {
+      if (list && items.length > 0) {
         const statEls = gsap.utils.toArray<HTMLElement>(
           "[data-stat-item]",
           list,

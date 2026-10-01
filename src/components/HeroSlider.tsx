@@ -26,7 +26,6 @@ export interface HeroSlide {
 }
 
 const SLIDE_INTERVAL_MS = 8000;
-const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
 
 // One display line of the title: the word stack's every slot keys off this
 // single height.
@@ -58,50 +57,36 @@ export const HeroSlider = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
   const videoStackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(reducedMotionQuery);
-    const sync = () => setReducedMotion(mediaQuery.matches);
-    sync();
-    mediaQuery.addEventListener("change", sync);
-    return () => mediaQuery.removeEventListener("change", sync);
-  }, []);
-
-  useEffect(() => {
-    if (reducedMotion || slides.length <= 1) return;
+    if (slides.length <= 1) return;
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % slides.length);
     }, SLIDE_INTERVAL_MS);
     return () => window.clearInterval(timer);
-  }, [reducedMotion, slides.length]);
+  }, [slides.length]);
 
   useEffect(() => {
-    if (reducedMotion || rotatingWords.length <= 1) return;
+    if (rotatingWords.length <= 1) return;
     const timer = window.setInterval(() => {
       setWordIndex((current) => nextWordIndex(current, rotatingWords.length));
     }, WORD_CYCLE_MS);
     return () => window.clearInterval(timer);
-  }, [reducedMotion, rotatingWords.length]);
+  }, [rotatingWords.length]);
 
   // Only the active slide plays; the rest sit paused on their poster frame.
   // Live Preview can shrink the slide list under the current index, so clamp.
   const safeActiveIndex = Math.min(activeIndex, slides.length - 1);
-  // Same clamp for the word list, for the same Live Preview reason. Reduced
-  // motion pins the first word — the static "Into Motion" state — even when
-  // toggled on mid-cycle; the dropped transition class makes it snap.
+  // Same clamp for the word list, for the same Live Preview reason.
   const safeWordIndex =
     rotatingWords.length > 0
-      ? reducedMotion
-        ? 0
-        : Math.min(wordIndex, rotatingWords.length - 1)
+      ? Math.min(wordIndex, rotatingWords.length - 1)
       : 0;
 
   useEffect(() => {
-    if (reducedMotion) return;
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
       // React sets `muted` as a property, not an attribute — some autoplay
@@ -116,7 +101,7 @@ export const HeroSlider = ({
         video.pause();
       }
     });
-  }, [reducedMotion, safeActiveIndex, slides]);
+  }, [safeActiveIndex, slides]);
 
   // The pure-fixed parallax: yPercent travels the stack's own height (it
   // fills the section, so that equals one viewport) across exactly the
@@ -124,7 +109,6 @@ export const HeroSlider = ({
   // screen while the section's box, the overlays, and the page scroll on.
   useGSAP(
     () => {
-      if (reducedMotion) return;
       const stack = videoStackRef.current;
       if (!stack) return;
       gsap.fromTo(
@@ -144,25 +128,20 @@ export const HeroSlider = ({
     },
     {
       scope: sectionRef,
-      dependencies: [reducedMotion],
       revertOnUpdate: true,
     },
   );
 
   // The cue's scroll branch: whatever follows the Hero — Who We Are, the
   // Client Marquee, or Selected Works, whichever the page is showing. Lenis
-  // owns public-site scroll (ADR 0004), so it drives the travel — and
-  // honors reduced motion by jumping instantly. The native fallback (a
-  // missing instance) has to gate the smooth behavior itself.
+  // owns public-site scroll (ADR 0004), so it drives the travel. The native
+  // fallback (a missing instance) smooths on its own.
   const scrollBelowHero = () => {
     const below = sectionRef.current?.nextElementSibling;
     if (!(below instanceof HTMLElement)) return;
     const smooth = getSmoothScroll();
     if (smooth) smooth.scrollTo(below);
-    else
-      below.scrollIntoView({
-        behavior: reducedMotion ? "auto" : "smooth",
-      });
+    else below.scrollIntoView({ behavior: "smooth" });
   };
 
   // Difference blending (ADR 0006) for the cue extends from text to a filled
@@ -170,9 +149,7 @@ export const HeroSlider = ({
   // rides as the un-blended video (difference with black is identity). The
   // blend and the pulse share the element — a wrapper's animated opacity
   // would wall the blend off from the video.
-  const scrollCueClassName = `hidden lg:inline-flex absolute flex justify-center items-center gap-x-[8px] bottom-6 right-6 z-20 rounded-[4px] bg-white px-4 py-3 xl:px-6 xl:py-4 text-base font-medium tracking-wide text-black hover:text-primary-500 transtition- mix-blend-difference md:bottom-12 md:right-16 ${
-    reducedMotion ? "" : "animate-cue-pulse"
-  }`;
+  const scrollCueClassName = `hidden lg:inline-flex absolute flex justify-center items-center gap-x-[8px] bottom-6 right-6 z-20 rounded-[4px] bg-white px-4 py-3 xl:px-6 xl:py-4 text-base font-medium tracking-wide text-black hover:text-primary-500 transtition- mix-blend-difference md:bottom-12 md:right-16 animate-cue-pulse`;
 
   return (
     <section
@@ -243,22 +220,17 @@ export const HeroSlider = ({
                     blurring to --word-blur on the shared swipe easing
                     (duration-500 mirrors WORD_TRANSITION_MS). The stack's
                     width holds the widest word, so the line never reflows
-                    mid-cycle. The transition is dropped under reduced
-                    motion so the reset to the first word snaps. */}
+                    mid-cycle. */}
                 <span
                   className="inline-grid h-(--title-line) align-bottom"
                   style={{ ["--word-blur" as string]: `${WORD_BLUR_PX}px` }}
                 >
                   {rotatingWords.map((word, index) => (
                     <span
-                      className={`col-start-1 row-start-1 block h-(--title-line) text-secondary-500 ${
+                      className={`col-start-1 row-start-1 block h-(--title-line) text-secondary-500 transition-[opacity,filter] duration-500 ease-swipe ${
                         index === safeWordIndex
                           ? "opacity-100 [filter:blur(0px)]"
                           : "opacity-0 [filter:blur(var(--word-blur))]"
-                      } ${
-                        reducedMotion
-                          ? ""
-                          : "transition-[opacity,filter] duration-500 ease-swipe"
                       }`}
                       key={`${word}-${index}`}
                     >

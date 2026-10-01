@@ -38,8 +38,8 @@ const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
     onNavigate={(event) => navigateWithBlackout(event, `/works/${item.slug}`)}
   >
     {/* The drift track: taller than the card so it can travel while the
-        card clips it. No-JS and reduced motion leave it top-flush — a
-        static, fully covered frame. */}
+        card clips it. No-JS leaves it top-flush — a static, fully covered
+        frame. */}
     <div data-work-media style={{ height: `${MEDIA_OVERSHOOT * 100}%` }}>
       {item.visual.kind === "video" ? (
         item.visual.source.type === "youtube" ? (
@@ -72,10 +72,10 @@ const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
         />
       )}
     </div>
-    {/* The static caption is the readable fallback: the accessible text,
-        the no-JS state, and what reduced-motion visitors see — Difference
-        Text (ADR 0006), its contrast coming from the blend rather than a
-        scrim. */}
+    {/* The static caption is the readable fallback: the accessible text and
+        the no-JS state, hidden once the Pinned Caption takes over —
+        Difference Text (ADR 0006), its contrast coming from the blend rather
+        than a scrim. */}
     <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-start justify-end gap-2 mix-blend-difference p-6 md:flex-row md:items-center md:justify-between md:p-16">
       <h3
         className="text-3xl font-medium text-white md:text-5xl"
@@ -125,15 +125,12 @@ export const SelectedWorksSection = ({
         "[data-static-caption]",
         scope,
       );
-      const reduced = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
 
       // ---- Works Rail ------------------------------------------------------
-      // Runs before the reduced-motion gate below: the white↔dimmed mark
-      // is information, not motion — only the arrow's slide is gated. CSS
-      // sticky owns the rail's visibility (in with the first card, out with
-      // the last); this block only tracks which Work holds the mark.
+      // The white↔dimmed mark is information, not motion; the arrow's slide
+      // is the only tween here. CSS sticky owns the rail's visibility (in
+      // with the first card, out with the last); this block only tracks
+      // which Work holds the mark.
       const rail = scope.querySelector<HTMLElement>("[data-works-rail]");
       if (rail) {
         const entries = gsap.utils.toArray<HTMLElement>(
@@ -175,7 +172,7 @@ export const SelectedWorksSection = ({
             target.offsetHeight,
             arrow.offsetHeight,
           );
-          if (instant || reduced) gsap.set(arrow, { y });
+          if (instant) gsap.set(arrow, { y });
           else gsap.to(arrow, { y, duration: 0.35, ease: "power2.out" });
         };
 
@@ -199,12 +196,8 @@ export const SelectedWorksSection = ({
         });
       }
 
-      // Reduced motion — and, by never running this, no-JS — keeps the
-      // static in-card captions: the readable end state.
-      if (reduced) {
-        return;
-      }
-
+      // No-JS never runs this and keeps the static in-card captions: the
+      // readable end state.
       const captions = gsap.utils.toArray<HTMLElement>(
         "[data-pinned-caption]",
         layer,

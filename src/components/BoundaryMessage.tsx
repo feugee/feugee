@@ -7,8 +7,7 @@ import { ArrowRight } from "./ArrowRight";
 // headline, body, then actions. Its classes mirror the Footer's Contact CTA
 // section so a boundary page reads as the site's own voice, not the
 // framework's. Deliberately free of motion and client-only APIs: boundaries
-// must render server-side, work without JS, and stay still under
-// reduced motion.
+// must render server-side and work without JS.
 export const boundaryActionClassName =
   "inline-flex items-center gap-2 text-white px-6 py-3 rounded border-neutral-800 border";
 

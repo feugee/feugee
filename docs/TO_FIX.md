@@ -31,10 +31,15 @@
 - in works page, adjust font weight for title and sector. remove the difference
 - gradient blur on card looks miss 1px
 - implement youtube embed asset
+- remove scrollbar so there will be no snapping frame after page transition
+- footer social hover color become primary
+- back button in works detail is capitalized
+- add back to top button in works page if work item list is long (same trigger as the filter)
+- implement sidebar toggle for the navbar menu
+- work card hover transition. the greyscale effect should have a smooth transition. the title and other text should also have a smooth transition.
+- video and animation dont work on mac (site now ignores prefers-reduced-motion entirely, per ADR 0011)
 
 # TODO
 
 - implement navigation rail in selected works with new design
-- implement sidebar toggle for the navbar menu
-
-- remove scrollbar so there will be no snapping frame after page transition
+- add badge to work

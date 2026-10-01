@@ -6,4 +6,4 @@ The public site is animation-heavy and wants inertial (smoothed) page scrolling.
 
 - Lenis runs on public pages only, via a provider in the `(frontend)` layout; the CMS Dashboard is untouched.
 - The provider is the single owner of the Lenis instance so the planned page-transition animations can call `stop()` and `scrollTo(0, { immediate: true })` during transitions.
-- `prefers-reduced-motion: reduce` disables all smoothing; scrolling falls back to native.
+- `prefers-reduced-motion: reduce` disables all smoothing; scrolling falls back to native. (Amended by ADR 0011: the public site ignores the setting, so smoothing stays on for everyone via `respectReducedMotion: false`.)

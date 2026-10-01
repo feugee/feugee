@@ -21,16 +21,15 @@ gsap.registerPlugin(ScrollTrigger);
  * synchronous setState in an effect for a value only the DOM needs.
  *
  * The show/hide is a plain CSS fade-and-rise on the site's swipe curve —
- * no GSAP tween to revert — and motion-safe: drops the travel under
- * prefers-reduced-motion. visibility, not display, does the hiding: it
+ * no GSAP tween to revert. visibility, not display, does the hiding: it
  * flips at the fade's end when leaving and at its start when arriving,
  * which also keeps the hidden button out of the tab order and beyond
  * pointers. The fill is the Scroll Cue's difference trick (ADR 0006): the
  * white circle inverts whatever passes behind it while the black arrow
  * rides as the page itself, un-inverted. Clicking hands the travel to
- * Lenis (ADR 0004), which honors reduced motion by jumping; the native
- * fallback has to gate its own smoothness. The Sector filter is
- * deliberately untouched — the control's job is positional, not editorial.
+ * Lenis (ADR 0004); the native fallback smooths on its own. The Sector
+ * filter is deliberately untouched — the control's job is positional, not
+ * editorial.
  */
 export const BackToTop = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -59,19 +58,13 @@ export const BackToTop = () => {
   const scrollTop = () => {
     const smooth = getSmoothScroll();
     if (smooth) smooth.scrollTo(0);
-    else
-      window.scrollTo({
-        top: 0,
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "auto"
-          : "smooth",
-      });
+    else window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <button
       aria-label="Back to top"
-      className="fixed right-6 bottom-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-white text-black mix-blend-difference hover:text-primary-500 focus-visible:text-primary-500 invisible translate-y-2 opacity-0 data-shown:visible data-shown:translate-y-0 data-shown:opacity-100 motion-safe:transition-[opacity,transform,visibility] motion-safe:duration-[400ms] motion-safe:ease-swipe"
+      className="fixed right-6 bottom-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-white text-black mix-blend-difference hover:text-primary-500 focus-visible:text-primary-500 invisible translate-y-2 opacity-0 data-shown:visible data-shown:translate-y-0 data-shown:opacity-100 transition-[opacity,transform,visibility] duration-[400ms] ease-swipe"
       onClick={scrollTop}
       ref={buttonRef}
       type="button"
