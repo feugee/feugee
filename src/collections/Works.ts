@@ -99,6 +99,15 @@ export const Works: CollectionConfig = {
       relationTo: "sectors",
     },
     {
+      name: "badge",
+      type: "relationship",
+      relationTo: "badges",
+      admin: {
+        description:
+          "The Badge this Work wears on its Works Page card, if any.",
+      },
+    },
+    {
       name: "year",
       type: "number",
       min: 1990,

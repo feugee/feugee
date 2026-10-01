@@ -28,9 +28,18 @@ gsap.registerPlugin(useGSAP, CustomEase);
 // form.
 CustomEase.create("swipe", "M0,0 C0.65,0 0.35,1 1,1");
 
+/** A Badge resolved to exactly what the card chip renders — the icon Asset's
+ * URL, the chip fill, and the name that labels it. */
+export interface CardBadge {
+  name: string;
+  color: string;
+  iconUrl: string;
+}
+
 export interface WorksListItem extends CardWork {
   firstExpertise: string | null;
   sectorSlug: string | null;
+  badge: CardBadge | null;
 }
 
 export interface SectorOption {
@@ -192,6 +201,27 @@ const WorkCard = ({
         )}
       </div>
     </div>
+    {/* The Badge chip: always visible, above the grayscale dim — a Badge's
+        job is to be seen without interaction. The whole card stays the link,
+        so the chip takes no pointer handling of its own. */}
+    {item.badge && (
+      <span
+        className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full"
+        style={{ backgroundColor: item.badge.color }}
+        title={item.badge.name}
+      >
+        {/* As uploaded — unoptimized like the Client Marquee's logos, since
+            the optimizer refuses the SVGs badges are likely to be. */}
+        <Image
+          alt={item.badge.name}
+          className="size-6 object-contain"
+          height={24}
+          src={item.badge.iconUrl}
+          unoptimized
+          width={24}
+        />
+      </span>
+    )}
   </Link>
 );
 

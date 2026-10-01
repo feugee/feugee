@@ -78,7 +78,7 @@ export const otherWorksSelect = {
   thumbnail: videoSourceSelect,
 } satisfies SelectShape;
 
-/** The card core plus the Works Page masonry's filter facets. */
+/** The card core plus the Works Page masonry's filter facets and Badge. */
 export const listingWorksSelect = {
   id: true,
   slug: true,
@@ -86,6 +86,7 @@ export const listingWorksSelect = {
   _status: true,
   expertise: true,
   sector: { id: true, name: true, slug: true },
+  badge: { name: true, color: true, icon: { url: true, filename: true } },
   thumbnail: videoSourceSelect,
 } satisfies SelectShape;
 

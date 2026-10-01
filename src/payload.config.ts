@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 import sharp from "sharp";
 
 import { Assets } from "./collections/Assets";
+import { Badges } from "./collections/Badges";
 import { Clients } from "./collections/Clients";
 import { Sectors } from "./collections/Sectors";
 import { Users } from "./collections/Users";
@@ -30,7 +31,7 @@ export default buildConfig({
     },
     theme: "light",
   },
-  collections: [Works, Sectors, Assets, Clients, Users],
+  collections: [Works, Sectors, Badges, Assets, Clients, Users],
   globals: [LandingPage, Footer],
   editor: lexicalEditor(),
   // Served at /api/health — the platform readiness probe.

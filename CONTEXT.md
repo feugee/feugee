@@ -61,8 +61,12 @@ The circular control pinned to the Works Page's bottom-right corner that returns
 _Avoid_: Scroll-to-top button, up button, top button
 
 **Work Card**:
-A card in the Works Page's listing presenting one Work — its Thumbnail, title, and first Expertise — linking to the Work Detail Page. Distinct from the Footer's Other Works cards and Selected Works' full-viewport cards.
+A card in the Works Page's listing presenting one Work — its Thumbnail, title, first Expertise, and optional Badge — linking to the Work Detail Page. Distinct from the Footer's Other Works cards and Selected Works' full-viewport cards.
 _Avoid_: Portfolio tile, project card, work tile
+
+**Badge**:
+A short, reusable marker the Agency attaches to a Work — a name, an icon, and a color. At most one per Work; renaming or recoloring a Badge updates every Work that references it. Distinct from Sector, the Works Page's filter facet, and Expertise, the disciplines applied to a Work.
+_Avoid_: Tag, label, ribbon, sticker
 
 **Work Detail Page**:
 The public page presenting one Work in depth.

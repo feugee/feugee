@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     works: Work;
     sectors: Sector;
+    badges: Badge;
     assets: Asset;
     clients: Client;
     users: User;
@@ -81,6 +82,7 @@ export interface Config {
   collectionsSelect: {
     works: WorksSelect<false> | WorksSelect<true>;
     sectors: SectorsSelect<false> | SectorsSelect<true>;
+    badges: BadgesSelect<false> | BadgesSelect<true>;
     assets: AssetsSelect<false> | AssetsSelect<true>;
     clients: ClientsSelect<false> | ClientsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -230,6 +232,10 @@ export interface Work {
   };
   client?: string | null;
   sector?: (number | null) | Sector;
+  /**
+   * The Badge this Work wears on its Works Page card, if any.
+   */
+  badge?: (number | null) | Badge;
   /**
    * Year the Work was produced or released.
    */
@@ -888,6 +894,29 @@ export interface Sector {
   createdAt: string;
 }
 /**
+ * Short markers Works can wear on their Works Page card — one per Work. Renaming or recoloring a Badge updates every Work wearing it.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "badges".
+ */
+export interface Badge {
+  id: number;
+  /**
+   * The Badge's meaning — the chip's screen-reader label and hover tooltip on the Work Card.
+   */
+  name: string;
+  /**
+   * Image only — SVG or transparent PNG especially. The icon shows as-is inside the Badge's colored chip on the Work Card, so pick artwork that reads on the color.
+   */
+  icon: number | Asset;
+  /**
+   * The chip's fill behind the icon on the Work Card.
+   */
+  color: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * The external companies Works are made for — drives the Client Marquee on the Landing Page. Drag order is the marquee order.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -966,6 +995,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'sectors';
         value: number | Sector;
+      } | null)
+    | ({
+        relationTo: 'badges';
+        value: number | Badge;
       } | null)
     | ({
         relationTo: 'assets';
@@ -1064,6 +1097,7 @@ export interface WorksSelect<T extends boolean = true> {
       };
   client?: T;
   sector?: T;
+  badge?: T;
   year?: T;
   associate?: T;
   expertise?: T;
@@ -1419,6 +1453,17 @@ export interface WorksSelect<T extends boolean = true> {
 export interface SectorsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "badges_select".
+ */
+export interface BadgesSelect<T extends boolean = true> {
+  name?: T;
+  icon?: T;
+  color?: T;
   updatedAt?: T;
   createdAt?: T;
 }
