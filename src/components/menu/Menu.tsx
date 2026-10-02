@@ -94,10 +94,10 @@ export const Menu = ({
           exposed column. */}
       <div
         aria-hidden="true"
-        className={`fixed inset-0 z-[35] bg-neutral-950/60 ${menuVeilTransition(open)}`}
+        className={`fixed inset-0 z-35 bg-neutral-950/60 ${menuVeilTransition(open)}`}
       />
       <div
-        className={`fixed inset-0 z-[55] flex flex-col bg-neutral-950/70 pt-(--navbar-height) backdrop-blur-[8px] lg:inset-y-0 lg:left-auto lg:right-0 lg:w-(--menu-width) lg:border-l lg:border-neutral-700 ${menuPanelTransition(open)}`}
+        className={`fixed inset-0 z-55 flex flex-col bg-neutral-950/70 pt-(--navbar-height) backdrop-blur-sm lg:inset-y-0 lg:left-auto lg:right-0 lg:w-(--menu-width) lg:border-l lg:border-neutral-700 ${menuPanelTransition(open)}`}
         ref={panelRef}
       >
         {/* The phone/tablet close: the Navbar's control sits behind the
@@ -129,14 +129,18 @@ export const Menu = ({
               index,
             );
             return (
-              <li className={className} key={link.id} style={{ transitionDelay }}>
+              <li
+                className={className}
+                key={link.id}
+                style={{ transitionDelay }}
+              >
                 {/* The full-bleed row (CONTEXT.md): the hover block spans
                     the panel edge-to-edge and the rows stack with no
                     vertical gap — the panel's old px-6 lives inside each
                     row now. The label stays white; the Arrow Push arrow
                     carries the hover, and there is no current item. */}
                 <Link
-                  className="group flex items-center px-6 py-3 text-2xl text-neutral-50 transition-colors hover:bg-neutral-800 focus-visible:bg-neutral-800"
+                  className="group flex items-center px-6 py-3 text-2xl lg:text-3xl xl:text-[64px] text-neutral-50 font-semibold transition-colors hover:bg-neutral-900 focus-visible:bg-neutral-800"
                   href={link.url}
                   onClick={onClose}
                   onNavigate={(event) => navigateWithBlackout(event, link.url)}
@@ -149,16 +153,16 @@ export const Menu = ({
           })}
         </ul>
         {socials.length > 0 && (
-          <div className="shrink-0">
-            <div className="h-px w-full bg-neutral-700" />
+          <div className="shrink-0 px-6">
+            <div className="h-px w-full bg-neutral-900" />
             {/* The Footer's Social Links row, verbatim — same CMS list, the
                 same bordered squares — wrapped so a narrow viewport can
                 never cut one off. */}
-            <div className="flex flex-wrap items-center gap-x-3 px-6 py-6">
+            <div className="flex flex-wrap justify-center items-center gap-x-3 px-6 py-12">
               {socials.map(({ id, url, label, Icon }) => (
                 <a
                   aria-label={label}
-                  className="rounded border border-neutral-700 p-2 text-neutral-500 transition-colors hover:border-primary-500 hover:text-primary-500"
+                  className="rounded border border-neutral-900 p-2 text-neutral-500 transition-colors hover:border-primary-500 hover:text-primary-500"
                   href={url}
                   key={id}
                   rel="noopener noreferrer"
