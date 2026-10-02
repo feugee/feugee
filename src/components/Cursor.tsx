@@ -18,6 +18,10 @@ const MORPH_DURATION = 0.4;
 const FOLLOW_DURATION = 0.18;
 const PILL_REST_WIDTH = 40;
 const ARROW_WIDTH = 18;
+// The open state's label-to-arrow gap. It lives in the label's padding only
+// mid-morph: a border-box can't shrink below its own padding, so a resting
+// gap there would survive max-w-0 and knock the arrow off the pill's center.
+const LABEL_GAP = 8;
 
 // The Cursor replaces the system pointer only where a real pointer exists.
 // The gate re-syncs live: docking a keyboard mid-session hands the system
@@ -109,19 +113,24 @@ export const Cursor = () => {
         mode = next;
         if (next === "see-more") {
           // Measure the label's natural box synchronously, mid-frame —
-          // unclipped for a read, clipped again before paint — so the pill
-          // tweens between two pixel widths instead of to an "auto" it
-          // would have to measure while already mid-morph.
-          gsap.set(label, { maxWidth: "none" });
+          // unclipped and stripped of the gap for the read, clipped again
+          // before paint — so the pill tweens between two pixel widths
+          // instead of to an "auto" it would have to measure while already
+          // mid-morph. Stripping the gap keeps the read the text alone no
+          // matter how far a previous morph got.
+          gsap.set(label, { maxWidth: "none", paddingRight: 0 });
           const labelWidth = label.offsetWidth;
           gsap.set(label, { maxWidth: 0 });
           gsap.to(pill, {
-            width: PILL_REST_WIDTH + labelWidth + ARROW_WIDTH,
+            width: PILL_REST_WIDTH + labelWidth + LABEL_GAP + ARROW_WIDTH,
             duration: MORPH_DURATION,
             ease: "swipe",
           });
+          // The gap rides inside maxWidth — border-box — so the padding
+          // never eats into the text it sits beside.
           gsap.to(label, {
-            maxWidth: labelWidth,
+            maxWidth: labelWidth + LABEL_GAP,
+            paddingRight: LABEL_GAP,
             opacity: 1,
             duration: MORPH_DURATION,
             ease: "swipe",
@@ -135,6 +144,7 @@ export const Cursor = () => {
           });
           gsap.to(label, {
             maxWidth: 0,
+            paddingRight: 0,
             opacity: 0,
             duration: MORPH_DURATION,
             ease: "swipe",
@@ -214,15 +224,17 @@ export const Cursor = () => {
           GSAP's. px-5 is permanent: the pill's own padding is where the
           resting arrow centers — overflow-hidden clips at the padding edge,
           not the content edge, so the arrow never sits cramped. The label
-          is clipped to nothing at rest (max-w-0 crushes its pr-2 along
-          with it, keeping the resting arrow dead-center) and the morph
-          tweens both it and the pill width apart in lockstep. */}
+          is clipped to nothing at rest and carries no padding of its own —
+          a border-box keeps its padding under max-w-0, so resting the gap
+          there would shove the arrow off the pill's center, the anchor the
+          visitor aims by — and the morph tweens the gap, the label's width,
+          and the pill's width apart in lockstep. */}
       <div
         className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white/20 px-5"
         ref={pillRef}
       >
         <span
-          className="max-w-0 pr-2 text-sm whitespace-nowrap text-white opacity-0"
+          className="max-w-0 text-sm whitespace-nowrap text-white opacity-0"
           ref={labelRef}
         >
           See More
