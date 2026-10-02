@@ -135,7 +135,11 @@ export const Cursor = () => {
             duration: MORPH_DURATION,
             ease: "swipe",
           });
-          gsap.to(arrow, { rotate: 90, duration: MORPH_DURATION, ease: "swipe" });
+          gsap.to(arrow, {
+            rotate: 90,
+            duration: MORPH_DURATION,
+            ease: "swipe",
+          });
         } else {
           gsap.to(pill, {
             width: PILL_REST_WIDTH,
@@ -149,7 +153,11 @@ export const Cursor = () => {
             duration: MORPH_DURATION,
             ease: "swipe",
           });
-          gsap.to(arrow, { rotate: 0, duration: MORPH_DURATION, ease: "swipe" });
+          gsap.to(arrow, {
+            rotate: 0,
+            duration: MORPH_DURATION,
+            ease: "swipe",
+          });
           if (next === "hidden") setVisible(false);
           else if (moved) setVisible(true);
         }
@@ -228,7 +236,7 @@ export const Cursor = () => {
           visitor aims by — and the morph tweens the gap, the label's width,
           and the pill's width apart in lockstep. */}
       <div
-        className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white/20 px-5"
+        className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-black/40 px-5"
         ref={pillRef}
       >
         <span
@@ -239,7 +247,7 @@ export const Cursor = () => {
         </span>
         <svg
           aria-hidden="true"
-          className="h-[18px] w-[18px] shrink-0 text-white"
+          className="h-4.5 w-4.5 shrink-0 text-white"
           fill="none"
           ref={arrowRef}
           stroke="currentColor"
