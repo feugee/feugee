@@ -58,10 +58,11 @@ const LogoList = ({
 );
 
 /**
- * The Client Marquee: its heading — the same sticky chip the Selected Works
- * heading rides — above an endless horizontal scroll built from two identical
- * lists. The track translates left by exactly one list's width (its own
- * -50%), so the seam is invisible. Hovering pauses the scroll.
+ * The Client Marquee: its heading — the same chip the Selected Works
+ * heading rides, minus the stick — above an endless horizontal scroll
+ * built from two identical lists. The track translates left by exactly
+ * one list's width (its own -50%), so the seam is invisible. Hovering
+ * pauses the scroll.
  */
 export const ClientMarquee = ({
   clients,
@@ -74,7 +75,7 @@ export const ClientMarquee = ({
     aria-label={heading}
     className="group relative border-t border-neutral-900 p-6 md:p-16"
   >
-    <SectionHeading>{heading}</SectionHeading>
+    <SectionHeading sticky={false}>{heading}</SectionHeading>
     <div className="overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
       <div className="flex w-max animate-marquee">
         <LogoList clients={clients} />
