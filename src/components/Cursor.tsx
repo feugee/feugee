@@ -49,9 +49,9 @@ type CursorMode = "default" | "see-more" | "hidden";
 
 /**
  * The Cursor (CONTEXT.md): the Public site's own pointer — a rounded,
- * semi-transparent white pill with difference blending, resting as a
- * top-left arrow and widening around a "See More" label over Selected Works
- * cards (`data-cursor="see-more"`). Entirely decorative: aria-hidden,
+ * semi-transparent white pill resting as a top-left arrow and widening
+ * around a "See More" label over Selected Works cards
+ * (`data-cursor="see-more"`). Entirely decorative: aria-hidden,
  * pointer-events-none, and clicks always land on whatever it floats over.
  * The [data-custom-cursor] flag it sets on <html> hides the system pointer
  * via globals.css — only once this component is actually driving, so no-JS
@@ -211,13 +211,11 @@ export const Cursor = () => {
   if (!canShow) return null;
 
   return (
-    /* The blend rides the root — its fixed z-index stacking context is what
-       difference blends against the page (ADR 0006's rule), and z-[70]
-       keeps it above the Blackout (z-[60]) so it survives page transitions
-       like the system pointer it stands in for. */
+    /* z-[70] keeps the Cursor above the Blackout (z-[60]) so it survives
+       page transitions like the system pointer it stands in for. */
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-[70] opacity-0 mix-blend-difference"
+      className="pointer-events-none fixed left-0 top-0 z-[70] opacity-0"
       ref={rootRef}
     >
       {/* The resting width comes from w-10; every width after that is

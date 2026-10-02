@@ -101,7 +101,7 @@ A thin fixed bar at the top of a public page that fills left to right as the vis
 _Avoid_: Progress indicator, reading bar, scroll tracker
 
 **Cursor**:
-The Public site's own pointer, standing in for the system's on hover-capable devices: a rounded, semi-transparent white pill rendered with difference blending, carrying a white arrow aimed at the top left. Its anchor — the point the visitor aims by, since the system pointer is hidden — is the pill's center, which sits exactly under the system pointer's position in every state. Over the cards in Selected Works it widens around a "See More" label while the arrow turns to aim at the top right.
+The Public site's own pointer, standing in for the system's on hover-capable devices: a rounded, semi-transparent white pill carrying a white arrow aimed at the top left. Its anchor — the point the visitor aims by, since the system pointer is hidden — is the pill's center, which sits exactly under the system pointer's position in every state. Over the cards in Selected Works it widens around a "See More" label while the arrow turns to aim at the top right.
 _Avoid_: Custom cursor, mouse follower, cursor dot
 
 **Blackout**:
