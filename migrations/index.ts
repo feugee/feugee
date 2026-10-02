@@ -17,6 +17,7 @@ import * as migration_20260925_143828_add_footer_social_platforms_and_secondary_
 import * as migration_20260925_143835_add_work_description from './20260925_143835_add_work_description';
 import * as migration_20260925_144930_add_text_item_vertical_alignment from './20260925_144930_add_text_item_vertical_alignment';
 import * as migration_20260926_190939_video_source_embeds from './20260926_190939_video_source_embeds';
+import * as migration_20261002_142042_add_badges from './20261002_142042_add_badges';
 
 export const migrations = [
   {
@@ -112,6 +113,11 @@ export const migrations = [
   {
     up: migration_20260926_190939_video_source_embeds.up,
     down: migration_20260926_190939_video_source_embeds.down,
-    name: '20260926_190939_video_source_embeds'
+    name: '20260926_190939_video_source_embeds',
+  },
+  {
+    up: migration_20261002_142042_add_badges.up,
+    down: migration_20261002_142042_add_badges.down,
+    name: '20261002_142042_add_badges'
   },
 ];
