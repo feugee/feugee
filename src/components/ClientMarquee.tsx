@@ -35,7 +35,7 @@ const LogoList = ({
 }) => (
   <ul
     aria-hidden={hidden || undefined}
-    className="flex shrink-0 items-center gap-x-12 pr-10 md:gap-x-32 md:pr-20"
+    className="flex shrink-0 items-center gap-x-12 pr-12 md:gap-x-32 md:pr-32"
   >
     {clients.map((client) => (
       <li key={client.id}>
