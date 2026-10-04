@@ -89,8 +89,12 @@ A titled group of content within a Work. Each Section is one destination in the 
 _Avoid_: Chapter, part, block
 
 **Contents**:
-The Work Detail Page navigation listing a Work's Sections in display order and highlighting the one currently on screen as the visitor scrolls — a sticky sidebar column on desktop, a collapsible accordion above the content on phone and tablet.
+The Work Detail Page navigation listing a Work's Sections in display order and tracking the Active Section — a sticky sidebar column on desktop; on phone and tablet, a bar floating at the viewport's bottom edge once the page moves past the Hero, opening the list in a sheet over the page.
 _Avoid_: Table of contents, section nav, TOC
+
+**Active Section**:
+The Section currently on screen while a visitor reads a Work — the one the Contents highlights in its list and names in its bar. It is the Section crossing a band near the top of the viewport.
+_Avoid_: Current section, selected section
 
 **Layout**:
 A named arrangement from a fixed vocabulary that positions Items on a grid. Each Layout determines how many Items it holds and where each one sits.

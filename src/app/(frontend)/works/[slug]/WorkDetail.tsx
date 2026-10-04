@@ -3,16 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import type { Work } from "@/payload-types";
 
-import { ArrowPush } from "@/components/ArrowPush";
 import { AutoVideo } from "@/components/AutoVideo";
 import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { workThumbnailOf } from "@/components/work";
+import { ContentsLinks, ContentsNav } from "./ContentsNav";
 import { WorkSections, sectionAnchor } from "./WorkSections";
 
 // Meta blocks are label/value pairs — description lists fit them exactly.
@@ -38,84 +38,6 @@ const MetaList = ({ label, values }: { label: string; values: string[] }) => (
   </dl>
 );
 
-// The Contents list body shared by the desktop sidebar and the mobile
-// accordion — the scroll-spy highlight reads the same in both.
-const ContentsLinks = ({
-  activeSection,
-  sections,
-}: {
-  activeSection: string | null;
-  sections: NonNullable<Work["sections"]>;
-}) => (
-  <ul className="mt-4 space-y-4">
-    {sections.map((section, index) => {
-      const anchor = sectionAnchor(index);
-      const active = activeSection === anchor;
-      return (
-        <li key={section.id ?? index}>
-          <Link
-            aria-current={active ? "true" : undefined}
-            className={`group flex items-center text-xl transition-colors ${
-              active
-                ? "text-primary-500"
-                : "text-neutral-800 hover:text-white focus-visible:text-white"
-            }`}
-            href={`#${anchor}`}
-          >
-            <ArrowPush active={active} hover="slide" />
-            {section.title}
-          </Link>
-        </li>
-      );
-    })}
-  </ul>
-);
-
-// Below lg the Contents folds into an accordion: closed on load, the trigger
-// a full-width row whose chevron turns over when open. The list keeps the
-// desktop scroll-spy highlight, and stays open across section jumps.
-const ContentsAccordion = ({
-  activeSection,
-  sections,
-}: {
-  activeSection: string | null;
-  sections: NonNullable<Work["sections"]>;
-}) => {
-  const [open, setOpen] = useState(false);
-  if (!sections.length) return null;
-  return (
-    <div className="mt-6 pb-6 lg:hidden">
-      <button
-        type="button"
-        aria-expanded={open}
-        className="flex w-full items-center justify-between py-2 text-left text-lg text-white"
-        onClick={() => setOpen((value) => !value)}
-      >
-        Contents
-        <span
-          aria-hidden="true"
-          className={`text-primary-500 transition-transform duration-300 ${
-            open ? "rotate-180" : ""
-          }`}
-        >
-          <svg fill="none" height="16" viewBox="0 0 16 16" width="16">
-            <path
-              d="M3 6l5 5 5-5"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-            />
-          </svg>
-        </span>
-      </button>
-      {open && (
-        <ContentsLinks activeSection={activeSection} sections={sections} />
-      )}
-    </div>
-  );
-};
-
 // Pure view of one Work. The public Detail Page renders it statically from
 // the published doc; the preview route hands it the Live Preview stream.
 export const WorkDetail = ({ data }: { data: Work }) => {
@@ -128,6 +50,8 @@ export const WorkDetail = ({ data }: { data: Work }) => {
   // video/poster discrimination and the poster-derived dimensions. It is
   // full-bleed (100vw × 100svh), so it requests the wide variant.
   const heroThumbnail = workThumbnailOf(data, "wide");
+  // The mobile Contents bar reads this to know when the Hero is fully past.
+  const heroRef = useRef<HTMLDivElement>(null);
 
   // Scroll-spy for the Contents nav: the section crossing a band near the top
   // of the viewport is the current one.
@@ -184,9 +108,17 @@ export const WorkDetail = ({ data }: { data: Work }) => {
             {/* inline keeps the span-era layout: space-y-6's margin-bottom is
                 ignored on inline boxes, so the ul's mt-4 still sets the gap. */}
             <h2 className="inline text-lg text-white">Contents</h2>
-            <ContentsLinks activeSection={activeSection} sections={sections} />
+            <ContentsLinks
+              activeSection={activeSection}
+              className="mt-4"
+              sections={sections}
+            />
           </div>
-          <ContentsAccordion activeSection={activeSection} sections={sections} />
+          <ContentsNav
+            activeSection={activeSection}
+            heroRef={heroRef}
+            sections={sections}
+          />
         </nav>
       </aside>
 
@@ -196,7 +128,10 @@ export const WorkDetail = ({ data }: { data: Work }) => {
           className="scroll-mt-[calc(var(--navbar-height)+0.5rem)] "
         >
           {heroThumbnail && (
-            <div className="relative w-full h-svh rounded-md overflow-hidden">
+            <div
+              className="relative w-full h-svh rounded-md overflow-hidden"
+              ref={heroRef}
+            >
               {heroThumbnail.kind === "video" ? (
                 heroThumbnail.source.type === "youtube" ? (
                   <AmbientYouTube
