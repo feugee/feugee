@@ -85,8 +85,12 @@ The optional visual — an image Asset, a video Asset, or an Embedded Video — 
 _Avoid_: Feature video, selected works video, landing video
 
 **Section**:
-A titled group of content within a Work. Each Section is one destination in the Work Detail Page's sidebar navigation.
+A titled group of content within a Work. Each Section is one destination in the Work Detail Page's Contents.
 _Avoid_: Chapter, part, block
+
+**Contents**:
+The Work Detail Page navigation listing a Work's Sections in display order and highlighting the one currently on screen as the visitor scrolls — a sticky sidebar column on desktop, a collapsible accordion above the content on phone and tablet.
+_Avoid_: Table of contents, section nav, TOC
 
 **Layout**:
 A named arrangement from a fixed vocabulary that positions Items on a grid. Each Layout determines how many Items it holds and where each one sits.

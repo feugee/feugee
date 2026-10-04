@@ -9,32 +9,38 @@ export type WorkLayout = NonNullable<WorkSection["layouts"]>[number];
 
 export const sectionAnchor = (index: number) => `section-${index}`;
 
+// Grids switch on at lg — below it every Layout stacks into one column.
+// The tracks are minmax(0,1fr), not bare 1fr: a track's auto minimum refuses
+// to shrink below an Asset's intrinsic width and pushes it past the screen.
 const layoutClass: Record<WorkLayout["blockType"], string> = {
-  "one-column": "grid gap-[4px]",
-  "two-column": "grid gap-[4px] sm:grid-cols-2",
-  "three-column": "grid gap-[4px] sm:grid-cols-3",
+  "one-column": "grid grid-cols-[minmax(0,1fr)] gap-[4px]",
+  "two-column": "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))]",
+  "three-column": "grid gap-[4px] lg:grid-cols-[repeat(3,minmax(0,1fr))]",
   // Item 1 spans both rows on the left; items 2 and 3 stack top and bottom right.
-  "feature-left": "grid gap-[4px] sm:grid-cols-2 sm:grid-rows-2",
+  "feature-left":
+    "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
   // Item 1 spans both rows on the right; items 2 and 3 stack top and bottom left.
-  "feature-right": "grid gap-[4px] sm:grid-cols-2 sm:grid-rows-2",
+  "feature-right":
+    "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
 };
 
 const itemClass = (layout: WorkLayout, index: number) => {
   if (layout.blockType === "feature-left") {
-    return index === 0 ? "sm:row-span-2" : "";
+    return index === 0 ? "lg:row-span-2" : "";
   }
   if (layout.blockType === "feature-right") {
-    if (index === 0) return "sm:col-start-2 sm:row-span-2";
+    if (index === 0) return "lg:col-start-2 lg:row-span-2";
     return index === 1
-      ? "sm:col-start-1 sm:row-start-1"
-      : "sm:col-start-1 sm:row-start-2";
+      ? "lg:col-start-1 lg:row-start-1"
+      : "lg:col-start-1 lg:row-start-2";
   }
   return "";
 };
 
 // The variant an Asset item requests, from its cell in the layout: only a
 // one-column item spans the full content column (desktop); every other
-// layout's cells are at most half of it (tablet).
+// layout's cells are at most half of it (tablet). Below lg the layouts stack
+// full width, but never past the 1024px the tablet variant covers.
 const assetSizeForLayout = (layout: WorkLayout): AssetSizeName =>
   layout.blockType === "one-column" ? "desktop" : "tablet";
 
@@ -57,7 +63,10 @@ export const WorkSections = ({ sections }: { sections: Work["sections"] }) => {
               {(layout.items ?? []).map((item: WorkItem, itemIndex) => (
                 <div
                   key={item.id ?? itemIndex}
-                  className={itemClass(layout, itemIndex)}
+                  // min-w-0 pairs with the minmax(0,1fr) tracks: a grid item's
+                  // auto minimum is its content's intrinsic width, so an Asset
+                  // would still overflow its cell without it.
+                  className={`min-w-0 ${itemClass(layout, itemIndex)}`}
                 >
                   <WorkItemView
                     assetSize={assetSizeForLayout(layout)}
