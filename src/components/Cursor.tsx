@@ -45,13 +45,21 @@ const getServerSnapshot = () => false;
 // than sitting on top of the I-beam.
 const EDITABLE_SELECTOR = "input, textarea, select, [contenteditable='true']";
 
-type CursorMode = "default" | "see-more" | "hidden";
+type CursorMode = "default" | "see-more" | "play" | "hidden";
+
+// The label each widening mode opens around; the text is set at morph time
+// so one label span serves every mode.
+const MODE_LABELS: Record<"see-more" | "play", string> = {
+  "see-more": "See More",
+  "play": "Play",
+};
 
 /**
  * The Cursor (CONTEXT.md): the Public site's own pointer — a rounded,
- * semi-transparent white pill resting as a top-left arrow and widening
- * around a "See More" label over Selected Works cards
- * (`data-cursor="see-more"`). Entirely decorative: aria-hidden,
+ * semi-transparent white pill resting as a top-left arrow, widening around
+ * a "See More" label over Selected Works cards (`data-cursor="see-more"`)
+ * and around a "Play" label over playable Embedded Videos
+ * (`data-cursor="play"`). Entirely decorative: aria-hidden,
  * pointer-events-none, and clicks always land on whatever it floats over.
  * The [data-custom-cursor] flag it sets on <html> hides the system pointer
  * via globals.css — only once this component is actually driving, so no-JS
@@ -111,13 +119,14 @@ export const Cursor = () => {
       const morphTo = (next: CursorMode) => {
         if (next === mode) return;
         mode = next;
-        if (next === "see-more") {
+        if (next === "see-more" || next === "play") {
           // Measure the label's natural box synchronously, mid-frame —
           // unclipped and stripped of the gap for the read, clipped again
           // before paint — so the pill tweens between two pixel widths
           // instead of to an "auto" it would have to measure while already
           // mid-morph. Stripping the gap keeps the read the text alone no
           // matter how far a previous morph got.
+          label.textContent = MODE_LABELS[next];
           gsap.set(label, { maxWidth: "none", paddingRight: 0 });
           const labelWidth = label.offsetWidth;
           gsap.set(label, { maxWidth: 0 });
@@ -136,7 +145,9 @@ export const Cursor = () => {
             ease: "swipe",
           });
           gsap.to(arrow, {
-            rotate: 90,
+            // See More aims the arrow at the top right beside the label;
+            // Play aims it straight right — the direction playback goes.
+            rotate: next === "see-more" ? 90 : 135,
             duration: MORPH_DURATION,
             ease: "swipe",
           });
@@ -180,6 +191,8 @@ export const Cursor = () => {
         if (event.target.closest(EDITABLE_SELECTOR)) morphTo("hidden");
         else if (event.target.closest("[data-cursor='see-more']"))
           morphTo("see-more");
+        else if (event.target.closest("[data-cursor='play']"))
+          morphTo("play");
         else morphTo("default");
       };
 

@@ -3,10 +3,20 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import {
+  loadYouTubePlayerApi,
+  REVEAL_SETTLE_MS,
+  YT_STATE_ENDED,
+  YT_STATE_PLAYING,
+  type YTPlayer,
+} from "@/components/youtubePlayerApi";
+
 /**
  * Ambient playback for an Embedded Video (CONTEXT.md) — the YouTube twin of
  * AutoVideo's contract: muted, looping, controls-free, plays only while on
- * screen (or while its slide is active).
+ * screen (or while its slide is active). The interactive twin — click-to-play
+ * with sound and controls — is InteractiveYouTube, for a Work's content
+ * surfaces.
  * The player mounts lazily — nothing touches Google's servers until the
  * video actually scrolls into view — and runs against youtube-nocookie.com
  * without consent gating (ADR 0010). YouTube's own overlays (pause button,
@@ -16,84 +26,6 @@ import { useEffect, useRef, useState } from "react";
  * poster instantly in any player state but settled playback, and fades in
  * only once play has held.
  */
-
-type YTPlayer = {
-  playVideo: () => void;
-  pauseVideo: () => void;
-  seekTo: (seconds: number, allowSeekAhead: boolean) => void;
-  mute: () => void;
-  destroy: () => void;
-  getIframe: () => HTMLIFrameElement;
-};
-
-type YTPlayerEvent = { data: number };
-
-type YTPlayerConstructor = new (
-  element: HTMLElement,
-  options: {
-    videoId: string;
-    host?: string;
-    width?: string | number;
-    height?: string | number;
-    playerVars: Record<string, string | number>;
-    events: {
-      onReady?: () => void;
-      onError?: (event: YTPlayerEvent) => void;
-      onStateChange?: (event: YTPlayerEvent) => void;
-    };
-  },
-) => YTPlayer;
-
-declare global {
-  interface Window {
-    YT?: { Player: YTPlayerConstructor };
-    onYouTubeIframeAPIReady?: () => void;
-  }
-}
-
-// YT.PlayerState values the visibility logic discriminates on. The paused
-// face is everything YouTube paints over a non-playing embed — the center
-// pause button, the corner logo, the "more videos" shelf — and YouTube will
-// flash it even over a "playing" player whose frames stopped (background
-// tab, slow buffer). So the iframe is revealed in exactly one state:
-// playing. Every other state hides to the poster beneath.
-const YT_STATE_ENDED = 0;
-const YT_STATE_PLAYING = 1;
-
-// The first PLAYING after a tab return or quality switch is often followed
-// immediately by buffering — and YouTube paints its paused face during the
-// dip. Play must hold for this long before the iframe is revealed.
-const REVEAL_SETTLE_MS = 250;
-
-let youTubeApiPromise: Promise<YTPlayerConstructor> | null = null;
-
-/** The IFrame API script, loaded once per page no matter how many players. */
-const loadYouTubePlayerApi = (): Promise<YTPlayerConstructor> => {
-  if (youTubeApiPromise !== null) return youTubeApiPromise;
-
-  youTubeApiPromise = new Promise((resolve, reject) => {
-    if (window.YT?.Player) {
-      resolve(window.YT.Player);
-      return;
-    }
-    // Chain, not clobber — another loader may have claimed the global.
-    const previous = window.onYouTubeIframeAPIReady;
-    window.onYouTubeIframeAPIReady = () => {
-      previous?.();
-      if (window.YT?.Player) resolve(window.YT.Player);
-    };
-    const script = document.createElement("script");
-    script.src = "https://www.youtube.com/iframe_api";
-    script.async = true;
-    script.onerror = () => {
-      youTubeApiPromise = null;
-      reject(new Error("YouTube IFrame API failed to load"));
-    };
-    document.head.appendChild(script);
-  });
-
-  return youTubeApiPromise;
-};
 
 export const AmbientYouTube = ({
   alt,

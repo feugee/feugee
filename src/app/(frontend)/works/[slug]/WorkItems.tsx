@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 
-import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { AutoVideo } from "@/components/AutoVideo";
+import { InteractiveYouTube } from "@/components/InteractiveYouTube";
 import { videoSourceVisualOf, type AssetSizeName } from "@/components/work";
 import type { WorkLayout } from "./WorkSections";
 
@@ -30,14 +30,15 @@ const AssetFigure = ({
     return null;
   }
 
-  // Video Items autoplay muted like the rest of the page's video; the poster
+  // Embedded Video Items are click-to-play with sound and the site's
+  // controls; uploaded video Assets stay ambient (ADR 0014). The poster
   // image sizes the grid cell until playback starts — its dimensions, not a
   // variant's, keep that slot honest.
   if (visual.kind === "video") {
     return (
       <figure className="h-full w-full rounded-md overflow-hidden">
         {visual.source.type === "youtube" ? (
-          <AmbientYouTube
+          <InteractiveYouTube
             alt={visual.alt}
             frameClassName="h-full w-full"
             height={visual.height}

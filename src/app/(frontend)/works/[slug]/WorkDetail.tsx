@@ -8,7 +8,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Work } from "@/payload-types";
 
 import { AutoVideo } from "@/components/AutoVideo";
-import { AmbientYouTube } from "@/components/AmbientYouTube";
+import { InteractiveYouTube } from "@/components/InteractiveYouTube";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { workThumbnailOf } from "@/components/work";
@@ -134,7 +134,10 @@ export const WorkDetail = ({ data }: { data: Work }) => {
             >
               {heroThumbnail.kind === "video" ? (
                 heroThumbnail.source.type === "youtube" ? (
-                  <AmbientYouTube
+                  /* An Embedded Video hero is click-to-play with sound and
+                     the site's controls (ADR 0014); an uploaded Asset stays
+                     ambient. */
+                  <InteractiveYouTube
                     alt={heroThumbnail.alt}
                     frameClassName="absolute inset-0 h-full w-full"
                     height={heroThumbnail.height}

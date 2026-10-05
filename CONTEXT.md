@@ -81,7 +81,7 @@ A single portfolio piece the agency presents publicly. Richly detailed — not a
 _Avoid_: Project, portfolio item, case study
 
 **Thumbnail**:
-The primary visual representing a Work — shown at the top of the Work Detail Page, as its card on the Works Page and the Footer's Other Works, and as its card in Selected Works when the Work has no Feature Visual. An image Asset, a video Asset, or an Embedded Video. A video Thumbnail plays muted, looping, and without controls, like every video on the public site.
+The primary visual representing a Work — shown at the top of the Work Detail Page, as its card on the Works Page and the Footer's Other Works, and as its card in Selected Works when the Work has no Feature Visual. An image Asset, a video Asset, or an Embedded Video. In its card placements a video Thumbnail plays as a muted, looping ambient visual; at the top of the Work Detail Page an Embedded Video Thumbnail is click-to-play with sound and player controls, while a video Asset Thumbnail keeps the muted loop.
 _Avoid_: Cover, hero image, featured image
 
 **Feature Visual**:
@@ -173,7 +173,7 @@ An uploaded image or video file managed by the CMS and referenced by site conten
 _Avoid_: Media, file, upload
 
 **Embedded Video**:
-An external video — YouTube today — that the CMS references by URL instead of storing as an uploaded file. Behaves on the public site like any video Asset: ambient, with a Poster.
+An external video — YouTube today — that the CMS references by URL instead of storing as an uploaded file. Ambient like any video Asset in the Hero's Slides and the Works' card placements; in a Work's content surfaces — the top of the Work Detail Page and its Layout Items — click-to-play from its Poster with sound and player controls. Always with a Poster.
 _Avoid_: YouTube video, external video, video link
 
 **Video Source**:
