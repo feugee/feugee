@@ -193,6 +193,7 @@ const WorkCard = ({
         the site-wide swipe curve: the grayscale dimming at 600ms, the
         caption's arrival and mirrored exit at 400ms. */}
     <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end rounded-md overflow-hidden">
+      <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-400 ease-swipe group-hover/card:opacity-100" />
       <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-400 ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
       <div className="relative flex w-full items-baseline justify-between gap-4 p-4 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 rounded-md overflow-hidden">
         <h2 className="text-2xl text-white font-medium">{item.title}</h2>
@@ -428,7 +429,7 @@ export const WorksListing = ({
   const mainRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="mx-auto min-h-screen grid w-full lg:grid-cols-[minmax(0,min(25%,500px))_1fr]">
+    <div className="mx-auto min-h-screen flex flex-col lg:grid w-full lg:grid-cols-[minmax(0,min(25%,500px))_1fr]">
       <ScrollProgress scope={mainRef} />
       {/* The lg+ sticky top already seats the aside clear of the overlaid
           navbar (sticky pushes down to its offset); below lg it is static
@@ -446,7 +447,9 @@ export const WorksListing = ({
             </p>
           </div>
           <div className="space-y-8">
-            <p className="text-white text-base">Filter Works</p>
+            <p className="text-white text-base hidden lg:visible">
+              Filter Works
+            </p>
             {filterable && (
               <ul className="max-lg:hidden space-y-4">
                 {[null, ...sectorOptions].map((sector) => {
