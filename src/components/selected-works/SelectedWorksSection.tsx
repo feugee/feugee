@@ -9,7 +9,6 @@ import { useRef } from "react";
 
 import type { Work } from "@/payload-types";
 
-import { ArrowRight } from "@/components/ArrowRight";
 import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { AutoVideo } from "@/components/AutoVideo";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
@@ -17,7 +16,13 @@ import { SectionHeading } from "@/components/SectionHeading";
 
 import { clipInsetsFor, formatClipPath, type Rect } from "./captionClip";
 import { MEDIA_OVERSHOOT, driftTravelPercent } from "./mediaDrift";
-import { railActiveIndex, railArrowOffsetY } from "./railActiveIndex";
+import {
+  RAIL_LINE_MAX_PX,
+  RAIL_LINE_REST_PX,
+  RAIL_TITLE_REVEAL_RADIUS_PX,
+  railLineWidth,
+  type RailAnchor,
+} from "./railProximity";
 import { toSelectedWorkItem, type SelectedWorkItem } from "./selectedWorkItem";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -30,11 +35,15 @@ const toRect = (rect: DOMRect): Rect => ({
 });
 
 const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
+  // The id is the Works Rail's anchor target: a rail row scrolls this
+  // card to the viewport's top — Lenis's anchor handling, a native jump
+  // without it.
   <Link
     className="relative block h-svh overflow-hidden"
     data-cursor="see-more"
     data-work-card
     href={`/works/${item.slug}`}
+    id={item.slug}
     onNavigate={(event) => navigateWithBlackout(event, `/works/${item.slug}`)}
   >
     {/* The drift track: taller than the card so it can travel while the
@@ -126,74 +135,155 @@ export const SelectedWorksSection = ({
         scope,
       );
 
+      // The rail's hooks are no-ops until the block below wires them;
+      // applyClips and the shared ScrollTrigger call them unconditionally.
+      let measureRail: () => void = () => {};
+      let applyRailClip: () => void = () => {};
+      let teardownRail: () => void = () => {};
+
       // ---- Works Rail ------------------------------------------------------
-      // The white↔dimmed mark is information, not motion; the arrow's slide
-      // is the only tween here. CSS sticky owns the rail's visibility (in
-      // with the first card, out with the last); this block only tracks
-      // which Work holds the mark.
+      // A fixed layer like the Pinned Caption, not a sticky traveler: held
+      // at the viewport's middle, visible only while the works list passes
+      // beneath it — the same clip-path geometry as the captions, with the
+      // list itself as the covering Work. The reveal edge is the list's own
+      // top and bottom edge, so the rail wipes in as the first card crosses
+      // it and drains away as the last one leaves.
       const rail = scope.querySelector<HTMLElement>("[data-works-rail]");
-      if (rail) {
-        const entries = gsap.utils.toArray<HTMLElement>(
-          "[data-rail-entry]",
-          rail,
+      const railLayer = rail?.querySelector<HTMLElement>("[data-rail-layer]");
+
+      if (rail && railLayer) {
+        const rows = gsap.utils.toArray<HTMLElement>(
+          "[data-rail-row]",
+          railLayer,
         );
-        const arrow = rail.querySelector<HTMLElement>("[data-rail-arrow]");
-        let current = 0;
+        const lines = gsap.utils.toArray<HTMLElement>(
+          "[data-rail-line]",
+          railLayer,
+        );
+        const titles = gsap.utils.toArray<HTMLElement>(
+          "[data-rail-title]",
+          railLayer,
+        );
+        // quickTo retargets one persistent tween per line, so a mousemove
+        // storm never piles up tweens.
+        const widthTos = lines.map((line) =>
+          gsap.quickTo(line, "width", { duration: 0.4, ease: "power3.out" }),
+        );
+        const titleTos = titles.map((title) =>
+          gsap.quickTo(title, "opacity", {
+            duration: 0.25,
+            ease: "power2.out",
+          }),
+        );
 
-        // The mark follows the rail itself: a hairline probe at the rail's
-        // vertical middle, wherever sticky currently holds it — riding the
-        // first Work's center on the way in, the viewport's middle while
-        // stuck, the last Work's center on the way out. The Work covering
-        // the probe is the marked one, flipping exactly as a seam crosses
-        // the rail. The Pinned Caption keeps its own bottom-of-screen
-        // rule, so the two can disagree for part of each handoff.
-        const railProbe = (): Rect => {
-          const box = rail.getBoundingClientRect();
-          const middle = box.top + box.height / 2;
-          return {
-            top: middle - 0.5,
-            right: innerWidth,
-            bottom: middle + 0.5,
-            left: 0,
-          };
-        };
+        let railRect: Rect | null = null;
+        let anchors: RailAnchor[] = [];
+        let revealed = -1;
+        let railVisible = false;
 
-        const mark = (index: number, instant = false) => {
-          // Difference Text is white-only (ADR 0006), so the active mark is
-          // full-opacity white against dimmed entries — not a color swap.
-          entries.forEach((entry, i) => {
-            entry.classList.toggle("opacity-40", i !== index);
+        // The layer is fixed, so its lines never move with scroll — their
+        // viewport positions are measured once and again on refresh
+        // (resize), never per mousemove. Lines are right-flush, so a
+        // swollen line grows leftward and its right end stays the anchor.
+        measureRail = () => {
+          railRect = toRect(railLayer.getBoundingClientRect());
+          anchors = lines.map((line) => {
+            const rect = line.getBoundingClientRect();
+            return { x: rect.right, y: rect.top + rect.height / 2 };
           });
-          const target = entries[index];
-          if (!arrow || !target) return;
-          arrow.classList.remove("invisible");
-          const y = railArrowOffsetY(
-            target.offsetTop,
-            target.offsetHeight,
-            arrow.offsetHeight,
-          );
-          if (instant) gsap.set(arrow, { y });
-          else gsap.to(arrow, { y, duration: 0.35, ease: "power2.out" });
         };
 
-        // The sticky rail is laid out from the start, so the first mark
-        // lands pre-paint — and is what shows the arrow at all.
-        mark(0, true);
-        const applyRail = () => {
-          const next = railActiveIndex(railProbe(), cardRects());
-          // Nothing under the rail (the seam gap, or past the section's
-          // ends) keeps the last mark.
-          if (next === null || next === current) return;
-          current = next;
-          mark(next);
+        const resetRail = () => {
+          widthTos.forEach((to) => to(RAIL_LINE_REST_PX));
+          if (revealed >= 0) {
+            titleTos[revealed](0);
+            revealed = -1;
+          }
         };
-        ScrollTrigger.create({
-          trigger: list,
-          start: "top bottom",
-          end: "bottom top",
-          onUpdate: applyRail,
-          onRefresh: applyRail,
-        });
+
+        // The proximity: every line swells by its distance to the pointer;
+        // the nearest Work's title rides beside its line while the pointer
+        // stays within the reveal radius, one title at a time.
+        const applyProximity = (event: MouseEvent) => {
+          if (!railVisible || anchors.length === 0) return;
+          let nearest = -1;
+          let nearestDistance = Infinity;
+          anchors.forEach((anchor, i) => {
+            const distance = Math.hypot(
+              event.clientX - anchor.x,
+              event.clientY - anchor.y,
+            );
+            widthTos[i](railLineWidth(distance));
+            if (distance < nearestDistance) {
+              nearestDistance = distance;
+              nearest = i;
+            }
+          });
+          const next =
+            nearestDistance <= RAIL_TITLE_REVEAL_RADIUS_PX ? nearest : -1;
+          if (next !== revealed) {
+            if (revealed >= 0) titleTos[revealed](0);
+            if (next >= 0) titleTos[next](1);
+            revealed = next;
+          }
+        };
+
+        // Visible exactly where the list covers the layer. Clipped-away
+        // regions never hit-test, so a half-wiped row can't be clicked.
+        applyRailClip = () => {
+          if (!railRect) return;
+          const listRect = toRect(list.getBoundingClientRect());
+          railLayer.style.clipPath = formatClipPath(
+            clipInsetsFor(railRect, listRect),
+          );
+          const visible =
+            listRect.top < railRect.bottom && listRect.bottom > railRect.top;
+          if (!visible && railVisible) resetRail();
+          railVisible = visible;
+        };
+
+        // Keyboard parity for the pointer's proximity: focusing a row
+        // swells its line and reveals its title.
+        const onFocused = (index: number) => {
+          widthTos[index](RAIL_LINE_MAX_PX);
+          if (revealed >= 0 && revealed !== index) titleTos[revealed](0);
+          titleTos[index](1);
+          revealed = index;
+        };
+        const onFocusIn = (event: FocusEvent) => {
+          if (!(event.target instanceof Element)) return;
+          const row = event.target.closest<HTMLElement>("[data-rail-row]");
+          if (!row) return;
+          const index = rows.indexOf(row);
+          if (index >= 0) onFocused(index);
+        };
+        const onFocusOut = (event: FocusEvent) => {
+          if (!railLayer.contains(event.relatedTarget as Node | null)) {
+            resetRail();
+          }
+        };
+
+        // Fine pointers only — the proximity is a pointer instrument, and
+        // the unhide doubles as the gate: no-JS and touch viewports never
+        // see the rail at all. Checked once at mount; the inner md:block
+        // keeps phone and tablet bare on top of this.
+        if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+          rail.classList.remove("hidden");
+          measureRail();
+          window.addEventListener("mousemove", applyProximity);
+          document.documentElement.addEventListener("mouseleave", resetRail);
+          railLayer.addEventListener("focusin", onFocusIn);
+          railLayer.addEventListener("focusout", onFocusOut);
+          teardownRail = () => {
+            window.removeEventListener("mousemove", applyProximity);
+            document.documentElement.removeEventListener(
+              "mouseleave",
+              resetRail,
+            );
+            railLayer.removeEventListener("focusin", onFocusIn);
+            railLayer.removeEventListener("focusout", onFocusOut);
+          };
+        }
       }
 
       // No-JS never runs this and keeps the static in-card captions: the
@@ -232,7 +322,9 @@ export const SelectedWorksSection = ({
 
       // Pure geometry: each caption shows exactly where its Work overlaps
       // the fixed caption zone, so the seam between two Works sweeps
-      // through the caption and the content hands off mid-letter.
+      // through the caption and the content hands off mid-letter. The rail
+      // clips against the list as a whole, so one trigger drives both
+      // fixed layers.
       const applyClips = () => {
         const zone = toRect(layer.getBoundingClientRect());
         cardRects().forEach((card, index) => {
@@ -240,6 +332,7 @@ export const SelectedWorksSection = ({
           if (!caption) return;
           caption.style.clipPath = formatClipPath(clipInsetsFor(zone, card));
         });
+        applyRailClip();
       };
       applyClips();
 
@@ -248,8 +341,15 @@ export const SelectedWorksSection = ({
         start: "top bottom",
         end: "bottom top",
         onUpdate: applyClips,
-        onRefresh: applyClips,
+        onRefresh: () => {
+          measureRail();
+          applyClips();
+        },
       });
+
+      return () => {
+        teardownRail();
+      };
     },
     {
       scope: scopeRef,
@@ -272,44 +372,60 @@ export const SelectedWorksSection = ({
         {items.map((item) => (
           <SelectedWorkCard item={item} key={item.id} />
         ))}
+      </div>
 
-        {/* The Works Rail: the section's Work titles down the right edge,
-            the arrow marking the Work the rail itself sits on — an
-            indicator only, so pointer-events-none never blocks the card
-            Links and aria-hidden defers to the static captions as the
-            accessible text. The wrapper spans the first card's middle to
-            the last card's middle (h-svh cards make that exactly half a
-            viewport in from each end of the list), so the rail rides in
-            at the first Work's center, holds the viewport's middle, and
-            departs at the last Work's center. The arrow ships invisible:
-            only JS positions it, so no-JS gets the bare titles. The md:
-            gate keeps it off small viewports; z-20 sits it above the
-            cards but below the Pinned Caption layer should a short
-            viewport ever overlap the two. The wrapper carries the
-            difference blend — the sticky inner's parent stacking context
-            is empty, so blending the inner would have no backdrop. */}
-        <div className="hidden pointer-events-none absolute bottom-[50svh] right-0 top-[50svh] z-20 mix-blend-difference">
-          <div
-            aria-hidden="true"
-            className="sticky top-[50svh] -translate-y-1/2 hidden flex-col items-start gap-3 pr-24 md:flex"
-            data-works-rail
-          >
-            <span
-              className="invisible absolute left-0 top-0 text-white"
-              data-rail-arrow
-            >
-              <ArrowRight />
-            </span>
+      {/* The Works Rail: one line per Work down the right edge, held at the
+          viewport's middle — a fixed layer like the Pinned Caption, not the
+          sticky traveler it replaced, visible only while the works list
+          passes beneath it (the JS clips it with the same geometry as the
+          captions, the list itself as the covering Work). At rest the lines
+          are equal; the pointer swells them by proximity and reveals the
+          nearest Work's title beside its line, anchored to the line's left
+          end via the shrink-wrap span so the title rides the line's growth —
+          and pointer-events-none, so the invisible title never widens the
+          row's hit area over the card. Each row is a real link to its
+          card's id: Lenis's anchor handling scrolls the Work to the
+          viewport's top, a native jump without it — which is why the rows
+          carry pointer events while the layer stays pointer-events-none,
+          leaving the cards and the Cursor everything but the rows. The
+          outer div ships hidden and is unhidden by JS on fine-pointer
+          devices only: no-JS never sees a rail floating over the whole
+          page, and the inner md:block keeps phone and tablet bare. The
+          layer carries the difference blend — blending inside its fixed
+          stacking context would have no backdrop (see the Pinned Caption).
+          z-30 matches the Pinned Caption layer; the two never overlap, and
+          a very short viewport would hand the seam to whichever renders
+          later. */}
+      <div className="hidden" data-works-rail>
+        {/* The layer spans the whole viewport, not just the rail: the
+            clip-path clips to the element's own box, and the revealed
+            titles overhang the lines' left ends — a rail-sized box would
+            shave them mid-letter. */}
+        <div
+          className="pointer-events-none fixed inset-0 z-30 hidden mix-blend-difference md:block"
+          data-rail-layer
+        >
+          <ul className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col items-end gap-y-0 gap-x-4 pr-16">
             {items.map((item) => (
-              <span
-                className="pl-6 text-3xl text-white"
-                data-rail-entry
-                key={item.id}
-              >
-                {item.title}
-              </span>
+              <li key={item.id}>
+                <Link
+                  className="pointer-events-auto flex h-8 w-28 items-center justify-end"
+                  data-rail-row
+                  href={`#${item.slug}`}
+                >
+                  <span className="relative flex items-center">
+                    <span
+                      className="pointer-events-none absolute right-full top-1/2 mr-3 -translate-y-1/2 whitespace-nowrap text-lg text-white opacity-0"
+                      data-rail-title
+                    >
+                      {item.title}
+                    </span>
+                    <span className="block h-0.5 w-6 bg-white" data-rail-line />
+                  </span>
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </div>
 

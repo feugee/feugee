@@ -45,7 +45,7 @@ The title and year of the Work currently occupying the bottom of the screen in t
 _Avoid_: Sticky caption, floating caption, work overlay
 
 **Works Rail**:
-The vertical strip of Work titles along the right edge of the Selected Works section, travelling from the first Work's middle to the last Work's middle; the arrow marks the Work the Rail itself is sitting on. An indicator only: nothing in it is clickable.
+The vertical strip of one line per Work on the Selected Works section's right edge — held at the viewport's middle while the Works pass beneath it, and visible only then. Hovering swells the lines near the pointer and reveals the nearest Work's title; clicking a line scrolls the page to that Work. Desktop only.
 _Avoid_: Side nav, works nav, dot nav, work indicator
 
 **Testimonials**:
