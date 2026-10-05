@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
 import { ArrowPush } from "@/components/ArrowPush";
-import { getSmoothScroll } from "@/components/SmoothScroll";
+import { BottomSheet } from "@/components/BottomSheet";
 import type { Work } from "@/payload-types";
 
 import { sectionAnchor } from "./WorkSections";
@@ -55,38 +55,18 @@ export const ContentsLinks = ({
   </ul>
 );
 
-// The Menu's transition grammar, bottom-sheet shaped: 400ms to arrive on
-// the site's swipe curve, 200ms to leave — dismissal shouldn't make the
-// visitor wait — and visibility rides along, so a closed surface releases
-// input only after its exit finishes. Literal strings throughout —
-// Tailwind only generates the classes it can read in source.
-const veilRide = (open: boolean): string =>
-  `transition-[opacity,visibility] ease-swipe ${
-    open
-      ? "duration-[400ms] opacity-100 visible"
-      : "duration-[200ms] opacity-0 invisible"
-  }`;
-
-const sheetRide = (open: boolean): string =>
-  `transition-[translate,visibility] ease-swipe ${
-    open
-      ? "duration-[400ms] translate-y-0 visible"
-      : "duration-[200ms] translate-y-[calc(100%+1.5rem)] invisible"
-  }`;
-
 /**
  * The phone/tablet face of the Contents (CONTEXT.md): a frosted bar pinned
  * 24px off the viewport's bottom edges once the Hero is fully past —
  * "Contents" hugging its label, the Active Section named beside it — that
- * raises a separate sheet over a dimmed veil, carrying the Section list.
- * The bar's shown state lives on it as a data-shown attribute the
- * ScrollTrigger flips (the Back to Top ride); React state is reserved for
- * the sheet, which is more than a DOM toggle — Escape, focus, and Lenis
- * stop with it. Hiding the bar closes the sheet: it cannot outlive its
- * trigger. The sheet closes from its X (focus returning to the bar), the
- * veil, Escape, or picking a Section — a jump must not land behind the
- * list that called it. z-order: above the page and the Navbar's frost,
- * below the Menu, the Blackout, and the Cursor.
+ * raises the shared Bottom Sheet carrying the Section list. The bar's shown
+ * state lives on it as a data-shown attribute the ScrollTrigger flips (the
+ * Back to Top ride); React state is reserved for the sheet. Hiding the bar
+ * closes the sheet: it cannot outlive its trigger. Every close — the X,
+ * the veil, Escape, picking a Section — funnels through closeSheet, which
+ * lands focus back on the bar: a jump must not leave focus behind the list
+ * that called it. z-order: above the page and the Navbar's frost, below
+ * the Menu, the Blackout, and the Cursor.
  */
 export const ContentsNav = ({
   activeSection,
@@ -138,21 +118,6 @@ export const ContentsNav = ({
     };
   }, [heroRef]);
 
-  useEffect(() => {
-    if (!open) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      closeSheet();
-    };
-    document.addEventListener("keydown", onKeyDown);
-    // The page stills behind the sheet — the Menu's own bargain.
-    getSmoothScroll()?.stop();
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-      getSmoothScroll()?.start();
-    };
-  }, [closeSheet, open]);
-
   if (!sections.length) return null;
 
   const activeTitle =
@@ -187,50 +152,19 @@ export const ContentsNav = ({
         </span>
       </button>
 
-      {/* The wrapper is the sheet's stage, never a hit target itself — the
-          surfaces opt into pointers, so the closed stage lets the page
-          through. */}
-      <div
-        aria-label="Contents"
-        aria-modal="true"
-        className="pointer-events-none fixed inset-0 z-50 lg:hidden"
+      <BottomSheet
         id="contents-sheet"
-        role="dialog"
+        onClose={closeSheet}
+        open={open}
+        title="Contents"
       >
-        <div
-          aria-hidden="true"
-          className={`pointer-events-auto absolute inset-0 bg-neutral-950/60 ${veilRide(open)}`}
-          onClick={() => setOpen(false)}
+        <ContentsLinks
+          activeSection={activeSection}
+          className="max-h-[60svh] overflow-y-auto p-4"
+          onSelect={closeSheet}
+          sections={sections}
         />
-        <div
-          className={`pointer-events-auto absolute inset-x-6 bottom-6 rounded-[4px] border border-neutral-700 bg-neutral-950/70 backdrop-blur-md ${sheetRide(open)}`}
-        >
-          <div className="flex items-center justify-between border-b border-neutral-900 px-4 py-3">
-            <span className="text-lg text-neutral-50">Contents</span>
-            <button
-              aria-label="Close"
-              className="-mr-1 flex h-8 w-8 items-center justify-center text-neutral-50 transition-colors duration-300 hover:text-primary-500 focus-visible:text-primary-500"
-              onClick={closeSheet}
-              type="button"
-            >
-              <svg fill="none" height="16" viewBox="0 0 16 16" width="16">
-                <path
-                  d="M4 4l8 8M12 4l-8 8"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeWidth="1.5"
-                />
-              </svg>
-            </button>
-          </div>
-          <ContentsLinks
-            activeSection={activeSection}
-            className="max-h-[60svh] overflow-y-auto p-4"
-            onSelect={() => setOpen(false)}
-            sections={sections}
-          />
-        </div>
-      </div>
+      </BottomSheet>
     </>
   );
 };

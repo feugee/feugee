@@ -20,6 +20,8 @@ import { navigateWithBlackout } from "@/components/page-transition/navigateWithB
 import { ScrollProgress } from "@/components/ScrollProgress";
 import type { CardWork } from "@/components/work";
 
+import { SectorFilter } from "./SectorFilter";
+
 gsap.registerPlugin(useGSAP, CustomEase);
 
 // The site's swipe curve (globals.css --ease-swipe) as a GSAP ease, so the
@@ -479,42 +481,17 @@ export const WorksListing = ({
       </aside>
 
       <div className="w-full" ref={mainRef}>
-        {/* The below-lg filter is a sticky pill tab bar. It lives here, not in
-            the aside, because a sticky element only sticks within its
-            containing block: on mobile the aside is a short grid row that
-            scrolls away with the intro, while this column spans the whole
-            listing. It parks directly under the navbar (sticky pushes down to
-            its offset) and z-30 seats it below the navbar's z-40. The bar
-            wears the Selected Works sticky heading's chip — dark,
-            translucent, blurred — so cards slide under it softened rather
-            than being masked by an opaque bar. The chip hugs its tabs and
-            centers; once they overflow, w-fit fills the row and the ul
-            scrolls from the left — a centered scroll row can't reach its
-            own start. */}
+        {/* The phone/tablet Sector Filter (CONTEXT.md): a fixed bar at the
+            viewport's bottom edge raising the Sector list in the shared
+            Bottom Sheet. Fixed, so unlike the pill bar it replaced it needs
+            no particular containing block and renders from the root.
+            Selection state stays here — the component owns only the sheet. */}
         {filterable && (
-          <div className="flex justify-center px-6 py-3 sticky top-(--navbar-height) z-30 lg:hidden">
-            <ul className="flex w-fit gap-2 overflow-x-auto rounded border border-neutral-700 bg-neutral-950/70 p-2 backdrop-blur scrollbar-none [&::-webkit-scrollbar]:hidden">
-              {[null, ...sectorOptions].map((sector) => {
-                const active = activeSector === (sector?.slug ?? null);
-                return (
-                  <li className="shrink-0" key={sector?.slug ?? "all"}>
-                    <button
-                      aria-pressed={active}
-                      className={`rounded-md px-4 py-2 text-base whitespace-nowrap transition-colors ${
-                        active
-                          ? "bg-primary-500 text-white"
-                          : "text-neutral-400"
-                      }`}
-                      onClick={() => selectSector(sector?.slug ?? null)}
-                      type="button"
-                    >
-                      {sector?.name ?? "All"}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          <SectorFilter
+            activeSector={activeSector}
+            onSelect={selectSector}
+            sectors={sectorOptions}
+          />
         )}
         {/* The list wrapper is relative for one reason: it is the cards'
             offsetParent, making their spot coordinates and the ghost layer's

@@ -11,7 +11,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 /**
  * The Back to Top control (CONTEXT.md): the circular white button pinned to
- * the viewport's bottom-right on the Works Page, rendered by the page only
+ * the viewport's bottom-right on the Works Page — riding above the Sector
+ * Filter's bar on phone and tablet — rendered by the page only
  * while the listing is long — the same list-length threshold that admits
  * the Sector filter, with none of its Sector requirements. It stays hidden
  * at the top of the page: a ScrollTrigger admits it one viewport down and
@@ -28,7 +29,7 @@ gsap.registerPlugin(ScrollTrigger);
  * white circle inverts whatever passes behind it while the black arrow
  * rides as the page itself, un-inverted. Clicking hands the travel to
  * Lenis (ADR 0004); the native fallback smooths on its own. The Sector
- * filter is deliberately untouched — the control's job is positional, not
+ * Filter is deliberately untouched — the control's job is positional, not
  * editorial.
  */
 export const BackToTop = () => {
@@ -64,7 +65,7 @@ export const BackToTop = () => {
   return (
     <button
       aria-label="Back to top"
-      className="fixed right-6 bottom-6 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-white text-black mix-blend-difference hover:text-primary-500 focus-visible:text-primary-500 invisible translate-y-2 opacity-0 data-shown:visible data-shown:translate-y-0 data-shown:opacity-100 transition-[opacity,transform,visibility] duration-[400ms] ease-swipe"
+      className="fixed right-6 bottom-24 z-30 flex h-12 w-12 items-center justify-center rounded-full bg-white text-black mix-blend-difference hover:text-primary-500 focus-visible:text-primary-500 invisible translate-y-2 opacity-0 data-shown:visible data-shown:translate-y-0 data-shown:opacity-100 transition-[opacity,transform,visibility] duration-[400ms] ease-swipe lg:bottom-6"
       onClick={scrollTop}
       ref={buttonRef}
       type="button"

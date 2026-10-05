@@ -56,8 +56,12 @@ _Avoid_: Reviews, quotes wall, testimonials section
 The public page listing every published Work.
 _Avoid_: Portfolio page, projects page
 
+**Sector Filter**:
+The Works Page's control for narrowing the listing to one Sector — a column beside the listing on desktop; on phone and tablet, a bar floating at the viewport's bottom edge, opening the Sector list in a Bottom Sheet over the page. Appears only while the page lists many Works.
+_Avoid_: Filter chips, chip bar, dropdown filter, category filter
+
 **Back to Top**:
-The circular control pinned to the Works Page's bottom-right corner that returns the visitor to the top of the listing — shown only while the page lists many Works and the visitor has scrolled away from the top.
+The circular control pinned to the Works Page's bottom-right corner, above the Sector Filter's bar on phone and tablet, that returns the visitor to the top of the listing — shown only while the page lists many Works and the visitor has scrolled away from the top.
 _Avoid_: Scroll-to-top button, up button, top button
 
 **Work Card**:
@@ -89,7 +93,7 @@ A titled group of content within a Work. Each Section is one destination in the 
 _Avoid_: Chapter, part, block
 
 **Contents**:
-The Work Detail Page navigation listing a Work's Sections in display order and tracking the Active Section — a sticky sidebar column on desktop; on phone and tablet, a bar floating at the viewport's bottom edge once the page moves past the Hero, opening the list in a sheet over the page.
+The Work Detail Page navigation listing a Work's Sections in display order and tracking the Active Section — a sticky sidebar column on desktop; on phone and tablet, a bar floating at the viewport's bottom edge once the page moves past the Hero, opening the list in a Bottom Sheet over the page.
 _Avoid_: Table of contents, section nav, TOC
 
 **Active Section**:
@@ -263,5 +267,9 @@ A control's label exchanging two clipped copies on hover — the resting copy sw
 _Avoid_: Rolling text, text swap, slide-up hover
 
 **Arrow Push**:
-A control's current affordance and the Menu's items' hover: a primary arrow slides in from the left, pushing the label right. The hovered label turns white; the current one stays primary. On the Works Page's Sector filter and the Work Detail Page's Contents the arrow is current-only — their hover keeps the label's slide but shows no arrow.
+A control's current affordance and the Menu's items' hover: a primary arrow slides in from the left, pushing the label right. The hovered label turns white; the current one stays primary. On the Works Page's Sector Filter and the Work Detail Page's Contents the arrow is current-only — their hover keeps the label's slide but shows no arrow.
 _Avoid_: Arrow slide, push-in, arrow reveal
+
+**Bottom Sheet**:
+A panel that rises from the viewport's bottom edge over a dimmed page on phone and tablet — the shape both the Work Detail Page's Contents and the Works Page's Sector Filter open their lists in.
+_Avoid_: Drawer, modal, dialog, popup
