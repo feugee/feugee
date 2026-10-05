@@ -31,9 +31,9 @@ import { menuPanelTransition, menuVeilTransition } from "./menuPanelTransition";
  * ahead of the navigation, a history traversal (Back/Forward) closes on
  * its popstate, and the page's scroll stops behind Lenis while open. The
  * items are edge-to-edge rows flush one atop the next, riding Arrow Push's
- * arrow on hover — the Menu knows no current item — and they stagger up
- * inside the panel, exactly as they always have. The foot pins the
- * Footer's Social Links below a divider.
+ * arrow on hover — the Menu knows no current item — and they stagger in
+ * from the panel's right edge, riding the panel's own direction. The foot
+ * pins the Footer's Social Links below a divider.
  */
 export const Menu = ({
   controlRef,
@@ -122,7 +122,7 @@ export const Menu = ({
             <span className={menuIconLine(true, false)} />
           </span>
         </button>
-        <ul className="min-h-0 flex-1 overflow-y-auto" id="site-menu">
+        <ul className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto" id="site-menu">
           {links.map((link, index) => {
             const { className, transitionDelay } = menuItemTransition(
               open,
@@ -140,12 +140,12 @@ export const Menu = ({
                     row now. The label stays white; the Arrow Push arrow
                     carries the hover, and there is no current item. */}
                 <Link
-                  className="group flex items-center px-6 py-3 text-2xl lg:text-3xl xl:text-[64px] text-neutral-50 font-semibold transition-colors hover:bg-neutral-900 focus-visible:bg-neutral-800"
+                  className="group flex items-center px-6 py-3 text-2xl lg:text-3xl xl:text-5xl lg:pl-12 text-neutral-50 font-semibold transition-colors hover:bg-neutral-900/20 focus-visible:bg-neutral-800"
                   href={link.url}
                   onClick={onClose}
                   onNavigate={(event) => navigateWithBlackout(event, link.url)}
                 >
-                  <ArrowPush active={false} />
+                  <ArrowPush active={false} size="lg" />
                   {link.label}
                 </Link>
               </li>

@@ -1,7 +1,7 @@
-export const ArrowRight = () => (
+export const ArrowRight = ({ size = "base" }: { size?: "base" | "lg" }) => (
   <svg
     aria-hidden="true"
-    className="h-4 w-4"
+    className={size === "lg" ? "h-8 w-8" : "h-4 w-4"}
     fill="none"
     stroke="currentColor"
     strokeWidth="2"

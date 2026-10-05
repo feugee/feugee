@@ -6,7 +6,7 @@ describe("menuItemTransition", () => {
   it("swipes the first open item in with no delay", () => {
     const { className, transitionDelay } = menuItemTransition(true, 0);
 
-    expect(className).toContain("translate-y-0");
+    expect(className).toContain("translate-x-0");
     expect(className).toContain("opacity-100");
     expect(className).toContain("duration-[400ms]");
     expect(transitionDelay).toBe("0ms");
@@ -21,10 +21,10 @@ describe("menuItemTransition", () => {
     );
   });
 
-  it("drops every closed item out together: full offset, fast, no delay", () => {
+  it("sweeps every closed item out together: full offset, fast, no delay", () => {
     const { className, transitionDelay } = menuItemTransition(false, 2);
 
-    expect(className).toContain("translate-y-full");
+    expect(className).toContain("translate-x-full");
     expect(className).toContain("opacity-0");
     expect(className).toContain("duration-[200ms]");
     expect(transitionDelay).toBe("0ms");

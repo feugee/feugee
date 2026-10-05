@@ -16,21 +16,30 @@ import { ArrowRight } from "@/components/ArrowRight";
  * while the arrow rides translate inside the clipped slot; both ride
  * group-hover and group-focus-visible, 400ms on the site's swipe curve.
  * The 28px slot (max-w-7) is the arrow plus its trailing gap,
- * so the wrapping element carries no gap of its own.
+ * so the wrapping element carries no gap of its own. `size` "lg" upsizes
+ * both in step — a 20px arrow, the slot max-w-8 (32px) — for the Menu's
+ * roomy rows; the default fits the site's inline text.
  */
 export const ArrowPush = ({
   active,
   hover = "arrow",
+  size = "base",
 }: {
   active: boolean;
   /** What hover rides: "arrow" = arrow and push, "slide" = push alone (glyph hidden), false = nothing. */
   hover?: "arrow" | "slide" | false;
+  /** "lg" pairs the 20px arrow with the wider slot; "base" is the site default. */
+  size?: "base" | "lg";
 }) => {
   const rides = hover !== false;
   const slot = active
-    ? "max-w-7"
+    ? size === "lg"
+      ? "max-w-12"
+      : "max-w-7"
     : rides
-      ? "max-w-0 group-hover:max-w-7 group-focus-visible:max-w-7"
+      ? size === "lg"
+        ? "max-w-0 group-hover:max-w-12 group-focus-visible:max-w-12"
+        : "max-w-0 group-hover:max-w-7 group-focus-visible:max-w-7"
       : "max-w-0";
   const arrow = active
     ? "translate-x-0"
@@ -46,7 +55,7 @@ export const ArrowPush = ({
         className={`mr-3 inline-flex transition-transform duration-[400ms] ease-swipe
           ${active || hover === "arrow" ? "" : "text-transparent"} ${arrow}`}
       >
-        <ArrowRight />
+        <ArrowRight size={size} />
       </span>
     </span>
   );
