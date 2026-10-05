@@ -108,22 +108,18 @@ const DribbbleIcon = () => (
   </svg>
 );
 
-// Contra's spark with its check as negative space — the mark from their own
-// site; Simple Icons no longer carries it. The check is redrawn as a thick
-// polygon (their original is a hairline stroke, invisible at 16px) and
-// evenodd keeps it a hole in the filled silhouette.
+// Contra's four-petal sparkle, traced from their brand mark; Simple Icons no
+// longer carries it. The petals are mirror images: each is a concave quadratic
+// edge between two tips, closed by straight edges along the thin cross gap of
+// negative space at the center.
 const ContraIcon = () => (
   <svg
     aria-hidden="true"
     className="h-4 w-4"
     fill="currentColor"
-    viewBox="0 0 26 26"
+    viewBox="0 0 24 24"
   >
-    <path
-      clipRule="evenodd"
-      d="M11.9188 0.959659C12.5103 0.349733 13.4897 0.349733 14.0812 0.959659L15.9897 2.92799L18.6609 2.30455C19.4883 2.11124 20.3124 2.64011 20.4802 3.47301L21.0213 6.16182L23.6062 7.08128C24.4066 7.36606 24.8132 8.25631 24.5041 9.04765L23.5063 11.6022L25.1835 13.7724C25.703 14.4447 25.5636 15.4136 24.8757 15.9123L22.6554 17.5219L22.8926 20.2548C22.9662 21.1012 22.3254 21.8412 21.4772 21.8889L18.7374 22.0418L17.4611 24.4698C17.0653 25.2216 16.1262 25.4971 15.3869 25.0786L13 23.7268L10.6131 25.0786C9.87382 25.4971 8.9347 25.2215 8.53891 24.4698L7.26165 22.0418L4.52285 21.8889C3.67454 21.8412 3.03378 21.1012 3.10737 20.2548L3.34361 17.5219L1.12434 15.9123C0.436442 15.4136 0.297006 14.4447 0.816544 13.7724L2.49276 11.6022L1.49585 9.04765C1.18677 8.25624 1.59325 7.36597 2.39376 7.08128L4.97768 6.16182L5.51976 3.47301C5.68759 2.64021 6.51085 2.11143 7.33811 2.30455L10.0083 2.92799L11.9188 0.959659ZM16.983 9.406L18.699 11.360L11.938 17.299L8.598 13.958L10.436 12.120L12.054 13.737L16.983 9.406Z"
-      fillRule="evenodd"
-    />
+    <path d="M12.69 11.31 12.69.42 13.04 0Q15.12 7.82 24 10.96L23.58 11.31ZM11.31 11.31 11.31.42 10.96 0Q8.88 7.82 0 10.96L.42 11.31ZM12.69 12.69 12.69 23.58 13.04 24Q15.12 16.18 24 13.04L23.58 12.69ZM11.31 12.69 11.31 23.58 10.96 24Q8.88 16.18 0 13.04L.42 12.69Z" />
   </svg>
 );
 
@@ -157,6 +153,11 @@ export const toSocialLinks = (links: Footer["socialLinks"]): SocialLink[] =>
     const url = link.url.trim();
     if (platform === undefined || url === "") return [];
     return [
-      { id: link.id ?? link.url, url, label: platform.label, Icon: platform.Icon },
+      {
+        id: link.id ?? link.url,
+        url,
+        label: platform.label,
+        Icon: platform.Icon,
+      },
     ];
   });
