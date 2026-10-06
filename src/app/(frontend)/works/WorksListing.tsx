@@ -30,8 +30,8 @@ gsap.registerPlugin(useGSAP, CustomEase);
 // form.
 CustomEase.create("swipe", "M0,0 C0.65,0 0.35,1 1,1");
 
-/** A Badge resolved to exactly what the card chip renders — the icon Asset's
- * URL, the chip fill, and the name that labels it. */
+/** A Badge resolved to exactly what the Work Card's ribbon renders — the
+ * icon Asset's URL, the fill, and the name revealed beside the icon. */
 export interface CardBadge {
   name: string;
   color: string;
@@ -204,14 +204,23 @@ const WorkCard = ({
         )}
       </div>
     </div>
-    {/* The Badge chip: always visible, above the grayscale dim — a Badge's
-        job is to be seen without interaction. The whole card stays the link,
-        so the chip takes no pointer handling of its own. */}
+    {/* The Badge ribbon: always visible, above the grayscale dim — a Badge's
+        job is to be seen without interaction. It hangs off the card's right
+        edge with a swallowtail notch cut into its free end by a clip-path
+        whose lone px vertex keeps the cut while the ribbon widens leftward
+        to reveal the name behind the icon — the icon rides the free end
+        with the notch. The wipe rides the caption's swipe timing on a
+        0fr→1fr grid track rather than a max-width cap, which would finish
+        early on short names and outpace the card's other hover motion; like
+        the caption, the name is the resting state below lg where there is
+        no hover. The name is aria-hidden because the icon's alt already
+        carries it; the reveal replaced the old tooltip. The whole card
+        stays the link, so the ribbon takes no pointer handling of its
+        own. */}
     {item.badge && (
       <span
-        className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full"
+        className="absolute right-0 top-3 flex h-10 items-center pl-4 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
         style={{ backgroundColor: item.badge.color }}
-        title={item.badge.name}
       >
         {/* As uploaded — unoptimized like the Client Marquee's logos, since
             the optimizer refuses the SVGs badges are likely to be. */}
@@ -223,6 +232,14 @@ const WorkCard = ({
           unoptimized
           width={24}
         />
+        <span
+          aria-hidden="true"
+          className="grid max-w-48 grid-cols-[minmax(0,0fr)] opacity-0 transition-[grid-template-columns,opacity] duration-400 ease-swipe group-hover/card:grid-cols-[minmax(0,1fr)] group-hover/card:opacity-100 max-lg:grid-cols-[minmax(0,1fr)] max-lg:opacity-100"
+        >
+          <span className="min-w-0 overflow-hidden pl-3 whitespace-nowrap">
+            {item.badge.name}
+          </span>
+        </span>
       </span>
     )}
   </Link>

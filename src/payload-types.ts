@@ -902,15 +902,15 @@ export interface Sector {
 export interface Badge {
   id: number;
   /**
-   * The Badge's meaning — the chip's screen-reader label and hover tooltip on the Work Card.
+   * The Badge's meaning — the name revealed beside the icon on the Work Card's ribbon, always shown on phone and tablet; doubles as the icon's screen-reader label.
    */
   name: string;
   /**
-   * Image only — SVG or transparent PNG especially. The icon shows as-is inside the Badge's colored chip on the Work Card, so pick artwork that reads on the color.
+   * Image only — SVG or transparent PNG especially. The icon shows as-is on the Badge's colored ribbon on the Work Card, so pick artwork that reads on the color.
    */
   icon: number | Asset;
   /**
-   * The chip's fill behind the icon on the Work Card.
+   * The Work Card ribbon's fill behind the icon and the white name text — pick a color both read on.
    */
   color: string;
   updatedAt: string;

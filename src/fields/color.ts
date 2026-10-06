@@ -4,8 +4,8 @@ const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
 
 /**
  * Empty passes — the required flag owns absence; anything set must be a
- * strict #rrggbb hex, what the picker produces and what the Work Card chip
- * consumes.
+ * strict #rrggbb hex, what the picker produces and what the Work Card
+ * ribbon consumes.
  */
 const hexColorValidate = (
   value: string | null | undefined,

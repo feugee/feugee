@@ -29,7 +29,7 @@ const sectorSlugOf = (
     ? sector.slug ?? String(sector.id)
     : null;
 
-// The chip renders only a whole Badge — a bare relationship id, or an icon
+// The ribbon renders only a whole Badge — a bare relationship id, or an icon
 // Asset without a URL, leaves the card unchanged.
 const badgeOf = (badge: Work["badge"]): CardBadge | null => {
   if (typeof badge !== "object" || badge === null) return null;
