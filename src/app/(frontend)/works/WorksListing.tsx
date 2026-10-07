@@ -18,7 +18,7 @@ import { AutoVideo } from "@/components/AutoVideo";
 import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { ScrollProgress } from "@/components/ScrollProgress";
-import { clientLogoAttrOf, type CardWork } from "@/components/work";
+import type { CardWork } from "@/components/work";
 
 import { SectorFilter } from "./SectorFilter";
 
@@ -170,7 +170,7 @@ const WorkCard = ({
     className="group/card relative block rounded-md overflow-hidden"
     data-work-card
     data-work-card-id={item.id}
-    data-cursor-logo={clientLogoAttrOf(item.clientLogo)}
+    data-cursor-logo={item.clientLogo ?? undefined}
     href={`/works/${item.slug}`}
     onNavigate={(event) => navigateWithBlackout(event, `/works/${item.slug}`)}
     onMouseEnter={canHover ? onHoverStart : undefined}

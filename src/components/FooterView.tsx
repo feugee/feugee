@@ -16,7 +16,7 @@ import { toMenuLinks } from "./menu";
 import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
 import { toSocialLinks } from "./socialPlatforms";
 import { SwipeText } from "./SwipeText";
-import { toCardWork, workThumbnailOf, clientLogoAttrOf, type CardWork } from "./work";
+import { toCardWork, workThumbnailOf, type CardWork } from "./work";
 
 // The Live Preview machinery rides a lazy chunk: it only downloads inside
 // the CMS Dashboard's preview iframe, where the gate below has seen
@@ -49,7 +49,7 @@ const WorkCard = ({
 }) => (
   <Link
     className="block w-full"
-    data-cursor-logo={clientLogoAttrOf(item.clientLogo)}
+    data-cursor-logo={item.clientLogo ?? undefined}
     href={`/works/${item.slug}`}
     onNavigate={(event) => navigateWithBlackout(event, `/works/${item.slug}`)}
   >

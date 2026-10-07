@@ -5,8 +5,6 @@ import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { useRef, useSyncExternalStore } from "react";
 
-import type { CardClientLogo } from "@/components/work";
-
 gsap.registerPlugin(useGSAP, CustomEase);
 
 // The site's swipe curve (globals.css --ease-swipe) as a GSAP ease, so the
@@ -19,6 +17,13 @@ const MORPH_DURATION = 0.4;
 // pointer, slow enough that it visibly trails — the cursor's only weight.
 const FOLLOW_DURATION = 0.18;
 const PILL_REST_WIDTH = 40;
+const PILL_REST_HEIGHT = 40;
+// The resting pill's paint (the bg-black/40 class). Every non-logo morph
+// restores it, because the logo state drops the paint entirely.
+const PILL_BACKGROUND = "rgba(0,0,0,0.4)";
+// The logo state's box: a square the Client Logo object-contains inside,
+// unpainted so the logo floats alone over the card.
+const LOGO_BOX = 64;
 const ARROW_WIDTH = 18;
 // The open state's label-to-arrow gap. It lives in the label's padding only
 // mid-morph: a border-box can't shrink below its own padding, so a resting
@@ -56,36 +61,18 @@ const MODE_LABELS: Record<"see-more" | "play", string> = {
   "play": "Play",
 };
 
-/** The [data-cursor-logo] payload's shape — the Work's resolved Client
- * Logo (url + intrinsic dimensions) riding the attribute. */
-type CursorLogo = CardClientLogo;
-
-// The attribute carries "url width height", the srcset descriptor shape
-// (clientLogoAttrOf builds it). Dimensions default to 1×1 when a host omits
-// them.
-const parseLogoAttr = (value: string): CursorLogo => {
-  const [url = "", width = "", height = ""] = value.trim().split(/\s+/);
-  const w = Number(width);
-  const h = Number(height);
-  return {
-    url,
-    width: Number.isFinite(w) && w > 0 ? w : 1,
-    height: Number.isFinite(h) && h > 0 ? h : 1,
-  };
-};
-
 /**
  * The Cursor (CONTEXT.md): the Public site's own pointer — a rounded,
  * semi-transparent black pill resting as a top-left arrow, widening around
  * a "See More" label over Selected Works cards (`data-cursor="see-more"`),
  * around a "Play" label over playable Embedded Videos (`data-cursor="play"`),
- * and around a Work's Client Logo over its cards
- * (`data-cursor-logo="url width height"`, which replaces the card's own See
- * More). Entirely decorative: aria-hidden, pointer-events-none, and clicks
- * always land on whatever it floats over. The [data-custom-cursor] flag it
- * sets on <html> hides the system pointer via globals.css — only once this
- * component is actually driving, so no-JS and touch visitors keep the
- * pointer they came with.
+ * and growing to an unpainted square around a Work's Client Logo over its
+ * cards (`data-cursor-logo`, which replaces the card's own See More).
+ * Entirely decorative: aria-hidden, pointer-events-none, and clicks always
+ * land on whatever it floats over. The [data-custom-cursor] flag it sets on
+ * <html> hides the system pointer via globals.css — only once this component
+ * is actually driving, so no-JS and touch visitors keep the pointer they
+ * came with.
  */
 export const Cursor = () => {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -162,10 +149,10 @@ export const Cursor = () => {
           ease: "swipe",
         });
 
-      const morphTo = (next: CursorMode, logo?: CursorLogo) => {
+      const morphTo = (next: CursorMode, logoUrl?: string) => {
         if (
           next === mode &&
-          !(next === "logo" && logo && logo.url !== currentLogoUrl)
+          !(next === "logo" && logoUrl && logoUrl !== currentLogoUrl)
         ) {
           return;
         }
@@ -184,6 +171,8 @@ export const Cursor = () => {
           gsap.set(label, { maxWidth: 0 });
           gsap.to(pill, {
             width: PILL_REST_WIDTH + labelWidth + LABEL_GAP + ARROW_WIDTH,
+            height: PILL_REST_HEIGHT,
+            backgroundColor: PILL_BACKGROUND,
             duration: MORPH_DURATION,
             ease: "swipe",
           });
@@ -208,29 +197,23 @@ export const Cursor = () => {
             ease: "swipe",
           });
           collapseLogo();
-        } else if (next === "logo" && logo) {
-          currentLogoUrl = logo.url;
-          // The width/height attributes state the box's ratio before the
-          // file loads, so the measure below is correct on the very first
-          // hover — modern browsers read the aspect off them.
-          logoImg.width = logo.width;
-          logoImg.height = logo.height;
-          if (logoImg.getAttribute("src") !== logo.url) {
-            logoImg.src = logo.url;
+        } else if (next === "logo" && logoUrl) {
+          currentLogoUrl = logoUrl;
+          if (logoImg.getAttribute("src") !== logoUrl) {
+            logoImg.src = logoUrl;
           }
-          // The label's synchronous measure, again: unclipped for the read,
-          // clipped again before paint, so the pill tweens between two pixel
-          // widths no matter how far a previous morph got.
-          gsap.set(logoImg, { maxWidth: "none" });
-          const logoWidth = logoImg.offsetWidth;
-          gsap.set(logoImg, { maxWidth: 0 });
+          // The box is a fixed square and the logo object-contains inside
+          // it, so there is nothing to measure: the pill grows to constants
+          // and drops its paint, letting the logo float alone over the card.
           gsap.to(pill, {
-            width: PILL_REST_WIDTH + logoWidth,
+            width: LOGO_BOX,
+            height: LOGO_BOX,
+            backgroundColor: "rgba(0,0,0,0)",
             duration: MORPH_DURATION,
             ease: "swipe",
           });
           gsap.to(logoImg, {
-            maxWidth: logoWidth,
+            maxWidth: LOGO_BOX,
             opacity: 1,
             duration: MORPH_DURATION,
             ease: "swipe",
@@ -250,6 +233,8 @@ export const Cursor = () => {
           currentLogoUrl = null;
           gsap.to(pill, {
             width: PILL_REST_WIDTH,
+            height: PILL_REST_HEIGHT,
+            backgroundColor: PILL_BACKGROUND,
             duration: MORPH_DURATION,
             ease: "swipe",
           });
@@ -292,9 +277,7 @@ export const Cursor = () => {
           if (logoHost) {
             morphTo(
               "logo",
-              parseLogoAttr(
-                logoHost.getAttribute("data-cursor-logo") ?? "",
-              ),
+              logoHost.getAttribute("data-cursor-logo") ?? "",
             );
           } else if (event.target.closest("[data-cursor='see-more']"))
             morphTo("see-more");
@@ -367,14 +350,14 @@ export const Cursor = () => {
           See More
         </span>
         {/* The Client Logo mode's artwork: src set imperatively from the
-            hovered card's [data-cursor-logo] payload, its box sized by the
-            h-5 and the intrinsic ratio the payload's width/height state. A
-            plain img — the Cursor is decorative (aria-hidden) and the src is
-            dynamic, so next/image has nothing to offer it. */}
+            hovered card's [data-cursor-logo] attribute, object-contained in
+            the mode's fixed square. A plain img — the Cursor is decorative
+            (aria-hidden) and the src is dynamic, so next/image has nothing
+            to offer it. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt=""
-          className="h-5 w-auto max-w-0 opacity-0"
+          className="size-16 max-w-0 object-contain opacity-0"
           ref={logoImgRef}
         />
         <svg

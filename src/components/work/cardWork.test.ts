@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Asset, Work } from "@/payload-types";
 
-import { toCardWork, clientLogoAttrOf } from "./cardWork";
+import { toCardWork } from "./cardWork";
 import { VIDEO_ASPECT_FALLBACK } from "./visual";
 
 const imageAsset = (overrides: Partial<Asset> = {}): Asset =>
@@ -104,7 +104,7 @@ describe("toCardWork", () => {
     });
   });
 
-  it("carries the Work's Client Logo for the Cursor", () => {
+  it("carries the Work's Client Logo URL for the Cursor", () => {
     const card = toCardWork(
       work({
         clientLogo: imageAsset({
@@ -117,14 +117,10 @@ describe("toCardWork", () => {
       }),
     );
 
-    expect(card?.clientLogo).toEqual({
-      url: "/assets/client.svg",
-      width: 240,
-      height: 80,
-    });
+    expect(card?.clientLogo).toBe("/assets/client.svg");
   });
 
-  it("falls back to 1×1 for a Client Logo Payload could not measure (SVG)", () => {
+  it("carries an unmeasured (SVG) Client Logo's URL — the Cursor sizes its box itself", () => {
     const card = toCardWork(
       work({
         clientLogo: imageAsset({
@@ -137,11 +133,7 @@ describe("toCardWork", () => {
       }),
     );
 
-    expect(card?.clientLogo).toEqual({
-      url: "/assets/client.svg",
-      width: 1,
-      height: 1,
-    });
+    expect(card?.clientLogo).toBe("/assets/client.svg");
   });
 
   it("maps a shallow-populated Client Logo to null", () => {
@@ -157,13 +149,6 @@ describe("toCardWork", () => {
 
   it("maps a missing Client Logo to null", () => {
     expect(toCardWork(work({ clientLogo: undefined }))?.clientLogo).toBeNull();
-  });
-
-  it("builds the data-cursor-logo payload from the Client Logo", () => {
-    expect(
-      clientLogoAttrOf({ url: "/assets/client.svg", width: 240, height: 80 }),
-    ).toBe("/assets/client.svg 240 80");
-    expect(clientLogoAttrOf(null)).toBeUndefined();
   });
 
   it("falls back to 1×1 for an image Thumbnail Payload could not measure", () => {

@@ -3,27 +3,6 @@ import type { Work } from "@/payload-types";
 import { populatedAssetOf, workThumbnailOf, type CardVisual } from "./visual";
 
 /**
- * A Work's Client Logo (CONTEXT.md) resolved to what the Cursor consumes:
- * the URL and the intrinsic dimensions that size the logo's box before the
- * file itself has loaded.
- */
-export type CardClientLogo = {
-  url: string;
-  width: number;
-  height: number;
-};
-
-/**
- * The [data-cursor-logo] payload — "url width height", the srcset descriptor
- * shape. The Cursor parses the intrinsic ratio out of it to size the logo's
- * box from the attributes alone, no load required.
- */
-export const clientLogoAttrOf = (
-  logo: CardClientLogo | null,
-): string | undefined =>
-  logo ? `${logo.url} ${logo.width} ${logo.height}` : undefined;
-
-/**
  * The core of every Work card surface — exactly the fields a card needs
  * before a page adds its own (Selected Works adds year, the Footer adds
  * subtitle, …). Surfaces spread this and read their extras off the
@@ -34,7 +13,11 @@ export type CardWork = {
   slug: string;
   title: string;
   visual: CardVisual;
-  clientLogo: CardClientLogo | null;
+  /** The Client Logo (CONTEXT.md) Asset's URL for the Cursor, or null when
+   * the field is empty, a bare relationship id (mid-edit Live Preview), or
+   * an Asset without a usable URL. The Cursor sizes the logo's box itself,
+   * so no dimensions ride along. */
+  clientLogo: string | null;
 };
 
 /**
@@ -70,7 +53,7 @@ export const toCardWork = (
     visual: resolved,
     clientLogo:
       logo && typeof logo.url === "string" && logo.url.length > 0
-        ? { url: logo.url, width: logo.width ?? 1, height: logo.height ?? 1 }
+        ? logo.url
         : null,
   };
 };

@@ -57,15 +57,13 @@ export const videoSourceSelect = {
 } satisfies SelectShape;
 
 /**
- * The Asset fields the Cursor's Client Logo consumes: the URL to show and
- * the intrinsic dimensions that size its box before the file loads (the
- * filename rides along because an upload's URL is derived from it).
+ * The Asset fields the Cursor's Client Logo consumes — just the URL (the
+ * filename rides along because an upload's URL is derived from it). The
+ * Cursor sizes the logo's box itself, so no dimensions are needed.
  */
 export const clientLogoSelect = {
   url: true,
   filename: true,
-  width: true,
-  height: true,
 } satisfies SelectShape;
 
 /** The card core plus the Year the Selected Works caption shows, with the

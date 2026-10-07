@@ -4,12 +4,7 @@
  * Work Detail hero consume. Everything else (the guard chain, the
  * video/poster discrimination, the aspect fallbacks) is implementation.
  */
-export {
-  clientLogoAttrOf,
-  toCardWork,
-  type CardClientLogo,
-  type CardWork,
-} from "./cardWork";
+export { toCardWork, type CardWork } from "./cardWork";
 export {
   asAssetsSelect,
   asClientsSelect,
