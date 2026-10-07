@@ -203,12 +203,14 @@ export const Cursor = () => {
             logoImg.src = logoUrl;
           }
           // The box is a fixed square and the logo object-contains inside
-          // it, so there is nothing to measure: the pill grows to constants
-          // and drops its paint, letting the logo float alone over the card.
+          // it, so there is nothing to measure: the pill grows to constants.
+          // Its paint cuts rather than fades — a black disc lingering
+          // through the morph reads as a leftover background — while the
+          // restore on the way out keeps the painted pill's smooth return.
+          gsap.set(pill, { backgroundColor: "rgba(0,0,0,0)" });
           gsap.to(pill, {
             width: LOGO_BOX,
             height: LOGO_BOX,
-            backgroundColor: "rgba(0,0,0,0)",
             duration: MORPH_DURATION,
             ease: "swipe",
           });
