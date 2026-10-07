@@ -21,6 +21,11 @@ const PILL_REST_HEIGHT = 40;
 // The resting pill's paint (the bg-black/40 class). Every non-logo morph
 // restores it, because the logo state drops the paint entirely.
 const PILL_BACKGROUND = "rgba(0,0,0,0.4)";
+// The resting pill's clip (the rounded-full class). It cuts to a square in
+// the logo state — the disc's clip would shave a filling logo's corners —
+// and is restored instantly on the way out, so the paint fading back in
+// always reads as the disc it lands as.
+const PILL_RADIUS = "9999px";
 // The logo state's box: a square the Client Logo object-contains inside,
 // unpainted so the logo floats alone over the card.
 const LOGO_BOX = 112;
@@ -169,6 +174,7 @@ export const Cursor = () => {
           gsap.set(label, { maxWidth: "none", paddingRight: 0 });
           const labelWidth = label.offsetWidth;
           gsap.set(label, { maxWidth: 0 });
+          gsap.set(pill, { borderRadius: PILL_RADIUS });
           gsap.to(pill, {
             width: PILL_REST_WIDTH + labelWidth + LABEL_GAP + ARROW_WIDTH,
             height: PILL_REST_HEIGHT,
@@ -204,10 +210,11 @@ export const Cursor = () => {
           }
           // The box is a fixed square and the logo object-contains inside
           // it, so there is nothing to measure: the pill grows to constants.
-          // Its paint cuts rather than fades — a black disc lingering
-          // through the morph reads as a leftover background — while the
-          // restore on the way out keeps the painted pill's smooth return.
-          gsap.set(pill, { backgroundColor: "rgba(0,0,0,0)" });
+          // Its paint and corner clip cut rather than fade — a black disc
+          // lingering through the morph reads as a leftover background, and
+          // the disc would shave a logo's corners — while the restore on the
+          // way out keeps the painted pill's smooth return.
+          gsap.set(pill, { backgroundColor: "rgba(0,0,0,0)", borderRadius: 0 });
           gsap.to(pill, {
             width: LOGO_BOX,
             height: LOGO_BOX,
@@ -233,6 +240,7 @@ export const Cursor = () => {
           });
         } else {
           currentLogoUrl = null;
+          gsap.set(pill, { borderRadius: PILL_RADIUS });
           gsap.to(pill, {
             width: PILL_REST_WIDTH,
             height: PILL_REST_HEIGHT,
