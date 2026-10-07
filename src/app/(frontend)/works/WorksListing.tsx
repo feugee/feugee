@@ -8,6 +8,7 @@ import Link from "next/link";
 import {
   useEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
   useSyncExternalStore,
@@ -20,14 +21,15 @@ import { navigateWithBlackout } from "@/components/page-transition/navigateWithB
 import { ScrollProgress } from "@/components/ScrollProgress";
 import type { CardWork } from "@/components/work";
 
+import { reduceFilterSwap } from "./filterSwap";
 import { SectorFilter } from "./SectorFilter";
 
 gsap.registerPlugin(useGSAP, CustomEase);
 
 // The site's swipe curve (globals.css --ease-swipe) as a GSAP ease, so the
-// reorder rides the same 400ms as every Swipe Text exchange and the Cursor's
-// morph. cubic-bezier(0.65, 0, 0.35, 1), stated in CustomEase's native path
-// form.
+// Filter Swap rides the same curve as every Swipe Text exchange and the
+// Cursor's morph. cubic-bezier(0.65, 0, 0.35, 1), stated in CustomEase's
+// native path form.
 CustomEase.create("swipe", "M0,0 C0.65,0 0.35,1 1,1");
 
 /** A Badge resolved to exactly what the Work Card's ribbon renders — the
@@ -48,18 +50,6 @@ export interface SectorOption {
   name: string;
   slug: string;
 }
-
-/** A card's committed place: grid-space coordinates plus everything a ghost
- * needs to re-render the card after React unmounts it. */
-interface CardSpot {
-  item: WorksListItem;
-  left: number;
-  top: number;
-  width: number;
-}
-
-/** A departing card — its last CardSpot, held just long enough to recede. */
-type GhostCard = CardSpot & { id: number };
 
 const desktopQuery = "(min-width: 1024px)";
 const hoverQuery = "(hover: hover)";
@@ -138,20 +128,6 @@ const WorkVisual = ({ item }: { item: WorksListItem }) =>
       width={item.visual.width}
     />
   );
-
-// A departing card's last frame: pinned exactly where the card was, deaf to
-// pointers and screen readers — purely a surface for the exit recede to
-// play on while the survivors slide through the space it vacates.
-const WorkGhost = ({ ghost }: { ghost: GhostCard }) => (
-  <div
-    aria-hidden="true"
-    className="absolute"
-    data-work-ghost
-    style={{ left: ghost.left, top: ghost.top, width: ghost.width }}
-  >
-    <WorkVisual item={ghost.item} />
-  </div>
-);
 
 const WorkCard = ({
   item,
@@ -271,20 +247,26 @@ export const WorksListing = ({
 
   // The page renders statically, so the deep-link filter (?sector=…) is read
   // on the client after mount; popstate re-syncs history traversal over the
-  // pushed filter entries. Anything unknown falls back to "All".
+  // pushed filter entries. Anything unknown falls back to "All". A deep link
+  // resolving from the mount sync arms `unseenStage`: the listing has not
+  // shown a card yet, so the swap machine commits straight to it and the
+  // load entrance plays on the deep-linked set instead of swapping onto it.
+  const [unseenStage, setUnseenStage] = useState(false);
   useEffect(() => {
-    const syncFromLocation = () => {
+    const syncFromLocation = (fromMount: boolean) => {
       const slug = new URLSearchParams(window.location.search).get("sector");
-      setActiveSector(
+      const next =
         slug !== null && sectorOptions.some((sector) => sector.slug === slug)
           ? slug
-          : null,
-      );
+          : null;
+      if (fromMount) setUnseenStage(next !== null);
+      setActiveSector(next);
     };
 
-    syncFromLocation();
-    window.addEventListener("popstate", syncFromLocation);
-    return () => window.removeEventListener("popstate", syncFromLocation);
+    syncFromLocation(true);
+    const syncFromHistory = () => syncFromLocation(false);
+    window.addEventListener("popstate", syncFromHistory);
+    return () => window.removeEventListener("popstate", syncFromHistory);
   }, [sectorOptions]);
 
   const filteredItems = useMemo(
@@ -295,17 +277,37 @@ export const WorksListing = ({
     [items, activeSector],
   );
 
-  // Two balanced columns on desktop (lg+); tablet shares mobile's single
-  // column with the sidebar above it. The server renders that layout so the
-  // curated order is correct in the initial HTML.
   const isDesktop = useSyncExternalStore(
     subscribeDesktop,
     getDesktopSnapshot,
     getServerSnapshot,
   );
+  // The Filter Swap (CONTEXT.md): the listing exchanges as one clean stage —
+  // no diff, no FLIP choreography. The machine (filterSwap.ts) owns the
+  // two phases; this component only renders `shown` and animates whatever
+  // phase is live: exit — everything on stage slides up and fades out
+  // together — then, strictly after it clears, enter — the new set arrives
+  // from 16px below with the shared 0.03s stagger. Because survivors exit
+  // and re-enter with everything else, there is nothing to measure: no
+  // spots, no FLIP, no ghosts — which also frees viewport resizes from the
+  // animation entirely (a re-layout is not a swap, so isDesktop is
+  // deliberately not a trigger here; cards just re-render in their new
+  // columns). A crossing that lands mid-phase degrades gracefully: cards
+  // remounting between columns skip their tween and sit at rest until the
+  // phase's commit re-renders the stage.
+  const [swap, dispatchSwap] = useReducer(reduceFilterSwap, {
+    shown: filteredItems,
+    exiting: false,
+  });
+
+  // Two balanced columns on desktop (lg+); tablet shares mobile's single
+  // column with the sidebar above it. The server renders that layout so the
+  // curated order is correct in the initial HTML. Derived from `shown`, not
+  // `filteredItems`: during an exit the columns belong to the departing
+  // stage, which the grid must keep rendering.
   const columns = useMemo(
-    () => (isDesktop ? balanceColumns(filteredItems) : [filteredItems]),
-    [filteredItems, isDesktop],
+    () => (isDesktop ? balanceColumns(swap.shown) : [swap.shown]),
+    [swap.shown, isDesktop],
   );
 
   // Hover dimming: the hovered card keeps its color, every other card
@@ -317,133 +319,94 @@ export const WorksListing = ({
   );
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
-  // The reorder: when the filter (or column count) changes, everything moves
-  // on the same frame — survivors FLIP from their previous spot to the new
-  // one, entering cards rise in at theirs (first paint included), and
-  // departing cards linger as ghosts that recede while the survivors slide
-  // through the space they vacate. Spots are offsetLeft/offsetTop keyed by
-  // card id, not DOM nodes: the masonry can remount a card into the other
-  // column on desktop, and offset coordinates are both scroll-proof (layout
-  // space, not viewport, so scrolling between filters can't skew the deltas)
-  // and transform-proof (an interrupted FLIP mid-flight can't pollute the
-  // next measurement). The relative list wrapper is the cards' offsetParent,
-  // so those coordinates are also exactly where a ghost pins itself.
-  const gridRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLDivElement>(null);
-  const cardSpotsRef = useRef(new Map<number, CardSpot>());
-
-  const [ghosts, setGhosts] = useState<GhostCard[]>([]);
-  const [prevFiltered, setPrevFiltered] = useState(filteredItems);
-
-  // Ghosts are derived during render — React's adjust-state-when-data-changes
-  // pattern — so a departing card overlaps its own ghost with no unmounted
-  // flash. cardSpotsRef still holds the cards the last commit actually
-  // rendered, so the leavers are exactly its entries that the new filter
-  // drops. A leaver that re-enters (a quick toggle back) cancels its ghost
-  // on the same render, or the real card and its ghost would double up.
-  if (prevFiltered !== filteredItems) {
-    setPrevFiltered(filteredItems);
-    const liveIds = new Set(filteredItems.map((item) => item.id));
-    setGhosts((prev) => {
-      const kept = prev.filter((ghost) => !liveIds.has(ghost.id));
-      const added = [...cardSpotsRef.current.entries()]
-        .filter(([id]) => !liveIds.has(id))
-        .map(([id, spot]) => ({ id, ...spot }));
-      const next = [...kept, ...added];
-      const unchanged =
-        next.length === prev.length &&
-        next.every((ghost, index) => ghost.id === prev[index]?.id);
-      return unchanged ? prev : next;
+  // A Sector Filter change — sidebar button, Bottom Sheet, or history
+  // traversal — arrives mid-render, its highlight and URL already moved.
+  // The listing hands the change to the machine: cards on stage pin as
+  // `shown` and the exit plays; an empty stage commits straight to the new
+  // set. Hover dimming goes with the departing stage.
+  const [prevSector, setPrevSector] = useState(activeSector);
+  if (prevSector !== activeSector) {
+    setPrevSector(activeSector);
+    setHoveredId(null);
+    dispatchSwap({
+      type: "sectorChanged",
+      filtered: filteredItems,
+      unseenStage,
     });
+    setUnseenStage(false);
   }
+
+  // The exit's completion lands as a flag, not a callback payload: the
+  // commit must name the set the NEWEST selection filtered to, and a render
+  // is the only place that is fresh. Same adjust pattern — dispatched in
+  // the order a visitor made things happen, so a selection made while an
+  // exit played is absorbed by the machine before the completion commits.
+  const [exitDone, setExitDone] = useState(false);
+  if (exitDone) {
+    setExitDone(false);
+    dispatchSwap({ type: "exitCompleted", filtered: filteredItems });
+  }
+
+  // The swap's animation side. Runs when the phase turns (exit starts) or
+  // the commit lands (enter starts) — and on mount, where the enter is
+  // simply the page-load entrance the listing has always played.
+  // revertOnUpdate cuts an in-flight enter the moment an exit is raised:
+  // it carries no completion, so a cut enter can never commit — the cards
+  // it was rising are the same ones the exit then clears.
+  const listRef = useRef<HTMLDivElement>(null);
 
   useGSAP(
     () => {
       const list = listRef.current;
       if (!list) return;
 
-      // The exit: ghosts step back from the page while letting go — a touch
-      // quicker than the survivors' slide, so the stage clears first.
-      const ghostEls = Array.from(
-        list.querySelectorAll<HTMLElement>("[data-work-ghost]"),
-      );
-      if (ghostEls.length > 0) {
+      if (swap.exiting) {
+        const cards = list.querySelectorAll<HTMLElement>(
+          "[data-work-card-id]",
+        );
+        // The machine only raises an exit over a stage holding cards; if
+        // that invariant ever breaks, raise the completion anyway rather
+        // than stick inert and empty forever.
+        if (cards.length === 0) {
+          setExitDone(true);
+          return;
+        }
         gsap.fromTo(
-          ghostEls,
-          { opacity: 1, scale: 1 },
+          cards,
+          { opacity: 1, y: 0 },
           {
             opacity: 0,
-            scale: 0.97,
+            y: -16,
             duration: 0.3,
-            ease: "power2.out",
-            onComplete: () => setGhosts([]),
+            ease: "swipe",
+            overwrite: "auto",
+            // No payload here — the commit reads this render's fresh set.
+            onComplete: () => setExitDone(true),
           },
         );
-      }
-
-      const grid = gridRef.current;
-      if (!grid) {
-        // The "coming soon" empty state replaced the grid; start over.
-        cardSpotsRef.current = new Map();
         return;
       }
 
-      const previousSpots = cardSpotsRef.current;
-      const spots = new Map<number, CardSpot>();
-      const movers: { card: HTMLElement; dx: number; dy: number }[] = [];
-      const enterers: HTMLElement[] = [];
-      const itemById = new Map(filteredItems.map((item) => [item.id, item]));
-
-      for (const card of grid.querySelectorAll<HTMLElement>(
-        "[data-work-card-id]",
-      )) {
-        const id = Number(card.dataset.workCardId);
-        const item = itemById.get(id);
-        if (!item) continue;
-        const spot: CardSpot = {
-          item,
-          left: card.offsetLeft,
-          top: card.offsetTop,
-          width: card.offsetWidth,
-        };
-        spots.set(id, spot);
-        const before = previousSpots.get(id);
-        if (!before) {
-          enterers.push(card);
-        } else {
-          const dx = before.left - spot.left;
-          const dy = before.top - spot.top;
-          if (dx !== 0 || dy !== 0) movers.push({ card, dx, dy });
-        }
-      }
-      cardSpotsRef.current = spots;
-
-      // Everyone travels at once — exits, slides, and entries start on the
-      // same frame; only the enterers' stagger varies, since a movement
-      // stagger reads as lag, not craft.
-      for (const { card, dx, dy } of movers) {
-        gsap.fromTo(
-          card,
-          { x: dx, y: dy },
-          { x: 0, y: 0, duration: 0.4, ease: "swipe", overwrite: "auto" },
-        );
-      }
-      if (enterers.length > 0) {
-        gsap.fromTo(
-          enterers,
-          { opacity: 0, y: 16 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.4,
-            ease: "swipe",
-            stagger: 0.03,
-            overwrite: "auto",
-          },
-        );
-      }
+      // The enter: the freshly committed set arrives — the empty state
+      // riding the same rise as the cards it stands in for.
+      const arrivals = list.querySelectorAll<HTMLElement>(
+        "[data-work-card-id], [data-works-empty]",
+      );
+      if (arrivals.length === 0) return;
+      gsap.fromTo(
+        arrivals,
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "swipe",
+          stagger: 0.03,
+          overwrite: "auto",
+        },
+      );
     },
-    { dependencies: [activeSector, isDesktop], revertOnUpdate: true },
+    { dependencies: [swap.exiting, swap.shown], revertOnUpdate: true },
   );
 
   const mainRef = useRef<HTMLDivElement>(null);
@@ -511,28 +474,20 @@ export const WorksListing = ({
             sectors={sectorOptions}
           />
         )}
-        {/* The list wrapper is relative for one reason: it is the cards'
-            offsetParent, making their spot coordinates and the ghost layer's
-            absolute positioning one shared coordinate space. The ghost layer
-            sits at negative z so survivors — transformed mid-FLIP or not —
-            always paint over the copies receding beneath them. */}
-        <div className="relative" ref={listRef}>
-          {ghosts.length > 0 && (
-            <div
-              aria-hidden="true"
-              className="-z-10 pointer-events-none absolute inset-0"
-            >
-              {ghosts.map((ghost) => (
-                <WorkGhost ghost={ghost} key={ghost.id} />
-              ))}
-            </div>
-          )}
-          {filteredItems.length === 0 ? (
-            <p className="p-8 text-xl text-neutral-600">Works coming soon</p>
+        {/* The list wrapper is the swap's query scope: whatever phase is
+            live, its targets — cards or the empty state — are found here. */}
+        <div ref={listRef}>
+          {swap.shown.length === 0 ? (
+            <p className="p-8 text-xl text-neutral-600" data-works-empty>
+              Works coming soon
+            </p>
           ) : (
             <div
               className="flex w-full flex-col gap-1 lg:flex-row"
-              ref={gridRef}
+              // The departing stage is inert, not merely dimmed: the exit
+              // plays on cards whose destination is already decided, so no
+              // click, focus, or hover may re-enter them mid-flight.
+              inert={swap.exiting}
             >
               {columns.map((column, columnIndex) => (
                 <div

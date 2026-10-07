@@ -60,6 +60,10 @@ _Avoid_: Portfolio page, projects page
 The Works Page's control for narrowing the listing to one Sector — a column beside the listing on desktop; on phone and tablet, a bar floating at the viewport's bottom edge, opening the Sector list in a Bottom Sheet over the page. Appears only while the page lists many Works.
 _Avoid_: Filter chips, chip bar, dropdown filter, category filter
 
+**Filter Swap**:
+The Works Page exchange when the Sector Filter changes: every Work Card in the listing slides up and fades out together — Work Cards surviving the filter included, the listing swaps as one clean stage rather than a shuffling diff — and the freshly filtered set then slides in from the bottom, fading in, strictly after the stage has cleared. Played for every filter change after load, back and forward through history included; the listing's empty state takes the incoming set's place. Narrowing or widening the viewport re-lays the listing out without one.
+_Avoid_: Filter animation, card transition, reorder, listing refresh
+
 **Back to Top**:
 The circular control pinned to the Works Page's bottom-right corner, above the Sector Filter's bar on phone and tablet, that returns the visitor to the top of the listing — shown only while the page lists many Works and the visitor has scrolled away from the top.
 _Avoid_: Scroll-to-top button, up button, top button
