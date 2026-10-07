@@ -23,7 +23,7 @@ const PILL_REST_HEIGHT = 40;
 const PILL_BACKGROUND = "rgba(0,0,0,0.4)";
 // The logo state's box: a square the Client Logo object-contains inside,
 // unpainted so the logo floats alone over the card.
-const LOGO_BOX = 64;
+const LOGO_BOX = 112;
 const ARROW_WIDTH = 18;
 // The open state's label-to-arrow gap. It lives in the label's padding only
 // mid-morph: a border-box can't shrink below its own padding, so a resting
@@ -58,7 +58,7 @@ type CursorMode = "default" | "see-more" | "play" | "logo" | "hidden";
 // so one label span serves every mode.
 const MODE_LABELS: Record<"see-more" | "play", string> = {
   "see-more": "See More",
-  "play": "Play",
+  play: "Play",
 };
 
 /**
@@ -277,10 +277,7 @@ export const Cursor = () => {
           // Work Detail surfaces — so first match is the whole rule.
           const logoHost = event.target.closest("[data-cursor-logo]");
           if (logoHost) {
-            morphTo(
-              "logo",
-              logoHost.getAttribute("data-cursor-logo") ?? "",
-            );
+            morphTo("logo", logoHost.getAttribute("data-cursor-logo") ?? "");
           } else if (event.target.closest("[data-cursor='see-more']"))
             morphTo("see-more");
           else if (event.target.closest("[data-cursor='play']"))
@@ -359,7 +356,7 @@ export const Cursor = () => {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt=""
-          className="size-16 max-w-0 object-contain opacity-0"
+          className="size-28 max-w-0 object-contain opacity-0"
           ref={logoImgRef}
         />
         <svg
