@@ -231,6 +231,10 @@ export interface Work {
     };
   };
   client?: string | null;
+  /**
+   * The Client's logo, shown by the Cursor over this Work's cards. Image only — SVG especially welcome.
+   */
+  clientLogo?: (number | null) | Asset;
   sector?: (number | null) | Sector;
   /**
    * The Badge this Work wears on its Works Page card, if any.
@@ -1096,6 +1100,7 @@ export interface WorksSelect<T extends boolean = true> {
             };
       };
   client?: T;
+  clientLogo?: T;
   sector?: T;
   badge?: T;
   year?: T;

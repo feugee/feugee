@@ -56,6 +56,18 @@ export const videoSourceSelect = {
   },
 } satisfies SelectShape;
 
+/**
+ * The Asset fields the Cursor's Client Logo consumes: the URL to show and
+ * the intrinsic dimensions that size its box before the file loads (the
+ * filename rides along because an upload's URL is derived from it).
+ */
+export const clientLogoSelect = {
+  url: true,
+  filename: true,
+  width: true,
+  height: true,
+} satisfies SelectShape;
+
 /** The card core plus the Year the Selected Works caption shows, with the
  *  Feature Visual that section prefers over the Thumbnail. */
 export const selectedWorksSelect = {
@@ -66,6 +78,7 @@ export const selectedWorksSelect = {
   _status: true,
   thumbnail: videoSourceSelect,
   featureVisual: videoSourceSelect,
+  clientLogo: clientLogoSelect,
 } satisfies SelectShape;
 
 /** The card core plus the Subtitle the Footer's Other Works cards show. */
@@ -76,6 +89,7 @@ export const otherWorksSelect = {
   subtitle: true,
   _status: true,
   thumbnail: videoSourceSelect,
+  clientLogo: clientLogoSelect,
 } satisfies SelectShape;
 
 /** The card core plus the Works Page masonry's filter facets and Badge. */
@@ -88,6 +102,7 @@ export const listingWorksSelect = {
   sector: { id: true, name: true, slug: true },
   badge: { name: true, color: true, icon: { url: true, filename: true } },
   thumbnail: videoSourceSelect,
+  clientLogo: clientLogoSelect,
 } satisfies SelectShape;
 
 /** The Client fields the marquee consumes — name, link, and a usable logo. */

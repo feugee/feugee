@@ -5,6 +5,8 @@ import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { useRef, useSyncExternalStore } from "react";
 
+import type { CardClientLogo } from "@/components/work";
+
 gsap.registerPlugin(useGSAP, CustomEase);
 
 // The site's swipe curve (globals.css --ease-swipe) as a GSAP ease, so the
@@ -45,7 +47,7 @@ const getServerSnapshot = () => false;
 // than sitting on top of the I-beam.
 const EDITABLE_SELECTOR = "input, textarea, select, [contenteditable='true']";
 
-type CursorMode = "default" | "see-more" | "play" | "hidden";
+type CursorMode = "default" | "see-more" | "play" | "logo" | "hidden";
 
 // The label each widening mode opens around; the text is set at morph time
 // so one label span serves every mode.
@@ -54,21 +56,42 @@ const MODE_LABELS: Record<"see-more" | "play", string> = {
   "play": "Play",
 };
 
+/** The [data-cursor-logo] payload's shape — the Work's resolved Client
+ * Logo (url + intrinsic dimensions) riding the attribute. */
+type CursorLogo = CardClientLogo;
+
+// The attribute carries "url width height", the srcset descriptor shape
+// (clientLogoAttrOf builds it). Dimensions default to 1×1 when a host omits
+// them.
+const parseLogoAttr = (value: string): CursorLogo => {
+  const [url = "", width = "", height = ""] = value.trim().split(/\s+/);
+  const w = Number(width);
+  const h = Number(height);
+  return {
+    url,
+    width: Number.isFinite(w) && w > 0 ? w : 1,
+    height: Number.isFinite(h) && h > 0 ? h : 1,
+  };
+};
+
 /**
  * The Cursor (CONTEXT.md): the Public site's own pointer — a rounded,
- * semi-transparent white pill resting as a top-left arrow, widening around
- * a "See More" label over Selected Works cards (`data-cursor="see-more"`)
- * and around a "Play" label over playable Embedded Videos
- * (`data-cursor="play"`). Entirely decorative: aria-hidden,
- * pointer-events-none, and clicks always land on whatever it floats over.
- * The [data-custom-cursor] flag it sets on <html> hides the system pointer
- * via globals.css — only once this component is actually driving, so no-JS
- * and touch visitors keep the pointer they came with.
+ * semi-transparent black pill resting as a top-left arrow, widening around
+ * a "See More" label over Selected Works cards (`data-cursor="see-more"`),
+ * around a "Play" label over playable Embedded Videos (`data-cursor="play"`),
+ * and around a Work's Client Logo over its cards
+ * (`data-cursor-logo="url width height"`, which replaces the card's own See
+ * More). Entirely decorative: aria-hidden, pointer-events-none, and clicks
+ * always land on whatever it floats over. The [data-custom-cursor] flag it
+ * sets on <html> hides the system pointer via globals.css — only once this
+ * component is actually driving, so no-JS and touch visitors keep the
+ * pointer they came with.
  */
 export const Cursor = () => {
   const rootRef = useRef<HTMLDivElement>(null);
   const pillRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
+  const logoImgRef = useRef<HTMLImageElement>(null);
   const arrowRef = useRef<SVGSVGElement>(null);
 
   const canShow = useSyncExternalStore(
@@ -86,8 +109,9 @@ export const Cursor = () => {
       const root = rootRef.current;
       const pill = pillRef.current;
       const label = labelRef.current;
+      const logoImg = logoImgRef.current;
       const arrow = arrowRef.current;
-      if (!root || !pill || !label || !arrow) return;
+      if (!root || !pill || !label || !logoImg || !arrow) return;
 
       document.documentElement.dataset.customCursor = "";
 
@@ -107,6 +131,9 @@ export const Cursor = () => {
       // flips on every element boundary the pointer crosses, and none of
       // those crossings ever change what React renders.
       let mode: CursorMode = "default";
+      // The logo currently shown, so sliding between two adjacent logo
+      // cards — same mode, new artwork — still swaps it.
+      let currentLogoUrl: string | null = null;
       let moved = false;
 
       const setVisible = (visible: boolean) =>
@@ -116,10 +143,35 @@ export const Cursor = () => {
           overwrite: "auto",
         });
 
-      const morphTo = (next: CursorMode) => {
-        if (next === mode) return;
+      // Every state returns what the other modes opened to: these are the
+      // collapses the label and the logo rest in, shared by the branches
+      // below so no mode ever leaves the other's artwork behind.
+      const collapseLabel = () =>
+        gsap.to(label, {
+          maxWidth: 0,
+          paddingRight: 0,
+          opacity: 0,
+          duration: MORPH_DURATION,
+          ease: "swipe",
+        });
+      const collapseLogo = () =>
+        gsap.to(logoImg, {
+          maxWidth: 0,
+          opacity: 0,
+          duration: MORPH_DURATION,
+          ease: "swipe",
+        });
+
+      const morphTo = (next: CursorMode, logo?: CursorLogo) => {
+        if (
+          next === mode &&
+          !(next === "logo" && logo && logo.url !== currentLogoUrl)
+        ) {
+          return;
+        }
         mode = next;
         if (next === "see-more" || next === "play") {
+          currentLogoUrl = null;
           // Measure the label's natural box synchronously, mid-frame —
           // unclipped and stripped of the gap for the read, clipped again
           // before paint — so the pill tweens between two pixel widths
@@ -148,24 +200,65 @@ export const Cursor = () => {
             // See More aims the arrow at the top right beside the label;
             // Play aims it straight right — the direction playback goes.
             rotate: next === "see-more" ? 90 : 135,
+            // Restored in case the previous mode was a logo, which withdraws
+            // the arrow entirely.
+            width: ARROW_WIDTH,
+            opacity: 1,
+            duration: MORPH_DURATION,
+            ease: "swipe",
+          });
+          collapseLogo();
+        } else if (next === "logo" && logo) {
+          currentLogoUrl = logo.url;
+          // The width/height attributes state the box's ratio before the
+          // file loads, so the measure below is correct on the very first
+          // hover — modern browsers read the aspect off them.
+          logoImg.width = logo.width;
+          logoImg.height = logo.height;
+          if (logoImg.getAttribute("src") !== logo.url) {
+            logoImg.src = logo.url;
+          }
+          // The label's synchronous measure, again: unclipped for the read,
+          // clipped again before paint, so the pill tweens between two pixel
+          // widths no matter how far a previous morph got.
+          gsap.set(logoImg, { maxWidth: "none" });
+          const logoWidth = logoImg.offsetWidth;
+          gsap.set(logoImg, { maxWidth: 0 });
+          gsap.to(pill, {
+            width: PILL_REST_WIDTH + logoWidth,
+            duration: MORPH_DURATION,
+            ease: "swipe",
+          });
+          gsap.to(logoImg, {
+            maxWidth: logoWidth,
+            opacity: 1,
+            duration: MORPH_DURATION,
+            ease: "swipe",
+          });
+          // The logo rides alone: the label collapses and the arrow
+          // withdraws entirely rather than rotating — a Client Logo needs
+          // no direction.
+          collapseLabel();
+          gsap.to(arrow, {
+            width: 0,
+            opacity: 0,
+            rotate: 0,
             duration: MORPH_DURATION,
             ease: "swipe",
           });
         } else {
+          currentLogoUrl = null;
           gsap.to(pill, {
             width: PILL_REST_WIDTH,
             duration: MORPH_DURATION,
             ease: "swipe",
           });
-          gsap.to(label, {
-            maxWidth: 0,
-            paddingRight: 0,
-            opacity: 0,
-            duration: MORPH_DURATION,
-            ease: "swipe",
-          });
+          collapseLabel();
+          collapseLogo();
           gsap.to(arrow, {
             rotate: 0,
+            width: ARROW_WIDTH,
+            opacity: 1,
             duration: MORPH_DURATION,
             ease: "swipe",
           });
@@ -189,11 +282,26 @@ export const Cursor = () => {
       const onMouseOver = (event: MouseEvent) => {
         if (!(event.target instanceof Element)) return;
         if (event.target.closest(EDITABLE_SELECTOR)) morphTo("hidden");
-        else if (event.target.closest("[data-cursor='see-more']"))
-          morphTo("see-more");
-        else if (event.target.closest("[data-cursor='play']"))
-          morphTo("play");
-        else morphTo("default");
+        else {
+          // The logo leads the chain: on a Selected Works card it shares the
+          // link with See More and replaces it (a Work without a Client Logo
+          // never renders the attribute, so See More keeps the rest). No
+          // cursor target nests inside a logo card today — Play lives in the
+          // Work Detail surfaces — so first match is the whole rule.
+          const logoHost = event.target.closest("[data-cursor-logo]");
+          if (logoHost) {
+            morphTo(
+              "logo",
+              parseLogoAttr(
+                logoHost.getAttribute("data-cursor-logo") ?? "",
+              ),
+            );
+          } else if (event.target.closest("[data-cursor='see-more']"))
+            morphTo("see-more");
+          else if (event.target.closest("[data-cursor='play']"))
+            morphTo("play");
+          else morphTo("default");
+        }
       };
 
       const onMouseDown = () =>
@@ -258,6 +366,17 @@ export const Cursor = () => {
         >
           See More
         </span>
+        {/* The Client Logo mode's artwork: src set imperatively from the
+            hovered card's [data-cursor-logo] payload, its box sized by the
+            h-5 and the intrinsic ratio the payload's width/height state. A
+            plain img — the Cursor is decorative (aria-hidden) and the src is
+            dynamic, so next/image has nothing to offer it. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          alt=""
+          className="h-5 w-auto max-w-0 opacity-0"
+          ref={logoImgRef}
+        />
         <svg
           aria-hidden="true"
           className="h-4.5 w-4.5 shrink-0 text-white"

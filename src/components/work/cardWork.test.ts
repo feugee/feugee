@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Asset, Work } from "@/payload-types";
 
-import { toCardWork } from "./cardWork";
+import { toCardWork, clientLogoAttrOf } from "./cardWork";
 import { VIDEO_ASPECT_FALLBACK } from "./visual";
 
 const imageAsset = (overrides: Partial<Asset> = {}): Asset =>
@@ -100,7 +100,70 @@ describe("toCardWork", () => {
         height: 900,
         alt: "An image",
       },
+      clientLogo: null,
     });
+  });
+
+  it("carries the Work's Client Logo for the Cursor", () => {
+    const card = toCardWork(
+      work({
+        clientLogo: imageAsset({
+          id: 6,
+          url: "/assets/client.svg",
+          mimeType: "image/svg+xml",
+          width: 240,
+          height: 80,
+        }),
+      }),
+    );
+
+    expect(card?.clientLogo).toEqual({
+      url: "/assets/client.svg",
+      width: 240,
+      height: 80,
+    });
+  });
+
+  it("falls back to 1×1 for a Client Logo Payload could not measure (SVG)", () => {
+    const card = toCardWork(
+      work({
+        clientLogo: imageAsset({
+          id: 6,
+          url: "/assets/client.svg",
+          mimeType: "image/svg+xml",
+          width: null,
+          height: null,
+        }),
+      }),
+    );
+
+    expect(card?.clientLogo).toEqual({
+      url: "/assets/client.svg",
+      width: 1,
+      height: 1,
+    });
+  });
+
+  it("maps a shallow-populated Client Logo to null", () => {
+    expect(toCardWork(work({ clientLogo: 9 }))?.clientLogo).toBeNull();
+  });
+
+  it("maps a Client Logo without a URL to null", () => {
+    expect(
+      toCardWork(work({ clientLogo: imageAsset({ id: 6, url: "" }) }))
+        ?.clientLogo,
+    ).toBeNull();
+  });
+
+  it("maps a missing Client Logo to null", () => {
+    expect(toCardWork(work({ clientLogo: undefined }))?.clientLogo).toBeNull();
+  });
+
+  it("builds the data-cursor-logo payload from the Client Logo", () => {
+    expect(
+      clientLogoAttrOf({ url: "/assets/client.svg", width: 240, height: 80 }),
+    ).toBe("/assets/client.svg 240 80");
+    expect(clientLogoAttrOf(null)).toBeUndefined();
   });
 
   it("falls back to 1×1 for an image Thumbnail Payload could not measure", () => {

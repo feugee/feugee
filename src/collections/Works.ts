@@ -94,6 +94,16 @@ export const Works: CollectionConfig = {
       type: "text",
     },
     {
+      name: "clientLogo",
+      type: "upload",
+      relationTo: "assets",
+      filterOptions: () => ({ mimeType: { like: "image/" } }),
+      admin: {
+        description:
+          "The Client's logo, shown by the Cursor over this Work's cards. Image only — SVG especially welcome.",
+      },
+    },
+    {
       name: "sector",
       type: "relationship",
       relationTo: "sectors",

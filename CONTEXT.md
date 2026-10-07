@@ -113,7 +113,7 @@ A thin fixed bar at the top of a public page that fills left to right as the vis
 _Avoid_: Progress indicator, reading bar, scroll tracker
 
 **Cursor**:
-The Public site's own pointer, standing in for the system's on hover-capable devices: a rounded, semi-transparent white pill carrying a white arrow aimed at the top left. Its anchor — the point the visitor aims by, since the system pointer is hidden — is the pill's center, which sits exactly under the system pointer's position in every state. Over the cards in Selected Works it widens around a "See More" label while the arrow turns to aim at the top right.
+The Public site's own pointer, standing in for the system's on hover-capable devices: a rounded, semi-transparent black pill carrying a white arrow aimed at the top left. Its anchor — the point the visitor aims by, since the system pointer is hidden — is the pill's center, which sits exactly under the system pointer's position in every state. Over the cards in Selected Works it widens around a "See More" label while the arrow turns to aim at the top right; over playable Embedded Videos it widens around a "Play" label with the arrow aiming straight right; over a Work's card placements carrying a Client Logo it widens around that logo alone, the arrow withdrawn — falling back to its usual state on Works without one.
 _Avoid_: Custom cursor, mouse follower, cursor dot
 
 **Blackout**:
@@ -167,6 +167,10 @@ _Avoid_: Client, owner, user
 **Client**:
 The external company a Work was made for. Distinct from the Agency and from a site visitor.
 _Avoid_: Customer, brand, partner
+
+**Client Logo**:
+An image Asset showing the Client a Work was made for, uploaded to the Work itself and shown by the Cursor over that Work's card placements. Distinct from the Clients collection's logos, which feed the Client Marquee.
+_Avoid_: Brand mark, client icon, work logo
 
 **Asset**:
 An uploaded image or video file managed by the CMS and referenced by site content.

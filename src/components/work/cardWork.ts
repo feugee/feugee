@@ -1,6 +1,27 @@
 import type { Work } from "@/payload-types";
 
-import { workThumbnailOf, type CardVisual } from "./visual";
+import { populatedAssetOf, workThumbnailOf, type CardVisual } from "./visual";
+
+/**
+ * A Work's Client Logo (CONTEXT.md) resolved to what the Cursor consumes:
+ * the URL and the intrinsic dimensions that size the logo's box before the
+ * file itself has loaded.
+ */
+export type CardClientLogo = {
+  url: string;
+  width: number;
+  height: number;
+};
+
+/**
+ * The [data-cursor-logo] payload — "url width height", the srcset descriptor
+ * shape. The Cursor parses the intrinsic ratio out of it to size the logo's
+ * box from the attributes alone, no load required.
+ */
+export const clientLogoAttrOf = (
+  logo: CardClientLogo | null,
+): string | undefined =>
+  logo ? `${logo.url} ${logo.width} ${logo.height}` : undefined;
 
 /**
  * The core of every Work card surface — exactly the fields a card needs
@@ -13,6 +34,7 @@ export type CardWork = {
   slug: string;
   title: string;
   visual: CardVisual;
+  clientLogo: CardClientLogo | null;
 };
 
 /**
@@ -40,10 +62,15 @@ export const toCardWork = (
   const resolved = visual ?? workThumbnailOf(work);
   if (resolved === null) return null;
 
+  const logo = populatedAssetOf(work.clientLogo);
   return {
     id: work.id,
     slug: work.slug ?? "",
     title: work.title,
     visual: resolved,
+    clientLogo:
+      logo && typeof logo.url === "string" && logo.url.length > 0
+        ? { url: logo.url, width: logo.width ?? 1, height: logo.height ?? 1 }
+        : null,
   };
 };

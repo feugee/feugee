@@ -1,0 +1,3 @@
+# A Work carries its own Client Logo, separate from the Clients collection
+
+The Cursor shows a Work's Client Logo over the Work's cards (Selected Works, the Works Page's Work Cards, the Footer's Other Works), and that logo is an upload field on the Work itself — deliberately not a relationship to the existing Clients collection, whose logos feed only the Client Marquee. The Work's `client` field stays free text, so there is nothing to join on without restructuring it and reshaping how the Agency edits every Work; per-Work uploads keep the Cursor self-contained at the accepted cost of a client appearing in both the Marquee and a Work uploading its logo twice.

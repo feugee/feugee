@@ -13,6 +13,7 @@ import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { AutoVideo } from "@/components/AutoVideo";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { SectionHeading } from "@/components/SectionHeading";
+import { clientLogoAttrOf } from "@/components/work";
 
 import { clipInsetsFor, formatClipPath, type Rect } from "./captionClip";
 import { MEDIA_OVERSHOOT, driftTravelPercent } from "./mediaDrift";
@@ -41,6 +42,10 @@ const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
   <Link
     className="relative block h-svh overflow-hidden"
     data-cursor="see-more"
+    /* A Work with a Client Logo trades the See More label for it — the
+       attribute rides the link only when the logo exists, so the Cursor's
+       fallback chain keeps See More for the rest. */
+    data-cursor-logo={clientLogoAttrOf(item.clientLogo)}
     data-work-card
     href={`/works/${item.slug}`}
     id={item.slug}
