@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Work } from "@/payload-types";
 
 import { AutoVideo } from "@/components/AutoVideo";
+import { badgeOf } from "@/components/work";
 import { InteractiveYouTube } from "@/components/InteractiveYouTube";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
@@ -42,6 +43,7 @@ const MetaList = ({ label, values }: { label: string; values: string[] }) => (
 // the published doc; the preview route hands it the Live Preview stream.
 export const WorkDetail = ({ data }: { data: Work }) => {
   const sections = useMemo(() => data.sections ?? [], [data.sections]);
+  const badge = badgeOf(data.badge);
   const sectorName =
     typeof data.sector === "object" && data.sector !== null
       ? data.sector.name
@@ -258,6 +260,46 @@ export const WorkDetail = ({ data }: { data: Work }) => {
           </section>
         ) : null}
       </div>
+
+      {/* The Badge (CONTEXT.md) at the viewport's right edge, its top flush
+          with the Back button's — both sit at the aside's sticky top-32.
+          The Work Card ribbon's hover reveal as the permanent state: the
+          grid track pinned at 1fr, no transition, the name readable with
+          no interaction on every viewport. Last child so tree order lifts
+          its z-auto fixed layer over the page's positioned media (the hero
+          and Section visuals are relative siblings painted later than an
+          earlier fixed node would be) while every explicit-z overlay still
+          covers it — the Menu veil (z-35), Navbar (z-40), Scroll Progress
+          Bar (z-50), Menu panel (z-55), Blackout (z-[60]), Cursor
+          (z-[70]) — and pointer-events-none keeps the content scrolling
+          beneath it clickable. The name is aria-hidden because the icon's
+          alt already carries it, as on the card. */}
+      {badge && (
+        <span
+          className="pointer-events-none fixed right-0 top-32 flex h-10 items-center pl-4 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
+          style={{ backgroundColor: badge.color }}
+        >
+          {/* As uploaded — unoptimized like the Work Card's badge and the
+              Client Marquee's logos, since the optimizer refuses the SVGs
+              badges are likely to be. */}
+          <Image
+            alt={badge.name}
+            className="size-5 lg:size-6 object-contain"
+            height={24}
+            src={badge.iconUrl}
+            unoptimized
+            width={24}
+          />
+          <span
+            aria-hidden="true"
+            className="grid max-w-48 grid-cols-[minmax(0,1fr)]"
+          >
+            <span className="min-w-0 overflow-hidden pl-3 whitespace-nowrap text-xs lg:text-base">
+              {badge.name}
+            </span>
+          </span>
+        </span>
+      )}
     </div>
   );
 };

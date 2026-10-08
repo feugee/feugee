@@ -15,7 +15,7 @@ export const Badges: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     description:
-      "Short markers Works can wear on their Works Page card — one per Work. Renaming or recoloring a Badge updates every Work wearing it.",
+      "Short markers Works can wear on their Works Page card and at the right of their Work Detail Page — one per Work. Renaming or recoloring a Badge updates every Work wearing it.",
     defaultColumns: ["name", "icon", "color"],
   },
   access: {
@@ -32,7 +32,7 @@ export const Badges: CollectionConfig = {
       required: true,
       admin: {
         description:
-          "The Badge's meaning — the name revealed beside the icon on the Work Card's ribbon, always shown on phone and tablet; doubles as the icon's screen-reader label.",
+          "The Badge's meaning — shown beside the icon on the Work Card's ribbon (revealed on hover on desktop, always shown on phone and tablet) and pinned open at the right of the Work Detail Page; doubles as the icon's screen-reader label.",
       },
     },
     {

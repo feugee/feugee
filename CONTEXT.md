@@ -73,7 +73,7 @@ A card in the Works Page's listing presenting one Work — its Thumbnail, title,
 _Avoid_: Portfolio tile, project card, work tile
 
 **Badge**:
-A short, reusable marker the Agency attaches to a Work — a name, an icon, and a color. At most one per Work; renaming or recoloring a Badge updates every Work that references it. Distinct from Sector, the Works Page's filter facet, and Expertise, the disciplines applied to a Work.
+A short, reusable marker the Agency attaches to a Work — a name, an icon, and a color. At most one per Work; renaming or recoloring a Badge updates every Work that references it. Shown on the Work Card, and fixed at the right of the Work Detail Page on every viewport — icon and name shown together, readable with no interaction. Distinct from Sector, the Works Page's filter facet, and Expertise, the disciplines applied to a Work.
 _Avoid_: Tag, label, ribbon, sticker
 
 **Work Detail Page**:

@@ -5,6 +5,7 @@
  * video/poster discrimination, the aspect fallbacks) is implementation.
  */
 export { toCardWork, type CardWork } from "./cardWork";
+export { badgeOf, type CardBadge } from "./badge";
 export {
   asAssetsSelect,
   asClientsSelect,

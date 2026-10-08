@@ -19,7 +19,7 @@ import { AutoVideo } from "@/components/AutoVideo";
 import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
 import { ScrollProgress } from "@/components/ScrollProgress";
-import type { CardWork } from "@/components/work";
+import type { CardBadge, CardWork } from "@/components/work";
 
 import { reduceFilterSwap } from "./filterSwap";
 import { SectorFilter } from "./SectorFilter";
@@ -31,14 +31,6 @@ gsap.registerPlugin(useGSAP, CustomEase);
 // Cursor's morph. cubic-bezier(0.65, 0, 0.35, 1), stated in CustomEase's
 // native path form.
 CustomEase.create("swipe", "M0,0 C0.65,0 0.35,1 1,1");
-
-/** A Badge resolved to exactly what the Work Card's ribbon renders — the
- * icon Asset's URL, the fill, and the name revealed beside the icon. */
-export interface CardBadge {
-  name: string;
-  color: string;
-  iconUrl: string;
-}
 
 export interface WorksListItem extends CardWork {
   firstExpertise: string | null;

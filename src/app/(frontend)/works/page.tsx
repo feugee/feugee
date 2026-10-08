@@ -5,14 +5,13 @@ import { getPayload } from "payload";
 
 import type { Sector, Work } from "@/payload-types";
 
-import { toCardWork, workThumbnailOf, asWorkSelect, listingWorksSelect } from "@/components/work";
+import { toCardWork, workThumbnailOf, asWorkSelect, listingWorksSelect, badgeOf } from "@/components/work";
 import { getFooterGlobal } from "@/components/footer-data";
 import { type OgImage, videoSourceOgOf } from "@/seo/ogImage";
 import { pageMetadata } from "@/seo/metadata";
 import { BackToTop } from "./BackToTop";
 import {
   WorksListing,
-  type CardBadge,
   type SectorOption,
   type WorksListItem,
 } from "./WorksListing";
@@ -28,23 +27,6 @@ const sectorSlugOf = (
   typeof sector === "object" && sector !== null
     ? sector.slug ?? String(sector.id)
     : null;
-
-// The ribbon renders only a whole Badge — a bare relationship id, or an icon
-// Asset without a URL, leaves the card unchanged.
-const badgeOf = (badge: Work["badge"]): CardBadge | null => {
-  if (typeof badge !== "object" || badge === null) return null;
-  const { name, color, icon } = badge;
-  if (
-    typeof name !== "string" ||
-    typeof color !== "string" ||
-    typeof icon !== "object" ||
-    icon === null ||
-    typeof icon.url !== "string"
-  ) {
-    return null;
-  }
-  return { name, color, iconUrl: icon.url };
-};
 
 // The card guards live in toCardWork; this adds only what the Works Page's
 // masonry cards display. Its published check is belt-and-braces — the query
