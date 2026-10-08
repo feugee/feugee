@@ -174,7 +174,7 @@ const WorkCard = ({
     <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end rounded-md overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-400 ease-swipe group-hover/card:opacity-100" />
       <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-400 ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
-      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 rounded-md overflow-hidden">
+      <div className="relative flex w-full items-baseline justify-between gap-4 p-6 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 rounded-md overflow-hidden">
         <h2 className="text-2xl text-white font-medium">{item.title}</h2>
         {item.firstExpertise && (
           <span className="text-[18px] text-white">{item.firstExpertise}</span>
@@ -196,14 +196,14 @@ const WorkCard = ({
         own. */}
     {item.badge && (
       <span
-        className="absolute right-0 top-3 flex h-10 items-center pl-4 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
+        className="absolute right-0 top-6 flex h-10 items-center pl-4 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
         style={{ backgroundColor: item.badge.color }}
       >
         {/* As uploaded — unoptimized like the Client Marquee's logos, since
             the optimizer refuses the SVGs badges are likely to be. */}
         <Image
           alt={item.badge.name}
-          className="size-6 object-contain"
+          className="size-5 lg:size-6 object-contain"
           height={24}
           src={item.badge.iconUrl}
           unoptimized
@@ -213,7 +213,7 @@ const WorkCard = ({
           aria-hidden="true"
           className="grid max-w-48 grid-cols-[minmax(0,0fr)] opacity-0 transition-[grid-template-columns,opacity] duration-400 ease-swipe group-hover/card:grid-cols-[minmax(0,1fr)] group-hover/card:opacity-100 max-lg:grid-cols-[minmax(0,1fr)] max-lg:opacity-100"
         >
-          <span className="min-w-0 overflow-hidden pl-3 whitespace-nowrap">
+          <span className="min-w-0 overflow-hidden pl-3 whitespace-nowrap text-xs lg:text-base">
             {item.badge.name}
           </span>
         </span>
@@ -361,9 +361,7 @@ export const WorksListing = ({
       if (!list) return;
 
       if (swap.exiting) {
-        const cards = list.querySelectorAll<HTMLElement>(
-          "[data-work-card-id]",
-        );
+        const cards = list.querySelectorAll<HTMLElement>("[data-work-card-id]");
         // The machine only raises an exit over a stage holding cards; if
         // that invariant ever breaks, raise the completion anyway rather
         // than stick inert and empty forever.
