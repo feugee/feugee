@@ -135,7 +135,7 @@ const WorkCard = ({
   onHoverEnd: () => void;
 }) => (
   <Link
-    className="group/card relative block rounded-md overflow-hidden"
+    className="group/card relative block lg:rounded-md overflow-hidden"
     data-work-card
     data-work-card-id={item.id}
     data-cursor-logo={item.clientLogo ?? undefined}
@@ -163,10 +163,10 @@ const WorkCard = ({
         because blend and opacity compose on the same element. Timings ride
         the site-wide swipe curve: the grayscale dimming at 600ms, the
         caption's arrival and mirrored exit at 400ms. */}
-    <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end rounded-md overflow-hidden">
+    <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end lg:rounded-md overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-400 ease-swipe group-hover/card:opacity-100" />
       <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-400 ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
-      <div className="relative flex w-full items-baseline justify-between gap-4 p-6 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 rounded-md overflow-hidden">
+      <div className="relative flex w-full items-baseline justify-between gap-4 p-6 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 lg:rounded-md overflow-hidden">
         <h2 className="text-2xl text-white font-medium">{item.title}</h2>
         {item.firstExpertise && (
           <span className="text-[18px] text-white">{item.firstExpertise}</span>
