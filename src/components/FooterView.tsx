@@ -189,7 +189,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
       {hasFooterCtaContent(cta) && (
         <section
           aria-label="Contact CTA"
-          className="flex w-full flex-col items-center justify-center gap-y-8 py-24 text-center md:gap-y-12 md:py-32"
+          className="flex w-full flex-col items-center justify-center gap-y-8 py-16 lg:py-24 text-center md:gap-y-12 md:py-32"
         >
           <div className="flex flex-col gap-y-6 items-center text-center">
             {cta.eyebrow && (
@@ -209,7 +209,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
           {(cta.actionLabel !== null || cta.secondaryActionLabel !== null) && (
             /* Both buttons share the row; each renders only with its label
                 filled, so an empty secondary label leaves the primary alone. */
-            <div className="flex flex-wrap items-center justify-center gap-4">
+            <div className="flex flex-col-reverse lg:flex-row flex-wrap items-center justify-center gap-4">
               {cta.secondaryActionLabel !== null && (
                 <CtaButton
                   label={cta.secondaryActionLabel}
