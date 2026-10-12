@@ -276,7 +276,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
           alt already carries it, as on the card. */}
       {badge && (
         <span
-          className="pointer-events-none fixed right-0 top-32 flex h-10 items-center pl-4 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
+          className="pointer-events-none fixed right-0 top-32 flex h-10 items-center pl-6 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
           style={{ backgroundColor: badge.color }}
         >
           {/* As uploaded — unoptimized like the Work Card's badge and the

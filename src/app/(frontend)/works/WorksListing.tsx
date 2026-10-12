@@ -166,10 +166,14 @@ const WorkCard = ({
     <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end lg:rounded-md overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-400 ease-swipe group-hover/card:opacity-100" />
       <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-400 ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
-      <div className="relative flex w-full items-baseline justify-between gap-4 p-6 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 lg:rounded-md overflow-hidden">
-        <h2 className="text-2xl text-white font-medium">{item.title}</h2>
+      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 lg:p-6 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 lg:rounded-md overflow-hidden">
+        <h2 className="text-lg lg:text-2xl text-white font-medium">
+          {item.title}
+        </h2>
         {item.firstExpertise && (
-          <span className="text-[18px] text-white">{item.firstExpertise}</span>
+          <span className="text-sm lg:text-lg text-white text-right">
+            {item.firstExpertise}
+          </span>
         )}
       </div>
     </div>
@@ -188,7 +192,7 @@ const WorkCard = ({
         own. */}
     {item.badge && (
       <span
-        className="absolute right-0 top-6 flex h-10 items-center pl-4 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
+        className="absolute right-0 top-6 flex h-10 items-center pl-6 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
         style={{ backgroundColor: item.badge.color }}
       >
         {/* As uploaded — unoptimized like the Client Marquee's logos, since

@@ -18,9 +18,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 export interface HeroSlide {
   id: string;
-  video:
-    | { type: "file"; url: string }
-    | { type: "youtube"; videoId: string };
+  video: { type: "file"; url: string } | { type: "youtube"; videoId: string };
   posterUrl: string | null;
   alt: string;
 }
@@ -208,7 +206,7 @@ export const HeroSlider = ({
             re-announce every few seconds — so a static sr-only twin carries
             the full title to assistive tech and crawlers. */}
         <h1
-          className="text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl 3xl:text-7xl leading-[1.15] tracking-tight text-white"
+          className="text-[32px] lg:text-4xl xl:text-5xl 2xl:text-6xl 3xl:text-7xl leading-[1.15] tracking-tight text-white"
           style={{ ["--title-line" as string]: `${TITLE_LINE_EM}em` }}
         >
           <span aria-hidden="true">

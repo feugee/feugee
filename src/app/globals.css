@@ -113,8 +113,9 @@
  */
 @theme {
   --animate-marquee: marquee 36s linear infinite;
-  --animate-marquee-up: marquee-up 8s linear infinite;
-  --animate-marquee-down: marquee-down 8s linear infinite;
+  --animate-marquee-up: marquee-up 12s linear infinite;
+  --animate-marquee-up-mobile: marquee-up 24s linear infinite;
+  --animate-marquee-down: marquee-down 12s linear infinite;
 
   @keyframes marquee {
     to {

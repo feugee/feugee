@@ -77,7 +77,9 @@ const MarqueeColumn = ({
   <div className="group/col h-120 flex-1 overflow-hidden mask-[linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)] md:h-[75svh]">
     <div
       className={`flex flex-col ${
-        direction === "up" ? "animate-marquee-up" : "animate-marquee-down"
+        direction === "up"
+          ? "animate-marquee-up-mobile lg:animate-marquee-up"
+          : "animate-marquee-down"
       }`}
     >
       <TestimonialList items={items} />
@@ -113,7 +115,7 @@ export const TestimonialsSection = ({
             <h2 className="text-md text-white">{heading}</h2>
           </div>
           {description && (
-            <p className="mt-6 text-sm leading-relaxed text-white md:text-2xl">
+            <p className="mt-6 text-xl leading-relaxed text-white md:text-2xl">
               {description}
             </p>
           )}

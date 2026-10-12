@@ -115,10 +115,10 @@ export const WhoWeAreSection = ({
   return (
     <section
       aria-label={heading}
-      className="p-6 md:p-16 mx-auto max-w-360"
+      className="px-6 pt-6 pb-12  md:p-16 mx-auto max-w-360"
       ref={scopeRef}
     >
-      <div className="flex flex-col gap-10 md:flex-row">
+      <div className="flex flex-col gap-y-6 lg:gap-12 md:flex-row">
         <div className="w-full md:w-[30%]">
           <div className="inline-flex rounded border border-neutral-700 px-4 py-2">
             <h2 className="text-md text-white">{heading}</h2>
@@ -127,7 +127,7 @@ export const WhoWeAreSection = ({
         <div className="w-full md:w-[70%]">
           {description && (
             <p
-              className="text-3xl text-white md:text-[40px] leading-[1.2em]"
+              className="text-2xl text-white md:text-[40px] leading-[1.2em]"
               ref={textRef}
             >
               {words.map((word, index) => (
@@ -142,17 +142,19 @@ export const WhoWeAreSection = ({
           )}
           {items.length > 0 && (
             <ul
-              className={`grid grid-cols-2 gap-x-6 gap-y-10 md:flex md:gap-24 ${
-                description ? "mt-8 md:mt-12" : ""
+              className={`flex flex-col items-center gap-x-6 gap-y-12 lg:flex lg:flex-row lg:gap-24 ${
+                description ? "mt-12" : ""
               }`}
               ref={statsRef}
             >
               {items.map((stat, index) => (
                 <li data-stat-item key={stat.id ?? index}>
-                  <p className="text-5xl font-semibold text-secondary-500 md:text-7xl">
+                  <p className="text-[64px] font-semibold text-secondary-500 lg:text-7xl">
                     <span data-stat-value>{stat.value}</span>
                   </p>
-                  <p className="mt-3 text-xl text-neutral-300">{stat.label}</p>
+                  <p className="mt-3 text-xl text-neutral-300 text-center lg:text-left">
+                    {stat.label}
+                  </p>
                 </li>
               ))}
             </ul>

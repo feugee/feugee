@@ -54,11 +54,7 @@ const WorkCard = ({
     onNavigate={(event) => navigateWithBlackout(event, `/works/${item.slug}`)}
   >
     <div
-      className={`${
-        isFirst
-          ? "aspect-3/4 md:aspect-square"
-          : "aspect-4/3 md:aspect-4/3 lg:aspect-square"
-      } w-full overflow-hidden rounded bg-neutral-800`}
+      className={`aspect-4/3 md:aspect-4/3 lg:aspect-square w-full overflow-hidden rounded bg-neutral-800`}
     >
       {item.visual.kind === "video" ? (
         item.visual.source.type === "youtube" ? (
@@ -91,7 +87,7 @@ const WorkCard = ({
         />
       )}
     </div>
-    <div className="mt-4 space-y-3">
+    <div className="mt-4 space-y-1.5 lg:space-y-3">
       <p className="text-xl text-white font-bold">{item.title}</p>
       {item.subtitle && (
         <span className="text-base text-neutral-500">{item.subtitle}</span>
@@ -246,7 +242,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
               <h2 className="text-base text-neutral-500">
                 {otherWorksHeading}
               </h2>
-              <div className="w-full flex flex-col gap-y-4 gap-x-1 md:flex-row md:justify-end md:items-start">
+              <div className="w-full flex flex-col gap-y-4 gap-x-6 md:flex-row md:justify-end md:items-start">
                 {otherWorks.map((item, index) => (
                   <WorkCard isFirst={index === 0} item={item} key={item.id} />
                 ))}

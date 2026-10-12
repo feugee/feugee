@@ -18,7 +18,7 @@ export const SectionHeading = ({
   sticky?: boolean;
 }) => (
   <div
-    className={`flex w-full justify-center pb-12 md:pb-16${sticky ? " sticky top-32 z-20" : ""}`}
+    className={`flex w-full justify-center pb-6 md:pb-16${sticky ? " sticky top-32 z-20" : ""}`}
   >
     <div className="rounded border border-neutral-700 bg-neutral-950/70 px-4 py-2 backdrop-blur">
       <h2 className="text-md text-center text-white">{children}</h2>
