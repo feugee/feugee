@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Asset, Work } from "@/payload-types";
 
-import { sizedUrlOf, videoSourceVisualOf, workThumbnailOf } from "./visual";
+import { sizedUrlOf, sizedVariantOf, videoSourceVisualOf, workThumbnailOf } from "./visual";
 
 const ladder = (prefix: string, ratio = 400 / 640) => ({
   thumbnail: {
@@ -120,6 +120,43 @@ describe("sizedUrlOf", () => {
     expect(sizedUrlOf(asset, "tablet")).toBe(
       "/api/assets/file/original-1600x1000.webp",
     );
+  });
+});
+
+describe("sizedVariantOf", () => {
+  it("pairs the requested variant's url with its own dimensions", () => {
+    expect(sizedVariantOf(sizedAsset(), "desktop")).toEqual({
+      url: "/api/assets/file/original-1600x1000.webp",
+      width: 1600,
+      height: 1000,
+    });
+  });
+
+  it("pairs the closest stand-in variant's dimensions when the requested size was skipped", () => {
+    const asset = sizedAsset({
+      width: 1200,
+      height: 750,
+      sizes: {
+        thumbnail: sizedAsset().sizes!.thumbnail,
+        tablet: sizedAsset().sizes!.tablet,
+        desktop: undefined,
+        wide: undefined,
+      },
+    });
+
+    expect(sizedVariantOf(asset, "wide")).toEqual({
+      url: "/api/assets/file/original-1024x640.webp",
+      width: 1024,
+      height: 640,
+    });
+  });
+
+  it("pairs the original's dimensions when there is no variant to serve", () => {
+    expect(sizedVariantOf(sizedAsset({ sizes: undefined }), "wide")).toEqual({
+      url: "/api/assets/file/original.png",
+      width: 3200,
+      height: 2000,
+    });
   });
 });
 

@@ -7,19 +7,28 @@ import type { Asset, Work } from "@/payload-types";
 export type AssetSizeName = keyof NonNullable<Asset["sizes"]>;
 
 /**
- * The URL of an Asset's variant for a size — the one every public placement
- * should request instead of the original file. Payload skips sizes wider
- * than a small original (and SVGs get none at all), so the pick falls back
- * to the widest variant that does exist and, failing that, to the original
- * url — never worse than the status quo, and dimensions for layout always
- * come from the Asset's own width/height elsewhere. Placements render the
- * picked URL with next/image's `unoptimized` — the optimizer would only
- * re-encode an already-sized variant.
+ * A picked placement: the url to request plus the dimensions that pair with
+ * it — the variant's own when a variant serves, the original's otherwise.
+ * Advertised dimensions that don't match the served file mislead layout and
+ * crawlers alike.
  */
-export const sizedUrlOf = (
-  asset: Asset,
-  size: AssetSizeName,
-): string | null => {
+export type SizedVariant = {
+  url: string | null;
+  width: number | null;
+  height: number | null;
+};
+
+/**
+ * The variant entry an Asset serves for a size, dimensions included — the
+ * one every public placement should request instead of the original file.
+ * Payload skips sizes wider than a small original (and SVGs get none at
+ * all), so the pick falls back to the widest variant that does exist and,
+ * failing that, to the original url with its own dimensions — never worse
+ * than the status quo. Placements render the picked URL with next/image's
+ * `unoptimized` — the optimizer would only re-encode an already-sized
+ * variant.
+ */
+export const sizedVariantOf = (asset: Asset, size: AssetSizeName): SizedVariant => {
   const entries = Object.values(asset.sizes ?? {}).filter(
     (entry): entry is NonNullable<NonNullable<Asset["sizes"]>[AssetSizeName]> =>
       entry != null,
@@ -27,7 +36,9 @@ export const sizedUrlOf = (
   const withUrl = entries.filter((entry) => entry.url != null);
 
   const requested = asset.sizes?.[size];
-  if (requested?.url != null) return requested.url;
+  if (requested?.url != null) {
+    return { url: requested.url, width: requested.width ?? null, height: requested.height ?? null };
+  }
 
   // The requested variant is missing — either skipped (an original narrower
   // than the size gets no variant) or still unregenerated. When its width is
@@ -39,7 +50,9 @@ export const sizedUrlOf = (
     const atLeast = withUrl
       .filter((entry) => (entry.width ?? 0) >= target)
       .sort((a, b) => (a.width ?? 0) - (b.width ?? 0));
-    if (atLeast[0]?.url != null) return atLeast[0].url;
+    if (atLeast[0]?.url != null) {
+      return { url: atLeast[0].url, width: atLeast[0].width ?? null, height: atLeast[0].height ?? null };
+    }
   }
 
   const widest = withUrl.reduce<(typeof withUrl)[number] | null>(
@@ -47,9 +60,21 @@ export const sizedUrlOf = (
       (best?.width ?? 0) < (entry.width ?? 0) ? entry : best,
     null,
   );
+  if (widest?.url != null) {
+    return { url: widest.url, width: widest.width ?? null, height: widest.height ?? null };
+  }
 
-  return widest?.url ?? asset.url ?? null;
+  return { url: asset.url ?? null, width: asset.width ?? null, height: asset.height ?? null };
 };
+
+/**
+ * The URL of an Asset's variant for a size — sizedVariantOf's pick, url only,
+ * for placements that take their dimensions from elsewhere.
+ */
+export const sizedUrlOf = (
+  asset: Asset,
+  size: AssetSizeName,
+): string | null => sizedVariantOf(asset, size).url;
 
 /**
  * Video Assets carry no dimensions — Payload measures images only — so until

@@ -7,8 +7,9 @@ import type { Sector, Work } from "@/payload-types";
 
 import { toCardWork, workThumbnailOf, asWorkSelect, listingWorksSelect, badgeOf } from "@/components/work";
 import { getFooterGlobal } from "@/components/footer-data";
-import { type OgImage, videoSourceOgOf } from "@/seo/ogImage";
+import { type OgImage, seoOgImageOf, videoSourceOgOf } from "@/seo/ogImage";
 import { pageMetadata } from "@/seo/metadata";
+import { getSeoGlobal } from "@/seo/seoGlobal";
 import { BackToTop } from "./BackToTop";
 import {
   WorksListing,
@@ -136,18 +137,27 @@ export default async function Page() {
 }
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const [{ ogImage }, footer] = await Promise.all([
+  const [{ ogImage }, footer, seo] = await Promise.all([
     getWorksPageData(),
     getFooterGlobal(),
+    getSeoGlobal(),
   ]);
 
+  // The chain: the Agency's SEO override, else the first Work's face, else
+  // the site-wide Share Image.
+  const worksPageSeo = seo?.worksPage;
+
   return pageMetadata({
-    title: "Our Works — Feugee",
+    title: worksPageSeo?.title?.trim() || "Our Works — Feugee",
     // The listing has no CMS copy of its own; the About blurb is the
     // agency-managed site description. getFooterGlobal is the layout's own
     // request-cached read — no extra query.
-    description: footer?.about?.description,
+    description:
+      worksPageSeo?.description?.trim() || footer?.about?.description,
     url: "/works",
-    image: ogImage,
+    image:
+      seoOgImageOf(worksPageSeo?.image) ??
+      ogImage ??
+      seoOgImageOf(seo?.shareImage),
   });
 };

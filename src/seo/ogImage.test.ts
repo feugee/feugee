@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { Asset, LandingPage, Work } from "@/payload-types";
 
-import { ogImageOf, heroOgImage, videoSourceOgOf } from "./ogImage";
+import { ogImageOf, heroOgImage, seoOgImageOf, videoSourceOgOf } from "./ogImage";
 
 const imageAsset = (overrides: Partial<Asset> = {}): Asset =>
   ({
@@ -72,6 +72,24 @@ describe("ogImageOf", () => {
     });
   });
 
+  it("reports the picked variant's own dimensions, not the original's", () => {
+    // A mismatched pair — 2082×1920 original, 1600×1476 desktop variant — must
+    // not advertise the original's dimensions for the variant's url: crawlers
+    // crop against the advertised box.
+    const asset = imageAsset({
+      width: 2082,
+      height: 1920,
+      sizes: { desktop: { url: "/d.webp", width: 1600, height: 1476 } },
+    });
+
+    expect(ogImageOf(asset)).toEqual({
+      url: "/d.webp",
+      width: 1600,
+      height: 1476,
+      alt: "An image",
+    });
+  });
+
   it("falls back to the original when the Asset has no variants", () => {
     expect(ogImageOf(imageAsset())).toEqual({
       url: "/api/files/assets/original.png",
@@ -112,6 +130,62 @@ describe("ogImageOf", () => {
     expect(ogImageOf(null)).toBeNull();
     expect(ogImageOf(undefined)).toBeNull();
     expect(ogImageOf(7)).toBeNull();
+  });
+});
+
+describe("seoOgImageOf", () => {
+  it("serves the uploaded original — url and dimensions exactly as uploaded", () => {
+    // The share face is the one placement where crawler format support beats
+    // bytes: the Agency uploads it purpose-built, so it rides as-is rather
+    // than through the WebP size ladder.
+    const asset = imageAsset({
+      url: "/api/assets/file/share.jpg",
+      width: 2400,
+      height: 1260,
+      sizes: { desktop: { url: "/share-d.webp", width: 1600, height: 840 } },
+    });
+
+    expect(seoOgImageOf(asset)).toEqual({
+      url: "/api/assets/file/share.jpg",
+      width: 2400,
+      height: 1260,
+      alt: "An image",
+    });
+  });
+
+  it("stands a video Asset's poster in, as the original", () => {
+    const poster = imageAsset({
+      id: 3,
+      url: "/api/assets/file/poster.jpg",
+      width: 1200,
+      height: 630,
+      sizes: { desktop: { url: "/poster-d.webp", width: 1600, height: 840 } },
+    });
+
+    expect(seoOgImageOf(videoAsset({ poster }))).toEqual({
+      url: "/api/assets/file/poster.jpg",
+      width: 1200,
+      height: 630,
+      alt: "An image",
+    });
+  });
+
+  it("drops a posterless video Asset — no still face to offer", () => {
+    expect(seoOgImageOf(videoAsset())).toBeNull();
+    expect(seoOgImageOf(videoAsset({ poster: 99 }))).toBeNull();
+  });
+
+  it("omits dimensions an unmeasured image cannot offer", () => {
+    expect(seoOgImageOf(imageAsset({ width: null, height: null }))).toEqual({
+      url: "/api/files/assets/original.png",
+      alt: "An image",
+    });
+  });
+
+  it("drops null, undefined, and a shallow-populated bare ID", () => {
+    expect(seoOgImageOf(null)).toBeNull();
+    expect(seoOgImageOf(undefined)).toBeNull();
+    expect(seoOgImageOf(7)).toBeNull();
   });
 });
 

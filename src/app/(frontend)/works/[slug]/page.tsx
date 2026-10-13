@@ -5,8 +5,9 @@ import { getPayload } from "payload"
 
 import { publishedWhere } from "@/access/publishedRead"
 import type { Work } from "@/payload-types"
-import { videoSourceOgOf } from "@/seo/ogImage"
+import { seoOgImageOf, videoSourceOgOf } from "@/seo/ogImage"
 import { pageMetadata } from "@/seo/metadata"
+import { getSeoGlobal } from "@/seo/seoGlobal"
 
 import { WorkDetail } from "./WorkDetail"
 
@@ -55,13 +56,21 @@ export default async function Page({ params }: PageProps<"/works/[slug]">) {
 
 export async function generateMetadata({ params }: PageProps<"/works/[slug]">) {
   const { slug } = await params
-  const work = await getWork(slug)
+  const [work, seo] = await Promise.all([getWork(slug), getSeoGlobal()])
   if (!work) return pageMetadata({ title: "Work — Feugee" })
 
+  // The chain: the Work's SEO override, else the Thumbnail's own face, else
+  // the site-wide Share Image. getWork's depth 2 populates both the picked
+  // image and the Thumbnail (and, in turn, its Poster).
+  const meta = work.meta
+
   return pageMetadata({
-    title: `${work.title} — Feugee`,
-    description: work.subtitle,
+    title: meta?.title?.trim() || `${work.title} — Feugee`,
+    description: meta?.description?.trim() || work.subtitle,
     url: `/works/${work.slug}`,
-    image: videoSourceOgOf(work.thumbnail),
+    image:
+      seoOgImageOf(meta?.image) ??
+      videoSourceOgOf(work.thumbnail) ??
+      seoOgImageOf(seo?.shareImage),
   })
 }

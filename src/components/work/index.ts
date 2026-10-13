@@ -22,6 +22,7 @@ export {
 export {
   populatedAssetOf,
   sizedUrlOf,
+  sizedVariantOf,
   VIDEO_ASPECT_FALLBACK,
   videoPosterOf,
   videoSourceVisualOf,
@@ -30,5 +31,6 @@ export {
   type AssetSizeName,
   type CardVideoSource,
   type CardVisual,
+  type SizedVariant,
   type VideoSourceField,
 } from "./visual";

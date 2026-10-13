@@ -193,7 +193,7 @@ The image Asset standing in for a video before it plays. Serves as the preview f
 _Avoid_: Still frame, preview image, thumbnail frame
 
 **Size ladder**:
-The four WebP variants the CMS generates for each image Asset — thumbnail 640, tablet 1024, desktop 1600, wide 2400 — that public placements request instead of original files. A size wider than the original is skipped; a placement falls back to the closest variant that exists, ending at the original file. Videos and SVGs get none (a video's Poster is a separate image Asset with its own variants).
+The four WebP variants the CMS generates for each image Asset — thumbnail 640, tablet 1024, desktop 1600, wide 2400 — that public placements request instead of original files; the Link Preview is the one exception, showing the Asset's original file. A size wider than the original is skipped; a placement falls back to the closest variant that exists, ending at the original file. Videos and SVGs get none (a video's Poster is a separate image Asset with its own variants).
 _Avoid_: Thumbnails (the CMS sense), responsive sizes, srcset
 
 **Draft**:
@@ -259,6 +259,14 @@ _Avoid_: Contact section, CTA banner
 **Contact Details**:
 The Footer's contact block — a heading, an optional call-to-action link, and the Agency's email and phone. Distinct from the Contact CTA.
 _Avoid_: Contact info, contact section
+
+**Link Preview**:
+The card a social platform or messaging app renders when someone shares a page's URL — its title, description, and image. Distinct from on-page visuals: a Work's Thumbnail lives on the site, while its Link Preview travels with the URL.
+_Avoid_: OG tag, social card, embed
+
+**Share Image**:
+The required site-wide image a page's Link Preview falls back to when neither the page's SEO fields nor its content provide an image.
+_Avoid_: OG image, fallback image, social image
 
 ### Design
 

@@ -16,8 +16,9 @@ import {
   selectedWorksSelect,
   sizedUrlOf,
 } from "@/components/work";
-import { heroOgImage } from "@/seo/ogImage";
+import { heroOgImage, seoOgImageOf } from "@/seo/ogImage";
 import { pageMetadata } from "@/seo/metadata";
+import { getSeoGlobal } from "@/seo/seoGlobal";
 import { LandingPageView } from "./LandingPageView";
 
 // A Client without a populated logo can't ride the marquee — drop it. Fallback
@@ -170,14 +171,26 @@ export default async function Page() {
 }
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const { landingPage } = await getLandingPageData();
+  const [{ landingPage }, seo] = await Promise.all([
+    getLandingPageData(),
+    getSeoGlobal(),
+  ]);
 
   const heroTitle = landingPage.hero?.title?.trim();
+  // The chain: the Agency's SEO override, else the Hero's own face, else the
+  // site-wide Share Image.
+  const landingPageSeo = seo?.landingPage;
 
   return pageMetadata({
-    title: heroTitle ? `Feugee — ${heroTitle}` : "Feugee",
-    description: landingPage.hero?.subtitle,
+    title:
+      landingPageSeo?.title?.trim() ||
+      (heroTitle ? `Feugee — ${heroTitle}` : "Feugee"),
+    description:
+      landingPageSeo?.description?.trim() || landingPage.hero?.subtitle,
     url: "/",
-    image: heroOgImage(landingPage.hero),
+    image:
+      seoOgImageOf(landingPageSeo?.image) ??
+      heroOgImage(landingPage.hero) ??
+      seoOgImageOf(seo?.shareImage),
   });
 };

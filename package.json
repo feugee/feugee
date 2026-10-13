@@ -27,6 +27,7 @@
     "@payloadcms/email-resend": "^3.90.1",
     "@payloadcms/live-preview-react": "3.90.1",
     "@payloadcms/next": "^3.90.1",
+    "@payloadcms/plugin-seo": "3.90.1",
     "@payloadcms/richtext-lexical": "^3.90.1",
     "@payloadcms/storage-s3": "^3.90.1",
     "gsap": "^3.15.0",

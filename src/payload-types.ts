@@ -98,10 +98,12 @@ export interface Config {
   globals: {
     'landing-page': LandingPage;
     footer: Footer;
+    seo: Seo;
   };
   globalsSelect: {
     'landing-page': LandingPageSelect<false> | LandingPageSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    seo: SeoSelect<false> | SeoSelect<true>;
   };
   locale: null;
   widgets: {
@@ -814,6 +816,14 @@ export interface Work {
         id?: string | null;
       }[]
     | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Asset;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -1447,6 +1457,13 @@ export interface WorksSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1827,6 +1844,38 @@ export interface Footer {
   createdAt?: string | null;
 }
 /**
+ * How the Landing Page and the Works Page preview when their links are shared, plus the site-wide Share Image every shared link falls back to.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo".
+ */
+export interface Seo {
+  id: number;
+  landingPage?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Asset;
+  };
+  worksPage?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (number | null) | Asset;
+  };
+  /**
+   * The site-wide Share Image (CONTEXT.md) — a shared link previews with it when the page offers no image of its own. Purpose-built JPEG or PNG, about 1200×630.
+   */
+  shareImage: number | Asset;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "landing-page_select".
  */
@@ -1956,6 +2005,31 @@ export interface FooterSelect<T extends boolean = true> {
         id?: T;
       };
   copyrightName?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "seo_select".
+ */
+export interface SeoSelect<T extends boolean = true> {
+  landingPage?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  worksPage?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  shareImage?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -19,6 +19,7 @@ import * as migration_20260925_144930_add_text_item_vertical_alignment from './2
 import * as migration_20260926_190939_video_source_embeds from './20260926_190939_video_source_embeds';
 import * as migration_20261002_142042_add_badges from './20261002_142042_add_badges';
 import * as migration_20261007_145429_work_client_logo from './20261007_145429_work_client_logo';
+import * as migration_20261013_135506_add_seo_global_and_work_meta from './20261013_135506_add_seo_global_and_work_meta';
 
 export const migrations = [
   {
@@ -124,6 +125,11 @@ export const migrations = [
   {
     up: migration_20261007_145429_work_client_logo.up,
     down: migration_20261007_145429_work_client_logo.down,
-    name: '20261007_145429_work_client_logo'
+    name: '20261007_145429_work_client_logo',
+  },
+  {
+    up: migration_20261013_135506_add_seo_global_and_work_meta.up,
+    down: migration_20261013_135506_add_seo_global_and_work_meta.down,
+    name: '20261013_135506_add_seo_global_and_work_meta'
   },
 ];

@@ -2,7 +2,7 @@ import type { Asset, LandingPage } from "@/payload-types";
 
 import {
   populatedAssetOf,
-  sizedUrlOf,
+  sizedVariantOf,
   videoPosterOf,
   type AssetSizeName,
   type VideoSourceField,
@@ -26,11 +26,45 @@ const OG_SIZE: AssetSizeName = "desktop";
 
 const imageOg = (image: Asset): OgImage | null => {
   if (typeof image.url !== "string") return null;
-  // sizedUrlOf degrades through the ladder to the original on its own.
-  const url = sizedUrlOf(image, OG_SIZE) ?? image.url;
+  // sizedVariantOf degrades through the ladder to the original on its own,
+  // carrying the served file's dimensions — an advertised box that matches
+  // the url, or crawlers crop against the wrong shape.
+  const variant = sizedVariantOf(image, OG_SIZE);
 
   return {
-    url,
+    url: variant.url ?? image.url,
+    ...(variant.width != null ? { width: variant.width } : {}),
+    ...(variant.height != null ? { height: variant.height } : {}),
+    alt: image.alt,
+  };
+};
+
+/**
+ * An SEO-picked Asset at its uploaded original — url and dimensions exactly
+ * as the Agency designed them, no size-ladder variant in between. The share
+ * face is the one placement where crawler format support matters more than
+ * bytes, so the purpose-built JPEG/PNG rides as-is instead of the ladder's
+ * WebP. Video Assets stand in via their Poster; a posterless one has no
+ * still face to offer and the chain falls through.
+ */
+export const seoOgImageOf = (
+  asset: Asset | number | null | undefined,
+): OgImage | null => {
+  if (typeof asset !== "object" || asset === null) return null;
+
+  if (asset.mimeType?.startsWith("video/")) {
+    const poster = videoPosterOf(asset);
+    return poster === null ? null : originalOgOf(poster);
+  }
+
+  return originalOgOf(asset);
+};
+
+const originalOgOf = (image: Asset): OgImage | null => {
+  if (typeof image.url !== "string") return null;
+
+  return {
+    url: image.url,
     ...(image.width != null ? { width: image.width } : {}),
     ...(image.height != null ? { height: image.height } : {}),
     alt: image.alt,
