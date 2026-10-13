@@ -429,8 +429,8 @@ export const WorksListing = ({
       <aside className="self-start lg:pb-6 md:px-12 px-6 max-lg:pt-32 lg:sticky lg:top-32">
         {/* A div, not a nav: the filter buttons are controls, not links. */}
         <div className="lg:space-y-12">
-          <div className="w-full space-y-4 border-b border-neutral-900 pb-12">
-            <h1 className="block text-4xl font-bold text-neutral-50">
+          <div className="w-full space-y-3 lg:space-y-4 border-b border-neutral-900 pb-12">
+            <h1 className="block text-2xl lg:text-4xl font-bold text-neutral-50">
               Our Works
             </h1>
             <p className="block text-xl text-neutral-500">

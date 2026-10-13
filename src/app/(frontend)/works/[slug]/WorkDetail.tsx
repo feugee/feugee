@@ -100,8 +100,8 @@ export const WorkDetail = ({ data }: { data: Work }) => {
             </span>
             Back
           </Link>
-          <div className="w-full pb-12 border-b border-neutral-900 space-y-4">
-            <h1 className="text-neutral-50 text-4xl font-bold block">
+          <div className="w-full pb-12 border-b border-neutral-900 space-y-3 lg:space-y-4">
+            <h1 className="text-neutral-50 text-2xl lg:text-4xl font-bold block">
               {data.title}
             </h1>
             <p className="text-neutral-500 text-xl block">{data.subtitle}</p>
