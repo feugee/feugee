@@ -85,25 +85,36 @@ const balanceColumns = (items: WorksListItem[]): WorksListItem[][] => {
   return columns.map((column) => column.items);
 };
 
+/* Below lg the listing is one column, and a one-column listing of natural
+ * ratios would still read as a masonry — so every card there holds its
+ * Thumbnail in the same 16/9 slot, center-cropped by object-cover. Desktop
+ * keeps the masonry's natural ratios. For the YouTube embed the slot
+ * wrapper must win over the frame's inline aspect-ratio style: absolutely
+ * positioned with both dimensions set, the frame's inline ratio goes
+ * inert, and the wrapper is a plain passthrough at lg+. */
+const cardMediaClass = "h-auto w-full object-cover max-lg:aspect-video";
+
 const WorkVisual = ({ item }: { item: WorksListItem }) =>
   item.visual.kind === "video" ? (
     item.visual.source.type === "youtube" ? (
       // Embedded thumbnails autoplay muted like uploaded ones; the ingested
       // poster-derived width/height keep the card's slot identical.
-      <AmbientYouTube
-        alt={item.visual.alt}
-        frameClassName="w-full"
-        height={item.visual.height}
-        poster={item.visual.posterUrl}
-        videoId={item.visual.source.videoId}
-        width={item.visual.width}
-      />
+      <div className="relative max-lg:aspect-video">
+        <AmbientYouTube
+          alt={item.visual.alt}
+          frameClassName="w-full max-lg:absolute max-lg:inset-0 max-lg:h-full"
+          height={item.visual.height}
+          poster={item.visual.posterUrl}
+          videoId={item.visual.source.videoId}
+          width={item.visual.width}
+        />
+      </div>
     ) : (
       // Video thumbnails autoplay muted while on screen; the poster-derived
       // width/height keep the card's slot identical to an image card's.
       <AutoVideo
         alt={item.visual.alt}
-        className="h-auto w-full object-cover"
+        className={cardMediaClass}
         height={item.visual.height}
         poster={item.visual.posterUrl}
         src={item.visual.source.url}
@@ -114,7 +125,7 @@ const WorkVisual = ({ item }: { item: WorksListItem }) =>
     /* A sized Payload variant — the optimizer would only re-encode it. */
     <Image
       alt={item.visual.alt}
-      className="h-auto w-full object-cover"
+      className={cardMediaClass}
       height={item.visual.height}
       src={item.visual.url}
       width={item.visual.width}
@@ -151,7 +162,9 @@ const WorkCard = ({
     </div>
     {/* Hover reveals the caption on hover-capable pointers (Tailwind's
         hover: variant is (hover: hover)-guarded); below lg it is the default
-        instead, since mobile and tablet have no hover to reveal it. The
+        instead, since mobile and tablet have no hover to reveal it — the
+        blur and the black gradient ride the same rule, so a resting card
+        below lg is the desktop hover look. The
         underlay is a blur gradient — the Thumbnail's own pixels, blurred by
         backdrop-filter and faded out by a mask, no dark scrim; blur(0px)
         rather than none keeps the hover transition interpolable. The text is
@@ -164,7 +177,7 @@ const WorkCard = ({
         the site-wide swipe curve: the grayscale dimming at 600ms, the
         caption's arrival and mirrored exit at 400ms. */}
     <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end lg:rounded-md overflow-hidden">
-      <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-400 ease-swipe group-hover/card:opacity-100" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-400 ease-swipe group-hover/card:opacity-100 max-lg:opacity-100" />
       <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-400 ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
       <div className="relative flex w-full items-baseline justify-between gap-4 p-4 lg:p-6 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 lg:rounded-md overflow-hidden">
         <h2 className="text-lg lg:text-2xl text-white font-medium">
