@@ -197,9 +197,10 @@ const WorkCard = ({
         to reveal the name behind the icon — the icon rides the free end
         with the notch. The wipe rides the caption's swipe timing on a
         0fr→1fr grid track rather than a max-width cap, which would finish
-        early on short names and outpace the card's other hover motion; like
-        the caption, the name is the resting state below lg where there is
-        no hover. The name is aria-hidden because the icon's alt already
+        early on short names and outpace the card's other hover motion. The
+        name is collapsed until hover-capable pointers reveal it — below lg
+        there is no hover, so the ribbon rests icon-only, matching the
+        desktop rest. The name is aria-hidden because the icon's alt already
         carries it; the reveal replaced the old tooltip. The whole card
         stays the link, so the ribbon takes no pointer handling of its
         own. */}
@@ -212,7 +213,7 @@ const WorkCard = ({
             the optimizer refuses the SVGs badges are likely to be. */}
         <Image
           alt={item.badge.name}
-          className="size-5 lg:size-6 object-contain"
+          className="size-4 lg:size-6 object-contain"
           height={24}
           src={item.badge.iconUrl}
           unoptimized
@@ -220,7 +221,7 @@ const WorkCard = ({
         />
         <span
           aria-hidden="true"
-          className="grid max-w-48 grid-cols-[minmax(0,0fr)] opacity-0 transition-[grid-template-columns,opacity] duration-400 ease-swipe group-hover/card:grid-cols-[minmax(0,1fr)] group-hover/card:opacity-100 max-lg:grid-cols-[minmax(0,1fr)] max-lg:opacity-100"
+          className="grid max-w-48 grid-cols-[minmax(0,0fr)] opacity-0 transition-[grid-template-columns,opacity] duration-400 ease-swipe group-hover/card:grid-cols-[minmax(0,1fr)] group-hover/card:opacity-100"
         >
           <span className="min-w-0 overflow-hidden pl-3 whitespace-nowrap text-xs lg:text-base">
             {item.badge.name}

@@ -50,9 +50,9 @@ export const SectorFilter = ({
         ref={barRef}
         type="button"
       >
-        <span className="shrink-0 text-lg text-neutral-50">Filter</span>
+        <span className="shrink-0 text-sm text-neutral-50">Filter</span>
         <span aria-hidden="true" className="h-4 w-px shrink-0 bg-neutral-800" />
-        <span className="min-w-0 flex-1 truncate text-lg text-primary-500">
+        <span className="min-w-0 flex-1 truncate text-sm text-primary-500">
           {activeName}
         </span>
         <span aria-hidden="true" className="shrink-0 text-neutral-50">
@@ -81,7 +81,7 @@ export const SectorFilter = ({
               <li key={sector?.slug ?? "all"}>
                 <button
                   aria-pressed={active}
-                  className={`group flex w-full items-center text-left text-xl transition-colors ${
+                  className={`group flex w-full items-center text-left text-base transition-colors ${
                     active
                       ? "text-primary-500"
                       : "text-neutral-800 hover:text-white focus-visible:text-white"

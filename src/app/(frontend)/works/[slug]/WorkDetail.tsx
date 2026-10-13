@@ -19,18 +19,18 @@ import { WorkSections, sectionAnchor } from "./WorkSections";
 // Meta blocks are label/value pairs — description lists fit them exactly.
 const Meta = ({ label, value }: { label: string; value: ReactNode }) => (
   <dl className="space-y-3 w-full">
-    <dt className="text-xl text-neutral-600">{label}</dt>
-    <dd className="text-xl text-white">{value}</dd>
+    <dt className="text-sm lg:text-xl text-neutral-600">{label}</dt>
+    <dd className="text-base lg:text-xl text-white">{value}</dd>
   </dl>
 );
 
 const MetaList = ({ label, values }: { label: string; values: string[] }) => (
   <dl className="w-full space-y-3">
-    <dt className="text-xl text-neutral-600">{label}</dt>
+    <dt className="text-sm lg:text-xl text-neutral-600">{label}</dt>
     <dd>
       <ul className="space-y-1">
         {values.map((value) => (
-          <li key={value} className="text-xl text-white">
+          <li key={value} className="text-base lg:text-xl text-white">
             {value}
           </li>
         ))}
@@ -171,7 +171,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
           )}
 
           <div className="p-6 lg:p-8 flex flex-col gap-y-8">
-            <div className="w-full flex flex-col justify-start items-stretch gap-y-8 lg:flex-row lg:gap-x-8">
+            <div className="w-full grid grid-cols-2 lg:flex flex-col justify-start items-stretch gap-y-8 lg:flex-row lg:gap-x-8">
               {data.client && <Meta label="Client" value={data.client} />}
               {sectorName && (
                 <>
@@ -187,7 +187,7 @@ export const WorkDetail = ({ data }: { data: Work }) => {
               )}
             </div>
             <div className="w-full h-px bg-neutral-900"></div>
-            <div className="w-full flex flex-col justify-start items-stretch gap-y-8 lg:flex-row lg:gap-x-8">
+            <div className="w-full grid grid-cols-2 lg:flex flex-col justify-start items-stretch gap-y-8 lg:flex-row lg:gap-x-8">
               {data.projectTeam?.length ? (
                 <MetaList label="Project Team" values={data.projectTeam} />
               ) : null}
@@ -214,13 +214,13 @@ export const WorkDetail = ({ data }: { data: Work }) => {
               <div className="w-full flex flex-row justify-start mb-8">
                 <dl className="w-full space-y-3">
                   {data.descriptionLabel ? (
-                    <dt className="text-xl text-neutral-600">
+                    <dt className="text-sm lg:text-xl text-neutral-600">
                       {data.descriptionLabel}
                     </dt>
                   ) : null}
                   <dd>
                     <RichText
-                      className="text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                      className="text-base lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
                       data={data.description}
                     />
                   </dd>

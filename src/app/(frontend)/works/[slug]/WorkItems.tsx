@@ -105,7 +105,7 @@ export const WorkItemView = ({
               <h3 className="text-xl text-neutral-600">{entry.title}</h3>
               <RichText
                 data={entry.text}
-                className="text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                className="text-base lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
               />
             </div>
           ))}
@@ -124,7 +124,7 @@ export const WorkItemView = ({
             <div key={entry.id ?? index} className=" text-xl text-white">
               <RichText
                 data={entry.text}
-                className="text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                className="text-base lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
               />
             </div>
           ))}
