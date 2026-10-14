@@ -13,6 +13,7 @@ import {
 
 import { ArrowPush } from "@/components/ArrowPush";
 import { BottomSheet } from "@/components/BottomSheet";
+import { getSmoothScroll } from "@/components/SmoothScroll";
 import type { Work } from "@/payload-types";
 
 import { sectionAnchor } from "./WorkSections";
@@ -35,31 +36,70 @@ export const ContentsLinks = ({
   className?: string;
   onSelect?: () => void;
   sections: WorkSectionsList;
-}) => (
-  <ul className={`space-y-4 ${className ?? ""}`}>
-    {sections.map((section, index) => {
-      const anchor = sectionAnchor(index);
-      const active = activeSection === anchor;
-      return (
-        <li key={section.id ?? index}>
-          <Link
-            aria-current={active ? "true" : undefined}
-            className={`group flex items-center text-base transition-colors ${
-              active
-                ? "text-primary-500"
-                : "text-neutral-800 hover:text-white focus-visible:text-white"
-            }`}
-            href={`#${anchor}`}
-            onClick={onSelect}
-          >
-            <ArrowPush active={active} hover="slide" />
-            {section.title}
-          </Link>
-        </li>
-      );
-    })}
-  </ul>
-);
+}) => {
+  const handleScroll = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    anchor: string
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    onSelect?.();
+
+    const target = document.getElementById(anchor);
+    if (!target) return;
+
+    const currentScroll = window.scrollY;
+    const targetTop = target.getBoundingClientRect().top + currentScroll;
+    const distance = Math.abs(currentScroll - targetTop);
+
+    // Koto formula: adaptive duration based on travel distance (1.2s - 2.8s)
+    const duration = Math.max(1.2, Math.min(2.8, distance / 800));
+
+    // Koto's power2.inOut (quad ease-in-out)
+    const power2InOut = (t: number) =>
+      t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+    const smooth = getSmoothScroll();
+    if (smooth) {
+      smooth.start();
+      smooth.scrollTo(target, {
+        duration,
+        easing: power2InOut,
+        lock: true,
+      });
+    } else {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+
+    window.history.pushState(null, "", `#${anchor}`);
+  };
+
+  return (
+    <ul className={`space-y-4 ${className ?? ""}`}>
+      {sections.map((section, index) => {
+        const anchor = sectionAnchor(index);
+        const active = activeSection === anchor;
+        return (
+          <li key={section.id ?? index}>
+            <a
+              aria-current={active ? "true" : undefined}
+              className={`group flex items-center text-base lg:text-xl transition-colors ${
+                active
+                  ? "text-primary-500"
+                  : "text-neutral-800 hover:text-white focus-visible:text-white"
+              }`}
+              href={`#${anchor}`}
+              onClick={(event) => handleScroll(event, anchor)}
+            >
+              <ArrowPush active={active} hover={false} />
+              {section.title}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
 
 /**
  * The phone/tablet face of the Contents (CONTEXT.md): a frosted bar pinned

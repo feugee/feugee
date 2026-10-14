@@ -220,6 +220,7 @@
 header[data-frosted] .navbar-bar {
   inset-inline: 24px;
   top: 24px;
+  border-radius: 4px;
   border-color: var(--color-neutral-700);
   background-color: color-mix(
     in oklab,
@@ -259,6 +260,7 @@ header[data-frosted] .navbar-bar {
   transition:
     top 400ms var(--ease-swipe),
     inset-inline 400ms var(--ease-swipe),
+    border-radius 400ms var(--ease-swipe),
     background-color 400ms var(--ease-swipe),
     border-color 400ms var(--ease-swipe),
     backdrop-filter 400ms var(--ease-swipe);

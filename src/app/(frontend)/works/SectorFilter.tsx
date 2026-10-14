@@ -92,7 +92,7 @@ export const SectorFilter = ({
                   }}
                   type="button"
                 >
-                  <ArrowPush active={active} hover="slide" />
+                  <ArrowPush active={active} hover={false} />
                   {sector?.name ?? "All"}
                 </button>
               </li>

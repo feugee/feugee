@@ -92,7 +92,7 @@ export const WorkItemView = ({
     case "title":
       return (
         <div className="p-6 lg:p-12">
-          <h2 className="text-xl font-semibold text-neutral-50">
+          <h2 className="text-xl md:text-2xl font-semibold text-neutral-50">
             {item.title}
           </h2>
         </div>
@@ -102,10 +102,12 @@ export const WorkItemView = ({
         <div className="space-y-8 p-6 lg:p-12">
           {(item.entries ?? []).map((entry, index) => (
             <div key={entry.id ?? index} className="space-y-2">
-              <h3 className="text-xl text-neutral-600">{entry.title}</h3>
+              <h3 className="text-sm md:text-base lg:text-xl text-neutral-600">
+                {entry.title}
+              </h3>
               <RichText
                 data={entry.text}
-                className="text-base lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                className="text-base md:text-lg lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
               />
             </div>
           ))}
@@ -124,7 +126,7 @@ export const WorkItemView = ({
             <div key={entry.id ?? index} className=" text-xl text-white">
               <RichText
                 data={entry.text}
-                className="text-base lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                className="text-base md:text-lg lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
               />
             </div>
           ))}

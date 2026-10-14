@@ -116,7 +116,7 @@ export const Menu = ({
         >
           <span
             aria-hidden="true"
-            className="flex h-3 w-9 flex-col items-end justify-between"
+            className="flex h-3 w-6 flex-col items-end justify-between"
           >
             <span className={menuIconLine(true, true)} />
             <span className={menuIconLine(true, false)} />

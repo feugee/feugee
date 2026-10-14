@@ -101,7 +101,8 @@ const columnRowClassName =
   "w-full flex flex-col-reverse md:flex-col gap-10 items-start lg:flex-row md:justify-between";
 
 // Shared by both Contact CTA buttons and their fallback-button branches.
-const ctaButtonClassName = `inline-flex items-center gap-2 hover:text-primary-500 transition px-6 py-4 rounded-[4px] border-neutral-800 border`;
+const ctaButtonClassName =
+  "inline-flex items-center justify-center gap-2 transition-colors px-6 py-4 rounded-[4px] text-base";
 
 // One button for both CTA actions — identical styling; they differ only in
 // the resolved label and URL.
@@ -113,27 +114,27 @@ const CtaButton = ({
   label: string;
   url: string | null;
   primary?: boolean;
-}) =>
-  url ? (
+}) => {
+  const className = `${ctaButtonClassName} ${
+    primary
+      ? "bg-white text-black border border-white hover:bg-neutral-100 hover:text-primary-500"
+      : "border border-neutral-800 text-white hover:border-neutral-700 hover:text-primary-500"
+  }`;
+
+  return url ? (
     <Link
-      className={
-        ctaButtonClassName + (primary ? " bg-white text-black" : " text-white")
-      }
+      className={className}
       href={url}
       onNavigate={(event) => navigateWithBlackout(event, url)}
     >
       {label} {primary && <ArrowRight />}
     </Link>
   ) : (
-    <button
-      className={
-        ctaButtonClassName + (primary ? " bg-white text-black" : " text-white")
-      }
-      type="button"
-    >
+    <button className={className} type="button">
       {label} {primary && <ArrowRight />}
     </button>
   );
+};
 
 export const FooterView = ({ initialData }: { initialData: Footer }) => {
   const livePreview = usePreviewRequested("footer");
@@ -189,27 +190,29 @@ export const FooterContent = ({ data }: { data: Footer }) => {
       {hasFooterCtaContent(cta) && (
         <section
           aria-label="Contact CTA"
-          className="flex w-full flex-col items-center justify-center gap-y-8 py-16 lg:py-24 text-center md:gap-y-12 md:py-32"
+          className="flex w-full flex-col items-center justify-center gap-y-8 py-20 md:py-28 lg:py-32 text-center md:gap-y-12"
         >
-          <div className="flex flex-col gap-y-6 items-center text-center">
+          <div className="flex flex-col gap-y-4 md:gap-y-6 items-center text-center">
             {cta.eyebrow && (
-              <p className="text-lg text-neutral-300 md:text-xl">
+              <p className="text-base text-neutral-400 md:text-lg lg:text-xl">
                 {cta.eyebrow}
               </p>
             )}
             {cta.headline && (
-              <h2 className="text-4xl text-white font-bold md:text-7xl">
+              <h2 className="text-4xl text-white font-bold md:text-5xl lg:text-7xl tracking-tight max-w-4xl">
                 {cta.headline}
               </h2>
             )}
             {cta.body && (
-              <p className="text-lg text-neutral-300 md:text-xl">{cta.body}</p>
+              <p className="max-w-xl text-base text-neutral-300 md:text-lg lg:text-xl leading-relaxed">
+                {cta.body}
+              </p>
             )}
           </div>
           {(cta.actionLabel !== null || cta.secondaryActionLabel !== null) && (
             /* Both buttons share the row; each renders only with its label
                 filled, so an empty secondary label leaves the primary alone. */
-            <div className="flex flex-col-reverse lg:flex-row flex-wrap items-center justify-center gap-4">
+            <div className="flex flex-col-reverse sm:flex-row flex-wrap items-center justify-center gap-4">
               {cta.secondaryActionLabel !== null && (
                 <CtaButton
                   label={cta.secondaryActionLabel}
@@ -232,7 +235,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
           {aboutDescription && (
             <div className="space-y-6 w-full">
               <h2 className="text-base text-neutral-500">{aboutHeading}</h2>
-              <p className="text-2xl text-white w-full md:w-[80%]">
+              <p className="text-xl lg:text-2xl text-white w-full md:w-[80%]">
                 {aboutDescription}
               </p>
             </div>

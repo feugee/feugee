@@ -54,7 +54,7 @@ export const SmoothScroll = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     // The site ignores prefers-reduced-motion everywhere (ADR 0011), so
     // Lenis must not honor it either — smoothing stays on for everyone.
-    const lenis = new Lenis({ anchors: true, respectReducedMotion: false });
+    const lenis = new Lenis({ anchors: false, respectReducedMotion: false });
     lenisInstance = lenis;
 
     // Lenis's rAF is driven by GSAP's ticker so the two never drift apart.
