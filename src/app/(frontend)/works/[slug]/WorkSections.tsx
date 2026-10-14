@@ -14,7 +14,7 @@ export const sectionAnchor = (index: number) => `section-${index}`;
 // to shrink below an Asset's intrinsic width and pushes it past the screen.
 const layoutClass: Record<WorkLayout["blockType"], string> = {
   "one-column": "grid grid-cols-[minmax(0,1fr)] gap-[4px]",
-  "two-column": "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))]",
+  "two-column": "grid gap-[4px] md:grid-cols-[repeat(2,minmax(0,1fr))]",
   "three-column": "grid gap-[4px] lg:grid-cols-[repeat(3,minmax(0,1fr))]",
   // Item 1 spans both rows on the left; items 2 and 3 stack top and bottom right.
   "feature-left":
@@ -39,8 +39,7 @@ const itemClass = (layout: WorkLayout, index: number) => {
 
 // The variant an Asset item requests, from its cell in the layout: only a
 // one-column item spans the full content column (desktop); every other
-// layout's cells are at most half of it (tablet). Below lg the layouts stack
-// full width, but never past the 1024px the tablet variant covers.
+// layout's cells are at most half of it (tablet).
 const assetSizeForLayout = (layout: WorkLayout): AssetSizeName =>
   layout.blockType === "one-column" ? "desktop" : "tablet";
 

@@ -184,7 +184,7 @@ const WorkCard = ({
           {item.title}
         </h2>
         {item.firstExpertise && (
-          <span className="text-sm lg:text-lg text-white text-right">
+          <span className="text-sm lg:text-lg text-neutral-300 text-right">
             {item.firstExpertise}
           </span>
         )}
@@ -429,11 +429,11 @@ export const WorksListing = ({
       <aside className="self-start lg:pb-6 md:px-12 px-6 max-lg:pt-32 lg:sticky lg:top-32">
         {/* A div, not a nav: the filter buttons are controls, not links. */}
         <div className="lg:space-y-12">
-          <div className="w-full space-y-3 lg:space-y-4 border-b border-neutral-900 pb-12">
+          <div className="w-full space-y-2 lg:space-y-4 border-b border-neutral-900 pb-6">
             <h1 className="block text-2xl lg:text-4xl font-bold text-neutral-50">
               Our Works
             </h1>
-            <p className="block text-xl text-neutral-500">
+            <p className="block text-lg lg:text-xl text-neutral-500">
               Ambitious ideas for ambitious business
             </p>
           </div>
@@ -457,7 +457,7 @@ export const WorksListing = ({
                         onClick={() => selectSector(sector?.slug ?? null)}
                         type="button"
                       >
-                        <ArrowPush active={active} hover="slide" />
+                        <ArrowPush active={active} hover={false} />
                         {sector?.name ?? "All"}
                       </button>
                     </li>

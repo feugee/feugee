@@ -97,7 +97,7 @@ export const NavbarBar = ({
             to the bar's children. The blur(0px) base keeps the frosting
             interpolable, the same trick as the Works cards' caption
             underlay. */}
-        <div className="navbar-bar pointer-events-none absolute inset-x-0 top-0 flex h-(--navbar-height) items-center justify-between rounded-xl border border-transparent px-6 backdrop-blur-[0px]">
+        <div className="navbar-bar pointer-events-none absolute inset-x-0 top-0 flex h-(--navbar-height) items-center justify-between rounded-none border border-transparent px-6 backdrop-blur-[0px]">
           <LogoLink />
           {links.length > 0 && (
             <MenuControl

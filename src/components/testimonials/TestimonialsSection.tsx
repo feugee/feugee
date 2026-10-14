@@ -1,4 +1,5 @@
 import { splitTestimonialColumns } from "./splitColumns";
+import { QuoteIcon } from "@/components/QuoteIcon";
 
 export interface TestimonialItem {
   id?: string | null;
@@ -7,18 +8,6 @@ export interface TestimonialItem {
   company: string | null;
   testimony: string;
 }
-
-/** Hand-rolled like every icon on the site — no icon library. */
-const QuoteIcon = () => (
-  <svg
-    aria-hidden="true"
-    className="h-10 w-10 text-neutral-800"
-    fill="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z" />
-  </svg>
-);
 
 const TestimonialCard = ({ item }: { item: TestimonialItem }) => {
   const role = [item.job, item.company].filter(Boolean).join(", ");
@@ -109,8 +98,8 @@ export const TestimonialsSection = ({
 
   return (
     <section aria-label={heading} className="p-6 md:p-16 mx-auto max-w-360">
-      <div className="flex flex-col gap-10 md:flex-row md:justify-between md:gap-x-16">
-        <div className="w-full shrink-0 md:w-[30%]">
+      <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-x-16">
+        <div className="w-full shrink-0 lg:w-[30%]">
           <div className="inline-flex rounded border border-neutral-700 px-4 py-2">
             <h2 className="text-md text-white">{heading}</h2>
           </div>
@@ -120,13 +109,13 @@ export const TestimonialsSection = ({
             </p>
           )}
         </div>
-        <div className="w-full md:w-[70%] ">
-          {/* Mobile: one full-width rising column with every testimonial. */}
-          <div className="md:hidden">
+        <div className="w-full lg:w-[70%]">
+          {/* Mobile & Tablet: one full-width rising column with every testimonial. */}
+          <div className="lg:hidden">
             <MarqueeColumn direction="up" items={items} />
           </div>
           {/* Desktop: the left column rises, the right one sinks. */}
-          <div className="hidden gap-1 md:flex">
+          <div className="hidden gap-1 lg:flex">
             <MarqueeColumn direction="up" items={left} />
             {right.length > 0 && (
               <MarqueeColumn direction="down" items={right} />

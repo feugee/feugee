@@ -142,12 +142,8 @@ export const HeroSlider = ({
     else below.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Difference blending (ADR 0006) for the cue extends from text to a filled
-  // control: the white pill inverts the video behind it while the black label
-  // rides as the un-blended video (difference with black is identity). The
-  // blend and the pulse share the element — a wrapper's animated opacity
-  // would wall the blend off from the video.
-  const scrollCueClassName = `hidden lg:inline-flex absolute flex justify-center items-center gap-x-[8px] bottom-6 right-6 z-20 rounded-[4px] bg-white px-4 py-3 xl:px-6 xl:py-4 text-base font-medium tracking-wide text-black hover:text-primary-500 transtition- mix-blend-difference md:bottom-12 md:right-16 animate-cue-pulse`;
+  const scrollCueClassName =
+    "hidden lg:inline-flex absolute bottom-6 right-6 z-20 md:bottom-12 md:right-16 items-center justify-center gap-2 transition-colors px-6 py-4 rounded-[4px] text-base bg-white text-black border border-white hover:bg-neutral-100 hover:text-primary-500 mix-blend-difference";
 
   return (
     <section
@@ -268,8 +264,7 @@ export const HeroSlider = ({
           href={cue.url}
           onNavigate={(event) => navigateWithBlackout(event, cue.url)}
         >
-          {cue.label}
-          <ArrowRight />
+          {cue.label} <ArrowRight />
         </Link>
       ) : (
         cue.kind === "scroll" && (
@@ -278,8 +273,7 @@ export const HeroSlider = ({
             onClick={scrollBelowHero}
             type="button"
           >
-            {cue.label}
-            <ArrowRight />
+            {cue.label} <ArrowRight />
           </button>
         )
       )}
