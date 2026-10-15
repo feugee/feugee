@@ -11,7 +11,7 @@ import { AmbientYouTube } from "./AmbientYouTube";
 import { AutoVideo } from "./AutoVideo";
 import { usePreviewRequested } from "./live-preview/usePreviewRequested";
 import { hasFooterCtaContent, toFooterCta } from "./footerCta";
-import { LogoMark } from "./LogoMark";
+import { FooterWordmark } from "./FooterWordmark";
 import { toMenuLinks } from "./menu";
 import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
 import { toSocialLinks } from "./socialPlatforms";
@@ -318,12 +318,10 @@ export const FooterContent = ({ data }: { data: Footer }) => {
           with the rule and bottom bar layered over its lower letters. Below
           md the letters are too short to spare, so the bar just follows them.
           The window's bottom edge is the footer's bottom edge. */}
-      <div className="relative overflow-hidden -mx-6 sm:-mx-8 md:-mx-8 lg:-mx-16">
-        <div aria-hidden="true" className="w-full text-[#1F1F1F] md:mb-[-3%]">
-          <LogoMark className="block h-auto w-full" monochrome />
-        </div>
+      <div className="relative overflow-hidden -mx-6 sm:-mx-8 md:-mx-8 lg:-mx-16 aspect-[1438/406] max-md:aspect-auto max-md:min-h-[220px] max-md:flex max-md:flex-col max-md:justify-end">
+        <FooterWordmark className="absolute left-0 right-0 bottom-0 w-full h-auto pointer-events-none z-0" />
         <div className="relative z-10 md:absolute md:inset-x-0 md:bottom-0 px-6 sm:px-8 md:px-8 lg:px-16">
-          <div className="mb-16 h-px w-full bg-neutral-900" />
+          <div className="mb-8 md:mb-16 h-px w-full bg-neutral-900" />
           <div className="w-full grid grid-rows-3 lg:grid-rows-1 lg:grid-cols-3 justify-between items-center gap-x-6 gap-y-3">
             <span className="text-sm text-neutral-500 text-center lg:text-left">
               &copy; {new Date().getFullYear()} {copyrightName}. All Rights
