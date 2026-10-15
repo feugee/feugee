@@ -98,6 +98,8 @@ export const Menu = ({
       />
       <div
         className={`fixed inset-0 z-55 flex flex-col bg-neutral-950/70 pt-(--navbar-height) backdrop-blur-sm lg:inset-y-0 lg:left-auto lg:right-0 lg:w-(--menu-width) lg:border-l lg:border-neutral-700 ${menuPanelTransition(open)}`}
+        data-menu-panel
+        data-static-slab
         ref={panelRef}
       >
         {/* The phone/tablet close: the Navbar's control sits behind the

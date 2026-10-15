@@ -156,7 +156,9 @@ const WorkCard = ({
     onMouseLeave={canHover ? onHoverEnd : undefined}
   >
     <div
-      className={`transition-[filter] duration-[600ms] ease-swipe ${dimmed ? "grayscale" : ""}`}
+      className={`transition-[filter,opacity] duration-[600ms] ease-swipe ${
+        dimmed ? "grayscale opacity-60" : "opacity-100"
+      }`}
     >
       <WorkVisual item={item} />
     </div>
@@ -179,12 +181,12 @@ const WorkCard = ({
     <div className="pointer-events-none absolute inset-x-0 -bottom-px flex h-1/2 items-end lg:rounded-md overflow-hidden">
       <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-400 ease-swipe group-hover/card:opacity-100 max-lg:opacity-100" />
       <div className="absolute inset-0 opacity-0 backdrop-blur-[0px] mask-[linear-gradient(to_top,black_30%,transparent)] transition-[opacity,backdrop-filter] duration-400 ease-swipe max-lg:opacity-100 max-lg:backdrop-blur-md group-hover/card:backdrop-blur-md group-hover/card:opacity-100" />
-      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 lg:p-6 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 lg:rounded-md overflow-hidden">
-        <h2 className="text-lg lg:text-2xl text-white font-medium">
+      <div className="relative flex w-full items-baseline justify-between gap-4 p-4 md:p-6 lg:p-6 translate-y-3 opacity-0 transition-[opacity,translate] duration-400 ease-swipe max-lg:translate-y-0 max-lg:opacity-100 group-hover/card:translate-y-0 group-hover/card:opacity-100 lg:rounded-md overflow-hidden">
+        <h2 className="text-lg md:text-2xl lg:text-2xl text-white font-medium">
           {item.title}
         </h2>
         {item.firstExpertise && (
-          <span className="text-sm lg:text-lg text-neutral-300 text-right">
+          <span className="text-sm md:text-lg lg:text-lg text-neutral-300 text-right">
             {item.firstExpertise}
           </span>
         )}
@@ -206,14 +208,14 @@ const WorkCard = ({
         own. */}
     {item.badge && (
       <span
-        className="absolute right-0 top-6 flex h-10 items-center pl-6 pr-3 text-base text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
+        className="absolute right-0 top-4 lg:top-6 flex h-8 lg:h-10 items-center pl-4 lg:pl-6 pr-2.5 lg:pr-3 text-white [clip-path:polygon(0_0,100%_0,100%_100%,0_100%,8px_50%)] lg:[clip-path:polygon(0_0,100%_0,100%_100%,0_100%,12px_50%)]"
         style={{ backgroundColor: item.badge.color }}
       >
         {/* As uploaded — unoptimized like the Client Marquee's logos, since
             the optimizer refuses the SVGs badges are likely to be. */}
         <Image
           alt={item.badge.name}
-          className="size-4 lg:size-6 object-contain"
+          className="size-3.5 lg:size-6 object-contain"
           height={24}
           src={item.badge.iconUrl}
           unoptimized
@@ -221,9 +223,9 @@ const WorkCard = ({
         />
         <span
           aria-hidden="true"
-          className="grid max-w-48 grid-cols-[minmax(0,0fr)] opacity-0 transition-[grid-template-columns,opacity] duration-400 ease-swipe group-hover/card:grid-cols-[minmax(0,1fr)] group-hover/card:opacity-100"
+          className="grid max-w-48 max-lg:grid-cols-[minmax(0,1fr)] max-lg:opacity-100 lg:grid-cols-[minmax(0,0fr)] lg:opacity-0 lg:transition-[grid-template-columns,opacity] lg:duration-400 lg:ease-swipe lg:group-hover/card:grid-cols-[minmax(0,1fr)] lg:group-hover/card:opacity-100"
         >
-          <span className="min-w-0 overflow-hidden pl-3 whitespace-nowrap text-xs lg:text-base">
+          <span className="min-w-0 overflow-hidden pl-2 lg:pl-3 whitespace-nowrap text-xs lg:text-base font-medium">
             {item.badge.name}
           </span>
         </span>
@@ -420,39 +422,39 @@ export const WorksListing = ({
   const mainRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="mx-auto min-h-screen flex flex-col lg:grid w-full lg:grid-cols-[minmax(0,min(25%,500px))_1fr]">
+    <div className="min-h-screen flex flex-col lg:flex-row w-full pl-0 lg:pl-12 pr-0 gap-x-8 lg:gap-x-12">
       <ScrollProgress scope={mainRef} />
       {/* The lg+ sticky top already seats the aside clear of the overlaid
           navbar (sticky pushes down to its offset); below lg it is static
           above the single column, so the padding supplies that clearance
           there instead. */}
-      <aside className="self-start lg:pb-6 md:px-12 px-6 max-lg:pt-32 lg:sticky lg:top-32">
+      <aside className="self-start w-full lg:w-[20rem] lg:shrink-0 px-6 md:px-12 lg:px-0 max-lg:pt-32 lg:sticky lg:top-28 lg:pt-4">
         {/* A div, not a nav: the filter buttons are controls, not links. */}
-        <div className="lg:space-y-12">
-          <div className="w-full space-y-2 lg:space-y-4 border-b border-neutral-900 pb-6">
-            <h1 className="block text-2xl lg:text-4xl font-bold text-neutral-50">
+        <div className="space-y-6">
+          <div className="w-full max-lg:border-b-0 border-b border-neutral-900/80 pb-6">
+            <h1 className="text-xl md:text-2xl font-sans font-medium tracking-tight text-white mb-1.5">
               Our Works
             </h1>
-            <p className="block text-lg lg:text-xl text-neutral-500">
+            <p className="text-sm md:text-base font-sans text-neutral-400 font-normal leading-relaxed">
               Ambitious ideas for ambitious business
             </p>
           </div>
-          <div className="space-y-8">
-            <p className="text-white text-base hidden lg:visible">
-              Filter Works
-            </p>
-            {filterable && (
-              <ul className="max-lg:hidden space-y-4">
+          {filterable && (
+            <div className="hidden lg:block space-y-3">
+              <h2 className="text-xs font-sans uppercase text-neutral-500 font-medium">
+                Filter Works
+              </h2>
+              <ul className="space-y-2">
                 {[null, ...sectorOptions].map((sector) => {
                   const active = activeSector === (sector?.slug ?? null);
                   return (
                     <li key={sector?.slug ?? "all"}>
                       <button
                         aria-pressed={active}
-                        className={`group flex w-full items-center text-left text-xl transition-colors ${
+                        className={`group flex items-center text-left text-sm font-sans transition-colors py-0.5 ${
                           active
-                            ? "text-primary-500"
-                            : "text-neutral-800 hover:text-white focus-visible:text-white"
+                            ? "text-primary-500 font-medium"
+                            : "text-neutral-700 hover:text-white font-normal"
                         }`}
                         onClick={() => selectSector(sector?.slug ?? null)}
                         type="button"
@@ -464,12 +466,12 @@ export const WorksListing = ({
                   );
                 })}
               </ul>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </aside>
 
-      <div className="w-full" ref={mainRef}>
+      <div className="w-full min-w-0 flex-1" ref={mainRef}>
         {/* The phone/tablet Sector Filter (CONTEXT.md): a fixed bar at the
             viewport's bottom edge raising the Sector list in the shared
             Bottom Sheet. Fixed, so unlike the pill bar it replaced it needs

@@ -113,7 +113,7 @@ const getWorksPageData = cache(
     return {
       items,
       sectorOptions,
-      showFilter: longList,
+      showFilter: true,
       showBackToTop: longList,
       ogImage,
     };

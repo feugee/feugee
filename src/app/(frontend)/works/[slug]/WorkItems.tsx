@@ -84,30 +84,50 @@ const textJustify = {
 export const WorkItemView = ({
   assetSize,
   item,
+  variant = "feugee",
 }: {
   assetSize: AssetSizeName;
   item: WorkItem;
+  variant?: "feugee" | "koto" | "hybrid";
 }) => {
+  const isRefined = variant === "koto" || variant === "hybrid";
+
   switch (item.blockType) {
     case "title":
       return (
-        <div className="p-6 lg:p-12">
-          <h2 className="text-xl md:text-2xl font-semibold text-neutral-50">
+        <div className={isRefined ? "py-6 px-4 md:py-8 md:px-6" : "p-6 lg:p-12"}>
+          <h2
+            className={
+              isRefined
+                ? "text-xl lg:text-2xl font-medium tracking-tight text-white"
+                : "text-xl md:text-2xl font-semibold text-neutral-50"
+            }
+          >
             {item.title}
           </h2>
         </div>
       );
     case "titled-text":
       return (
-        <div className="space-y-8 p-6 lg:p-12">
+        <div className={isRefined ? "space-y-6 py-6 px-4 md:py-8 md:px-6" : "space-y-8 p-6 lg:p-12"}>
           {(item.entries ?? []).map((entry, index) => (
             <div key={entry.id ?? index} className="space-y-2">
-              <h3 className="text-sm md:text-base lg:text-xl text-neutral-600">
+              <h3
+                className={
+                  isRefined
+                    ? "text-xs md:text-sm font-sans uppercase text-neutral-500 font-medium"
+                    : "text-sm md:text-base lg:text-xl text-neutral-600"
+                }
+              >
                 {entry.title}
               </h3>
               <RichText
                 data={entry.text}
-                className="text-base md:text-lg lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                className={
+                  isRefined
+                    ? "text-base md:text-lg lg:text-xl font-normal leading-relaxed text-neutral-200 [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4"
+                    : "text-base md:text-lg lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                }
               />
             </div>
           ))}
@@ -116,17 +136,19 @@ export const WorkItemView = ({
     case "text":
       return (
         <div
-          className={`h-full space-y-8 p-6 lg:p-12 flex flex-col ${
-            textJustify[item.verticalAlignment ?? "bottom"]
-          }`}
+          className={`h-full ${
+            isRefined ? "space-y-6 py-6 px-4 md:py-8 md:px-6" : "space-y-8 p-6 lg:p-12"
+          } flex flex-col ${textJustify[item.verticalAlignment ?? "bottom"]}`}
         >
           {(item.entries ?? []).map((entry, index) => (
-            // One wrapper per entry keeps each paragraph separately targetable
-            // by the animations planned for the real Work Detail Page.
-            <div key={entry.id ?? index} className=" text-xl text-white">
+            <div key={entry.id ?? index}>
               <RichText
                 data={entry.text}
-                className="text-base md:text-lg lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                className={
+                  isRefined
+                    ? "text-base md:text-lg lg:text-xl font-normal leading-relaxed text-neutral-200 [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4"
+                    : "text-base md:text-lg lg:text-2xl text-white [&_blockquote]:border-l-2 [&_blockquote]:border-primary-500 [&_blockquote]:pl-4 [&_blockquote]:font-bold"
+                }
               />
             </div>
           ))}

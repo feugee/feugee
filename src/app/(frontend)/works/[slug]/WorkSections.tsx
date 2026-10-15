@@ -12,7 +12,7 @@ export const sectionAnchor = (index: number) => `section-${index}`;
 // Grids switch on at lg — below it every Layout stacks into one column.
 // The tracks are minmax(0,1fr), not bare 1fr: a track's auto minimum refuses
 // to shrink below an Asset's intrinsic width and pushes it past the screen.
-const layoutClass: Record<WorkLayout["blockType"], string> = {
+const layoutClassFeugee: Record<WorkLayout["blockType"], string> = {
   "one-column": "grid grid-cols-[minmax(0,1fr)] gap-[4px]",
   "two-column": "grid gap-[4px] md:grid-cols-[repeat(2,minmax(0,1fr))]",
   "three-column": "grid gap-[4px] lg:grid-cols-[repeat(3,minmax(0,1fr))]",
@@ -20,6 +20,26 @@ const layoutClass: Record<WorkLayout["blockType"], string> = {
   "feature-left":
     "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
   // Item 1 spans both rows on the right; items 2 and 3 stack top and bottom left.
+  "feature-right":
+    "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
+};
+
+const layoutClassRefined: Record<WorkLayout["blockType"], string> = {
+  "one-column": "grid grid-cols-[minmax(0,1fr)] gap-3 md:gap-4",
+  "two-column": "grid gap-3 md:gap-4 md:grid-cols-[repeat(2,minmax(0,1fr))]",
+  "three-column": "grid gap-3 md:gap-4 lg:grid-cols-[repeat(3,minmax(0,1fr))]",
+  "feature-left":
+    "grid gap-3 md:gap-4 lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
+  "feature-right":
+    "grid gap-3 md:gap-4 lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
+};
+
+const layoutClassHybrid: Record<WorkLayout["blockType"], string> = {
+  "one-column": "grid grid-cols-[minmax(0,1fr)] gap-[4px]",
+  "two-column": "grid gap-[4px] md:grid-cols-[repeat(2,minmax(0,1fr))]",
+  "three-column": "grid gap-[4px] lg:grid-cols-[repeat(3,minmax(0,1fr))]",
+  "feature-left":
+    "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
   "feature-right":
     "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
 };
@@ -43,21 +63,38 @@ const itemClass = (layout: WorkLayout, index: number) => {
 const assetSizeForLayout = (layout: WorkLayout): AssetSizeName =>
   layout.blockType === "one-column" ? "desktop" : "tablet";
 
-export const WorkSections = ({ sections }: { sections: Work["sections"] }) => {
+export const WorkSections = ({
+  sections,
+  variant = "feugee",
+}: {
+  sections: Work["sections"];
+  variant?: "feugee" | "koto" | "hybrid";
+}) => {
   if (!sections?.length) return null;
 
+  const activeLayoutClass =
+    variant === "koto"
+      ? layoutClassRefined
+      : variant === "hybrid"
+        ? layoutClassHybrid
+        : layoutClassFeugee;
+
+  const isKoto = variant === "koto";
+
   return (
-    <div className="w-full space-y-1 pb-8">
+    <div className={isKoto ? "w-full space-y-3 md:space-y-4 pb-12" : "w-full space-y-1 pb-8"}>
       {sections.map((section, sectionIndex) => (
         <section
           key={section.id ?? sectionIndex}
           id={sectionAnchor(sectionIndex)}
-          className="scroll-mt-[calc(var(--navbar-height)+0.5rem)] space-y-1"
+          className={`scroll-mt-[calc(var(--navbar-height)+0.5rem)] ${
+            isKoto ? "space-y-3 md:space-y-4" : "space-y-1"
+          }`}
         >
           {(section.layouts ?? []).map((layout, layoutIndex) => (
             <div
               key={layout.id ?? layoutIndex}
-              className={layoutClass[layout.blockType]}
+              className={activeLayoutClass[layout.blockType]}
             >
               {(layout.items ?? []).map((item: WorkItem, itemIndex) => (
                 <div
@@ -70,6 +107,7 @@ export const WorkSections = ({ sections }: { sections: Work["sections"] }) => {
                   <WorkItemView
                     assetSize={assetSizeForLayout(layout)}
                     item={item}
+                    variant={variant}
                   />
                 </div>
               ))}

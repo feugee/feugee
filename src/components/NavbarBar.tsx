@@ -87,6 +87,7 @@ export const NavbarBar = ({
       <header
         className="sticky top-0 z-40 -mb-(--navbar-height) h-(--navbar-height)"
         data-blackout-slab
+        data-static-slab
         data-menu-open={menuOpen || undefined}
         ref={headerRef}
       >
