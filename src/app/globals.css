@@ -23,9 +23,9 @@
  * and arbitrary-value styles read these variables directly.
  */
 @theme static {
-  /* Breakpoints — md starts tablet at 1080px (67.5rem), lg starts desktop at 1280px (80rem) */
-  --breakpoint-md: 67.5rem;
-  --breakpoint-lg: 80rem;
+  /* Breakpoints — md (tablet) starts at 768px (48rem); lg (desktop) starts at 1080px (67.5rem) */
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 67.5rem;
   --breakpoint-xl: 90rem;
   --breakpoint-2xl: 108rem;
   --breakpoint-3xl: 120rem;
@@ -283,7 +283,7 @@ header[data-frosted] .navbar-bar {
    starves the column but never crams the logo and control together.
    Below lg the Menu is a full-screen layer at the front — the bar keeps
    its shape and this clearance never applies. */
-@media (min-width: 80rem) {
+@media (min-width: 67.5rem) {
   header[data-menu-open] .navbar-bar {
     inset-inline-end: var(--menu-width);
     min-width: max-content;
