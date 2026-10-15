@@ -251,7 +251,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
             </div>
           )}
         </div>
-        <div className={columnRowClassName}>
+        <div className="w-full flex flex-col md:flex-row gap-10 items-start md:justify-between">
           {menuLinks.length > 0 && (
             <div className="space-y-6 w-full">
               <h2 className="text-base text-neutral-500">{menuHeading}</h2>
