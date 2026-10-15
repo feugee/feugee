@@ -322,8 +322,8 @@ export const FooterContent = ({ data }: { data: Footer }) => {
         <FooterWordmark className="block h-auto w-full select-none pointer-events-none" />
         <div className="absolute inset-x-0 bottom-0 z-10 px-6 sm:px-8 md:px-8 lg:px-16 pb-3 md:pb-4">
           <div className="mb-3 md:mb-4 h-px w-full bg-neutral-900" />
-          <div className="w-full grid grid-rows-3 lg:grid-rows-1 lg:grid-cols-3 justify-between items-center gap-x-6 gap-y-2 lg:gap-y-0">
-            <span className="text-sm text-neutral-500 text-center lg:text-left">
+          <div className="w-full grid grid-rows-3 md:grid-rows-1 md:grid-cols-3 justify-between items-center gap-x-6 gap-y-2 md:gap-y-0">
+            <span className="text-sm text-neutral-500 text-center md:text-left">
               &copy; {new Date().getFullYear()} {copyrightName}. All Rights
               Reserved.
             </span>
@@ -333,7 +333,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
               </div>
             )}
             {socialLinks.length > 0 && (
-              <div className="flex justify-center lg:justify-end items-center gap-x-3">
+              <div className="flex justify-center md:justify-end items-center gap-x-3">
                 {socialLinks.map(({ id, url, label, Icon }) => (
                   <a
                     aria-label={label}
