@@ -318,9 +318,9 @@ export const FooterContent = ({ data }: { data: Footer }) => {
           with the rule and bottom bar layered over its lower letters. Below
           md the letters are too short to spare, so the bar just follows them.
           The window's bottom edge is the footer's bottom edge. */}
-      <div className="relative overflow-hidden -mx-6 sm:-mx-8 md:-mx-8 lg:-mx-16 min-h-[125px] flex flex-col justify-end">
+      <div className="relative overflow-hidden -mx-6 sm:-mx-8 md:-mx-8 lg:-mx-16 -mb-6 sm:-mb-8 md:-mb-8 lg:-mb-16 min-h-[125px] flex flex-col justify-end">
         <FooterWordmark className="block h-auto w-full select-none pointer-events-none" />
-        <div className="absolute inset-x-0 bottom-0 z-10 px-6 sm:px-8 md:px-8 lg:px-16 pb-0">
+        <div className="absolute inset-x-0 bottom-0 z-10 px-6 sm:px-8 md:px-8 lg:px-16 pb-3 md:pb-4">
           <div className="mb-3 md:mb-4 h-px w-full bg-neutral-900" />
           <div className="w-full grid grid-rows-3 lg:grid-rows-1 lg:grid-cols-3 justify-between items-center gap-x-6 gap-y-2 lg:gap-y-0">
             <span className="text-sm text-neutral-500 text-center lg:text-left">
