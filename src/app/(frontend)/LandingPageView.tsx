@@ -156,7 +156,7 @@ export const LandingPageContent = ({
   );
 
   return (
-    <div className="flex flex-1 flex-col">
+    <div className="flex flex-1 flex-col" data-page="home" data-static-slab>
       {slides.length > 0 ? (
         <HeroSlider
           cue={cue}

@@ -97,7 +97,7 @@ export const TestimonialsSection = ({
   const [left, right] = splitTestimonialColumns(items);
 
   return (
-    <section aria-label={heading} className="p-6 md:p-16 mx-auto max-w-360">
+    <section aria-label={heading} className="w-full max-w-[1440px] mx-auto p-6 md:p-16">
       <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-x-16">
         <div className="w-full shrink-0 lg:w-[30%]">
           <div className="inline-flex rounded border border-neutral-700 px-4 py-2">

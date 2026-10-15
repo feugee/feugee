@@ -165,6 +165,44 @@
     scrollbar-width: none;
   }
 
+  /* Fluid root scaling (Koto-style): on large monitors (>= 1728px), scale
+     typography and rem-based spacing proportionally with screen width
+     (0.925926vw = 16px at 1728px canvas), bounded by clamp to 24px on 4K. */
+  @media (min-width: 1728px) {
+    html {
+      font-size: clamp(16px, 0.925926vw, 24px);
+    }
+
+    :root {
+      --navbar-height: 72px;
+      --menu-width: min(85vw, 480px);
+    }
+  }
+
+  /* Decouple Navbar, Menu, Homepage, CTA & Footer from Fluid Root Scaling (Koto):
+     Lock typography (--text-*), containers (--container-*), and spacing (--spacing)
+     inside these static slabs to a static 16px root basis at all monitor resolutions (including 4K/Ultrawide). */
+  [data-static-slab],
+  header[data-blackout-slab],
+  [data-menu-panel],
+  footer[data-blackout-slab] {
+    font-size: 16px;
+    --spacing: 4px;
+    --container-xl: 576px;
+    --container-4xl: 896px;
+    --text-xs: 12px;
+    --text-sm: 14px;
+    --text-base: 16px;
+    --text-lg: 18px;
+    --text-xl: 20px;
+    --text-2xl: 24px;
+    --text-3xl: 30px;
+    --text-4xl: 36px;
+    --text-5xl: 48px;
+    --text-6xl: 60px;
+    --text-7xl: 72px;
+  }
+
   html::-webkit-scrollbar {
     display: none;
   }
@@ -266,7 +304,7 @@ header[data-frosted] .navbar-bar {
     backdrop-filter 400ms var(--ease-swipe);
 }
 
-/* The bar overhangs its header's box by the 24px top inset, so it must not
+/* The bar overhangs its header's box by the 1.5rem top inset, so it must not
    eat input meant for the content it floats over; its own children take
    events back (pointer-events isn't overridden per-child anywhere else). */
 .navbar-bar > * {

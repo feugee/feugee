@@ -42,13 +42,12 @@ const toFooterWorkCard = (work: number | Work): FooterWorkCard | null => {
 
 const WorkCard = ({
   item,
-  isFirst,
 }: {
   item: FooterWorkCard;
-  isFirst: boolean;
+  isFirst?: boolean;
 }) => (
   <Link
-    className="block w-full"
+    className="group block w-full"
     data-cursor-logo={item.clientLogo ?? undefined}
     href={`/works/${item.slug}`}
     onNavigate={(event) => navigateWithBlackout(event, `/works/${item.slug}`)}
@@ -60,7 +59,7 @@ const WorkCard = ({
         item.visual.source.type === "youtube" ? (
           <AmbientYouTube
             alt={item.visual.alt}
-            frameClassName="h-full w-full"
+            frameClassName="h-full w-full transition-transform duration-500 ease-out lg:group-hover:scale-105"
             height={item.visual.height}
             poster={item.visual.posterUrl}
             videoId={item.visual.source.videoId}
@@ -69,7 +68,7 @@ const WorkCard = ({
         ) : (
           <AutoVideo
             alt={item.visual.alt}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-500 ease-out lg:group-hover:scale-105"
             height={item.visual.height}
             poster={item.visual.posterUrl}
             src={item.visual.source.url}
@@ -80,7 +79,7 @@ const WorkCard = ({
         /* A sized Payload variant — the optimizer would only re-encode it. */
         <Image
           alt={item.visual.alt}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover transition-transform duration-500 ease-out lg:group-hover:scale-105"
           height={item.visual.height}
           src={item.visual.url}
           width={item.visual.width}
@@ -179,16 +178,15 @@ export const FooterContent = ({ data }: { data: Footer }) => {
 
   return (
     /* The data attribute marks the Page Shift slab (ADR 0007). */
-    // <footer
-    //   className="mt-auto mx-auto max-w-360 bg-red-500 px-6 pt-6 flex flex-col gap-y-6 items-stretch justify-start bg-linear-to-t from-[#161616] to-neutral-950"
-    //   data-blackout-slab
-    // >
     <footer
-      className="mt-auto mx-auto max-w-360 px-6 pt-6 flex flex-col gap-y-6 items-stretch justify-start bg-neutral-950"
+      id="site-footer"
+      className="mt-auto mx-auto w-full max-w-[1440px] px-6 pt-6 flex flex-col gap-y-6 items-stretch justify-start bg-neutral-950"
       data-blackout-slab
+      data-static-slab
     >
       {hasFooterCtaContent(cta) && (
         <section
+          id="contact-cta"
           aria-label="Contact CTA"
           className="flex w-full flex-col items-center justify-center gap-y-8 py-20 md:py-28 lg:py-32 text-center md:gap-y-12"
         >

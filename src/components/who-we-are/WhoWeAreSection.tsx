@@ -115,7 +115,7 @@ export const WhoWeAreSection = ({
   return (
     <section
       aria-label={heading}
-      className="px-6 pt-6 pb-12 md:p-16 mx-auto max-w-360"
+      className="w-full max-w-[1440px] mx-auto px-6 pt-6 pb-12 md:p-16"
       ref={scopeRef}
     >
       <div className="flex flex-col gap-y-6 lg:gap-12 lg:flex-row">

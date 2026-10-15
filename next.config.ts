@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
       // remotePatterns matches port '' (the default) unless one is given, so
       // omitting it here would 400 every http://localhost:3000/... asset URL.
       { protocol: "http", hostname: "localhost", port: "3000" },
+      { protocol: "http", hostname: "localhost", port: "3001" },
       { protocol: "https", hostname: "feugee.com" },
       ...(process.env.R2_PUBLIC_URL
         ? [
