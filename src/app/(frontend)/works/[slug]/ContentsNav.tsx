@@ -124,6 +124,89 @@ export const ContentsLinks = ({
  * into a solid black (bg-neutral-950) full contents sheet with a synchronized 500ms
  * ease-swipe transition.
  */
+/**
+ * Slot machine ticker: rolls vertically upwards whenever activeTitle changes,
+ * both incoming and outgoing animated with GSAP for guaranteed smooth motion.
+ */
+const SlotMachineTitle = ({ activeTitle }: { activeTitle: string }) => {
+  const [titles, setTitles] = useState<{ current: string; prev: string | null }>({
+    current: activeTitle,
+    prev: null,
+  });
+  const prevRef = useRef<HTMLSpanElement>(null);
+  const currRef = useRef<HTMLSpanElement>(null);
+  const lastTitleRef = useRef(activeTitle);
+
+  useEffect(() => {
+    if (activeTitle === lastTitleRef.current) return;
+    const oldTitle = lastTitleRef.current;
+    lastTitleRef.current = activeTitle;
+
+    setTitles({
+      current: activeTitle,
+      prev: oldTitle,
+    });
+  }, [activeTitle]);
+
+  useEffect(() => {
+    if (!titles.prev) return;
+
+    const ctx = gsap.context(() => {
+      if (prevRef.current) {
+        gsap.fromTo(
+          prevRef.current,
+          { yPercent: 0, opacity: 1 },
+          {
+            yPercent: -100,
+            opacity: 0,
+            duration: 0.45,
+            ease: "power2.out",
+          },
+        );
+      }
+      if (currRef.current) {
+        gsap.fromTo(
+          currRef.current,
+          { yPercent: 100, opacity: 0 },
+          {
+            yPercent: 0,
+            opacity: 1,
+            duration: 0.45,
+            ease: "power2.out",
+            onComplete: () => {
+              setTitles((t) =>
+                t.current === activeTitle ? { current: activeTitle, prev: null } : t,
+              );
+            },
+          },
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, [titles, activeTitle]);
+
+  return (
+    <div className="relative h-5 min-w-0 flex-1 overflow-hidden">
+      {titles.prev && (
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 truncate text-sm text-primary-500 font-normal leading-5 pointer-events-none"
+          ref={prevRef}
+        >
+          {titles.prev}
+        </span>
+      )}
+      <span
+        className="block truncate text-sm text-primary-500 font-normal leading-5"
+        ref={currRef}
+      >
+        {titles.current}
+      </span>
+    </div>
+  );
+};
+
 export const ContentsNav = ({
   activeSection,
   sections,
@@ -204,10 +287,9 @@ export const ContentsNav = ({
 
   if (!sections.length) return null;
 
-  const activeIndex = Math.max(
-    0,
-    sections.findIndex((section, index) => sectionAnchor(index) === activeSection),
-  );
+  const activeTitle =
+    sections.find((section, index) => sectionAnchor(index) === activeSection)
+      ?.title ?? sections[0].title;
 
   return (
     <>
@@ -250,30 +332,7 @@ export const ContentsNav = ({
               Contents
             </span>
             <span aria-hidden="true" className="h-4 w-px shrink-0 bg-neutral-800" />
-            {/* Slot machine ticker: rolls vertically in the scroll direction with smooth fade */}
-            <div className="relative h-5 min-w-0 flex-1 overflow-hidden">
-              <div className="grid grid-cols-1 grid-rows-1 h-5 w-full">
-                {sections.map((section, index) => {
-                  const isCurrent = index === activeIndex;
-                  const isPast = index < activeIndex;
-                  return (
-                    <span
-                      aria-hidden={!isCurrent}
-                      className={`col-start-1 row-start-1 truncate text-sm text-primary-500 font-normal leading-5 transition-[opacity,transform] duration-400 ease-swipe ${
-                        isCurrent
-                          ? "translate-y-0 opacity-100"
-                          : isPast
-                            ? "-translate-y-full opacity-0 pointer-events-none"
-                            : "translate-y-full opacity-0 pointer-events-none"
-                      }`}
-                      key={section.id ?? index}
-                    >
-                      {section.title}
-                    </span>
-                  );
-                })}
-              </div>
-            </div>
+            <SlotMachineTitle activeTitle={activeTitle} />
           </div>
 
           {/* Toggle / Close Icon */}
@@ -313,7 +372,7 @@ export const ContentsNav = ({
           </button>
         </div>
 
-        {/* Expandable Content Grid: Smooth CSS Grid Accordion */}
+        {/* Expandable Content Grid: Smooth Symmetrical CSS Grid Accordion */}
         <div
           className={`grid transition-[grid-template-rows] duration-500 ease-swipe ${
             open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
@@ -321,10 +380,10 @@ export const ContentsNav = ({
         >
           <div className="overflow-hidden min-h-0">
             <div
-              className={`transition-[opacity,transform] ease-swipe ${
+              className={`transition-[opacity,translate] duration-500 ease-swipe ${
                 open
-                  ? "opacity-100 translate-y-0 delay-100 duration-400 pointer-events-auto"
-                  : "opacity-0 -translate-y-2 duration-200 pointer-events-none"
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 translate-y-3 pointer-events-none"
               }`}
             >
               <ContentsLinks

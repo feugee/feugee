@@ -196,10 +196,10 @@ export const SectorFilter = ({
         >
           <div className="overflow-hidden min-h-0">
             <div
-              className={`transition-[opacity,transform] ease-swipe ${
+              className={`transition-[opacity,translate] duration-500 ease-swipe ${
                 open
-                  ? "opacity-100 translate-y-0 delay-100 duration-400 pointer-events-auto"
-                  : "opacity-0 -translate-y-2 duration-200 pointer-events-none"
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 translate-y-3 pointer-events-none"
               }`}
             >
               <ul className="max-h-[calc(65svh-50px)] space-y-2 overflow-y-auto overscroll-contain p-4 pb-6 mask-[linear-gradient(to_bottom,black_calc(100%-24px),transparent)]">
