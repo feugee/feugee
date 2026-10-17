@@ -223,14 +223,14 @@ export const ContentsNav = ({
       <div
         aria-expanded={open}
         aria-label="Table of Contents"
-        className={`fixed inset-x-6 bottom-6 z-45 overflow-hidden flex flex-col transition-[max-height,height,opacity,translate,border-radius,box-shadow,background-color,border-color,backdrop-filter,visibility] duration-500 ease-swipe lg:hidden ${
+        className={`fixed inset-x-6 bottom-6 z-45 overflow-hidden transition-[opacity,translate,border-radius,box-shadow,background-color,border-color,backdrop-filter,visibility] duration-500 ease-swipe lg:hidden ${
           !isShown
             ? "invisible translate-y-10 opacity-0 pointer-events-none"
             : "visible translate-y-0 opacity-100"
         } ${
           open
-            ? "max-h-[65svh] rounded-[8px] border border-neutral-700 bg-neutral-950 backdrop-blur-none shadow-2xl"
-            : "max-h-[50px] h-[50px] rounded-[4px] border border-neutral-700/80 bg-neutral-950/70 backdrop-blur-md shadow-lg cursor-pointer"
+            ? "rounded-[8px] border border-neutral-700 bg-neutral-950 backdrop-blur-none shadow-2xl"
+            : "rounded-[4px] border border-neutral-700/80 bg-neutral-950/70 backdrop-blur-md shadow-lg cursor-pointer"
         }`}
         data-lenis-prevent
         ref={barRef}
@@ -291,20 +291,28 @@ export const ContentsNav = ({
           </button>
         </div>
 
-        {/* Expanded Content Body */}
+        {/* Expandable Content Grid: Smooth CSS Grid Accordion */}
         <div
-          className={`flex-1 min-h-0 overflow-hidden transition-[opacity,translate] duration-400 ease-swipe ${
-            open
-              ? "opacity-100 translate-y-0 delay-100 pointer-events-auto"
-              : "opacity-0 -translate-y-2 pointer-events-none"
+          className={`grid transition-[grid-template-rows] duration-500 ease-swipe ${
+            open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
           }`}
         >
-          <ContentsLinks
-            activeSection={activeSection}
-            className="max-h-[calc(65svh-50px)] overflow-y-auto overscroll-contain p-4 pb-6 mask-[linear-gradient(to_bottom,black_calc(100%-24px),transparent)]"
-            onSelect={closeSheet}
-            sections={sections}
-          />
+          <div className="overflow-hidden min-h-0">
+            <div
+              className={`transition-[opacity,transform] ease-swipe ${
+                open
+                  ? "opacity-100 translate-y-0 delay-100 duration-400 pointer-events-auto"
+                  : "opacity-0 -translate-y-2 duration-200 pointer-events-none"
+              }`}
+            >
+              <ContentsLinks
+                activeSection={activeSection}
+                className="max-h-[calc(65svh-50px)] overflow-y-auto overscroll-contain p-4 pb-6 mask-[linear-gradient(to_bottom,black_calc(100%-24px),transparent)]"
+                onSelect={closeSheet}
+                sections={sections}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
