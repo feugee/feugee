@@ -204,9 +204,10 @@ export const ContentsNav = ({
 
   if (!sections.length) return null;
 
-  const activeTitle =
-    sections.find((section, index) => sectionAnchor(index) === activeSection)
-      ?.title ?? sections[0].title;
+  const activeIndex = Math.max(
+    0,
+    sections.findIndex((section, index) => sectionAnchor(index) === activeSection),
+  );
 
   return (
     <>
@@ -249,9 +250,30 @@ export const ContentsNav = ({
               Contents
             </span>
             <span aria-hidden="true" className="h-4 w-px shrink-0 bg-neutral-800" />
-            <span className="min-w-0 flex-1 truncate text-sm text-primary-500 font-normal">
-              {activeTitle}
-            </span>
+            {/* Slot machine ticker: rolls vertically in the scroll direction with smooth fade */}
+            <div className="relative h-5 min-w-0 flex-1 overflow-hidden">
+              <div className="grid grid-cols-1 grid-rows-1 h-5 w-full">
+                {sections.map((section, index) => {
+                  const isCurrent = index === activeIndex;
+                  const isPast = index < activeIndex;
+                  return (
+                    <span
+                      aria-hidden={!isCurrent}
+                      className={`col-start-1 row-start-1 truncate text-sm text-primary-500 font-normal leading-5 transition-[opacity,transform] duration-400 ease-swipe ${
+                        isCurrent
+                          ? "translate-y-0 opacity-100"
+                          : isPast
+                            ? "-translate-y-full opacity-0 pointer-events-none"
+                            : "translate-y-full opacity-0 pointer-events-none"
+                      }`}
+                      key={section.id ?? index}
+                    >
+                      {section.title}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           {/* Toggle / Close Icon */}
