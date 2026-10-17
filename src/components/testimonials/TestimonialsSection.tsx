@@ -15,7 +15,7 @@ const TestimonialCard = ({ item }: { item: TestimonialItem }) => {
   return (
     <figure className="flex flex-col gap-4 border border-neutral-900 p-6">
       <QuoteIcon />
-      <blockquote className="text-base leading-relaxed text-white md:text-xl">
+      <blockquote className="text-base leading-relaxed text-white md:text-lg lg:text-xl">
         {item.testimony}
       </blockquote>
       <div className="border-t border-neutral-900" />
@@ -67,7 +67,7 @@ const MarqueeColumn = ({
     <div
       className={`flex flex-col ${
         direction === "up"
-          ? "animate-marquee-up-mobile lg:animate-marquee-up"
+          ? "animate-marquee-up-mobile md:animate-marquee-up"
           : "animate-marquee-down"
       }`}
     >
@@ -97,25 +97,28 @@ export const TestimonialsSection = ({
   const [left, right] = splitTestimonialColumns(items);
 
   return (
-    <section aria-label={heading} className="w-full max-w-[1440px] mx-auto p-6 md:p-16">
-      <div className="flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-x-16">
+    <section
+      aria-label={heading}
+      className="w-full max-w-[1440px] mx-auto px-6 py-12 md:px-12 md:py-20 lg:px-16 lg:py-24"
+    >
+      <div className="flex flex-col gap-y-8 lg:flex-row lg:justify-between lg:gap-x-12">
         <div className="w-full shrink-0 lg:w-[30%]">
-          <div className="inline-flex rounded border border-neutral-700 px-4 py-2">
-            <h2 className="text-md text-white">{heading}</h2>
+          <div className="inline-flex rounded border border-neutral-700 bg-neutral-950/70 px-3 py-1 sm:px-3.5 sm:py-1.5 md:px-4 md:py-2 backdrop-blur">
+            <h2 className="text-xs sm:text-sm md:text-base text-white">{heading}</h2>
           </div>
           {description && (
-            <p className="mt-6 text-xl leading-relaxed text-white md:text-2xl">
+            <p className="mt-6 text-lg md:text-xl lg:text-2xl xl:text-[28px] leading-[1.35] text-white">
               {description}
             </p>
           )}
         </div>
         <div className="w-full lg:w-[70%]">
-          {/* Mobile & Tablet: one full-width rising column with every testimonial. */}
-          <div className="lg:hidden">
+          {/* Mobile: one full-width rising column with every testimonial. */}
+          <div className="md:hidden">
             <MarqueeColumn direction="up" items={items} />
           </div>
-          {/* Desktop: the left column rises, the right one sinks. */}
-          <div className="hidden gap-1 lg:flex">
+          {/* Tablet & Desktop: two counter-scrolling columns (left rises, right sinks). */}
+          <div className="hidden gap-1 md:flex">
             <MarqueeColumn direction="up" items={left} />
             {right.length > 0 && (
               <MarqueeColumn direction="down" items={right} />

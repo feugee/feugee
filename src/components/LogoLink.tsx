@@ -12,7 +12,16 @@ import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
  * link differs.
  */
 export const LogoLink = () => (
-  <Link href="/" onNavigate={(event) => navigateWithBlackout(event, "/")}>
-    <LogoMark ariaLabel="Feugee" height={32} width={113} />
+  <Link
+    className="inline-flex items-center"
+    href="/"
+    onNavigate={(event) => navigateWithBlackout(event, "/")}
+  >
+    <LogoMark
+      ariaLabel="Feugee"
+      className="h-6 w-auto md:h-7 lg:h-8"
+      height={32}
+      width={113}
+    />
   </Link>
 );

@@ -13,10 +13,11 @@ describe("menuIconLine", () => {
   });
 
   it("grows both lines to equal length and crosses them at the center when open", () => {
-    expect(menuIconLine(true, true)).toContain("translate-y-[5px] rotate-45");
-    expect(menuIconLine(true, false)).toContain(
-      "w-full -translate-y-[5px] -rotate-45",
-    );
+    expect(menuIconLine(true, true)).toContain("rotate-45");
+    expect(menuIconLine(true, true)).toContain("lg:translate-y-[5px]");
+    expect(menuIconLine(true, false)).toContain("w-full");
+    expect(menuIconLine(true, false)).toContain("-rotate-45");
+    expect(menuIconLine(true, false)).toContain("lg:-translate-y-[5px]");
   });
 
   it("rides the site's swipe curve at ~300ms", () => {

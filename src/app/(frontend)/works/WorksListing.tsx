@@ -87,19 +87,21 @@ const balanceColumns = (items: WorksListItem[]): WorksListItem[][] => {
 
 /* Below lg the listing is one column, and a one-column listing of natural
  * ratios would still read as a masonry — so every card there holds its
- * Thumbnail in the same 16/9 slot, center-cropped by object-cover. Desktop
+ * Thumbnail in a calibrated slot (portrait 552:581.83 on mobile < md,
+ * 16:9 on tablet md:<lg), center-cropped by object-cover. Desktop
  * keeps the masonry's natural ratios. For the YouTube embed the slot
  * wrapper must win over the frame's inline aspect-ratio style: absolutely
  * positioned with both dimensions set, the frame's inline ratio goes
  * inert, and the wrapper is a plain passthrough at lg+. */
-const cardMediaClass = "h-auto w-full object-cover max-lg:aspect-video";
+const cardMediaClass =
+  "h-auto w-full object-cover aspect-[552/581.83] md:aspect-video lg:aspect-auto";
 
 const WorkVisual = ({ item }: { item: WorksListItem }) =>
   item.visual.kind === "video" ? (
     item.visual.source.type === "youtube" ? (
       // Embedded thumbnails autoplay muted like uploaded ones; the ingested
       // poster-derived width/height keep the card's slot identical.
-      <div className="relative max-lg:aspect-video">
+      <div className="relative aspect-[552/581.83] md:aspect-video lg:aspect-auto">
         <AmbientYouTube
           alt={item.visual.alt}
           frameClassName="w-full max-lg:absolute max-lg:inset-0 max-lg:h-full"
@@ -148,6 +150,7 @@ const WorkCard = ({
   <Link
     className="group/card relative block lg:rounded-md overflow-hidden"
     data-work-card
+    data-static-slab
     data-work-card-id={item.id}
     data-cursor-logo={item.clientLogo ?? undefined}
     href={`/works/${item.slug}`}
@@ -186,7 +189,7 @@ const WorkCard = ({
           {item.title}
         </h2>
         {item.firstExpertise && (
-          <span className="text-sm md:text-lg lg:text-lg text-neutral-300 text-right">
+          <span className="text-sm md:text-base lg:text-base text-neutral-300 text-right">
             {item.firstExpertise}
           </span>
         )}
@@ -215,17 +218,17 @@ const WorkCard = ({
             the optimizer refuses the SVGs badges are likely to be. */}
         <Image
           alt={item.badge.name}
-          className="size-3.5 lg:size-6 object-contain"
-          height={24}
+          className="size-3.5 lg:size-5 object-contain"
+          height={20}
           src={item.badge.iconUrl}
           unoptimized
-          width={24}
+          width={20}
         />
         <span
           aria-hidden="true"
           className="grid max-w-48 max-lg:grid-cols-[minmax(0,1fr)] max-lg:opacity-100 lg:grid-cols-[minmax(0,0fr)] lg:opacity-0 lg:transition-[grid-template-columns,opacity] lg:duration-400 lg:ease-swipe lg:group-hover/card:grid-cols-[minmax(0,1fr)] lg:group-hover/card:opacity-100"
         >
-          <span className="min-w-0 overflow-hidden pl-2 lg:pl-3 whitespace-nowrap text-xs lg:text-base font-medium">
+          <span className="min-w-0 overflow-hidden pl-2 lg:pl-3 whitespace-nowrap text-xs lg:text-sm font-medium">
             {item.badge.name}
           </span>
         </span>
@@ -431,7 +434,7 @@ export const WorksListing = ({
       <aside className="self-start w-full lg:w-[20rem] lg:shrink-0 px-6 md:px-12 lg:px-0 max-lg:pt-32 lg:sticky lg:top-28 lg:pt-4">
         {/* A div, not a nav: the filter buttons are controls, not links. */}
         <div className="space-y-6">
-          <div className="w-full max-lg:border-b-0 border-b border-neutral-900/80 pb-6">
+          <div className="w-full max-lg:border-b-0 border-b border-neutral-900/80 max-md:pb-0 pb-6">
             <h1 className="text-xl md:text-2xl font-sans font-medium tracking-tight text-white mb-1.5">
               Our Works
             </h1>

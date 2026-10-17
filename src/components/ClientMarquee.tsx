@@ -73,7 +73,7 @@ export const ClientMarquee = ({
 }) => (
   <section
     aria-label={heading}
-    className="group relative border-t border-neutral-900 px-6 pb-6 pt-12 md:p-16"
+    className="group relative border-t border-neutral-900 py-12 md:py-20 lg:py-24"
   >
     <SectionHeading sticky={false}>{heading}</SectionHeading>
     <div className="overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">

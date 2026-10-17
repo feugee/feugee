@@ -12,7 +12,7 @@ import type { Work } from "@/payload-types";
 import { AmbientYouTube } from "@/components/AmbientYouTube";
 import { AutoVideo } from "@/components/AutoVideo";
 import { navigateWithBlackout } from "@/components/page-transition/navigateWithBlackout";
-import { SectionHeading } from "@/components/SectionHeading";
+import { getSmoothScroll } from "@/components/SmoothScroll";
 
 import { clipInsetsFor, formatClipPath, type Rect } from "./captionClip";
 import { MEDIA_OVERSHOOT, driftTravelPercent } from "./mediaDrift";
@@ -91,13 +91,13 @@ const SelectedWorkCard = ({ item }: { item: SelectedWorkItem }) => (
         than a scrim. */}
     <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-start justify-end gap-2 mix-blend-difference p-6 md:flex-row md:items-center md:justify-between md:p-16">
       <h3
-        className="text-3xl font-medium text-white md:text-5xl"
+        className="text-2xl font-medium text-white md:text-5xl"
         data-static-caption
       >
         {item.title}
       </h3>
       {item.year !== null && (
-        <p className="text-base text-white md:text-lg" data-static-caption>
+        <p className="text-sm text-white md:text-lg" data-static-caption>
           {item.year}
         </p>
       )}
@@ -119,6 +119,40 @@ export const SelectedWorksSection = ({
     const item = toSelectedWorkItem(work);
     return item ? [item] : [];
   });
+
+  const handleRailClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    slug: string,
+  ) => {
+    event.preventDefault();
+    const target = document.getElementById(slug);
+    if (!target) return;
+
+    const currentScroll = window.scrollY;
+    const targetTop = target.getBoundingClientRect().top + currentScroll;
+    const distance = Math.abs(currentScroll - targetTop);
+
+    // Koto formula: adaptive duration based on travel distance (1.2s - 2.8s)
+    const duration = Math.max(1.2, Math.min(2.8, distance / 800));
+
+    // Koto's power2.inOut (quad ease-in-out)
+    const power2InOut = (t: number) =>
+      t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+
+    const smooth = getSmoothScroll();
+    if (smooth) {
+      smooth.start();
+      smooth.scrollTo(target, {
+        duration,
+        easing: power2InOut,
+        lock: true,
+      });
+    } else {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+
+    window.history.pushState(null, "", `#${slug}`);
+  };
 
   // useGSAP runs before paint, so the overlay never flashes unclipped and
   // never doubles up with the static captions. The raw works prop is the
@@ -365,14 +399,23 @@ export const SelectedWorksSection = ({
   if (items.length === 0) return null;
 
   return (
-    <section aria-label={heading} className="pt-16" ref={scopeRef}>
-      {/* The shared sticky-chip heading — the Client Marquee's heading
-          renders through the same component. Sticks below the Navbar for the
-          whole section; z-20 keeps it above the cards but below the Pinned
-          Caption layer (z-30) should a very short viewport ever make the two
-          meet. */}
-      <SectionHeading>{heading}</SectionHeading>
+    <section aria-label={heading} className="pt-0" ref={scopeRef}>
       <div className="relative flex flex-col" ref={listRef}>
+        {/* The shared sticky-chip heading: placed directly in the media stream
+            over an absolute container spanning from top-0 to bottom-8 md:bottom-12.
+            Starts 32px/48px inside the first video (pt-8 md:pt-12), sticks at top-24
+            below the navbar during scroll, and docks symmetrically 32px/48px above
+            the bottom of the last card so it rides off-screen with the media and
+            never spills over the Client Voices section below. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 bottom-8 md:bottom-12 z-20">
+          <div className="sticky top-24 flex w-full justify-center pt-8 md:pt-12">
+            <div className="pointer-events-auto rounded border border-neutral-700 bg-neutral-950/70 px-3 py-1 sm:px-3.5 sm:py-1.5 md:px-4 md:py-2 backdrop-blur">
+              <h2 className="text-xs sm:text-sm md:text-base text-center text-white">
+                {heading}
+              </h2>
+            </div>
+          </div>
+        </div>
         {items.map((item) => (
           <SelectedWorkCard item={item} key={item.id} />
         ))}
@@ -406,7 +449,7 @@ export const SelectedWorksSection = ({
             titles overhang the lines' left ends — a rail-sized box would
             shave them mid-letter. */}
         <div
-          className="pointer-events-none fixed inset-0 z-30 hidden mix-blend-difference md:block"
+          className="pointer-events-none fixed inset-0 z-30 hidden mix-blend-difference [@media(hover:hover)_and_(pointer:fine)]:block"
           data-rail-layer
         >
           <ul className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col items-end gap-y-0 gap-x-4 pr-16">
@@ -416,6 +459,7 @@ export const SelectedWorksSection = ({
                   className="pointer-events-auto flex h-8 w-28 items-center justify-end"
                   data-rail-row
                   href={`#${item.slug}`}
+                  onClick={(event) => handleRailClick(event, item.slug)}
                 >
                   <span className="relative flex items-center">
                     <span
@@ -452,11 +496,11 @@ export const SelectedWorksSection = ({
               data-pinned-caption
               key={item.id}
             >
-              <h3 className="text-3xl text-center lg:text-start font-medium text-white lg:text-4xl xl:text-5xl 2xl:text-7xl lg:max-w-[60%] ">
+              <h3 className="text-2xl text-center lg:text-start font-medium text-white lg:text-4xl xl:text-5xl 2xl:text-7xl lg:max-w-[60%] ">
                 {item.title}
               </h3>
               {item.year !== null && (
-                <p className="text-base text-white md:text-2xl lg:text-2xl xl:text-4xl 2xl:text-5xl">
+                <p className="text-sm text-white md:text-2xl lg:text-2xl xl:text-4xl 2xl:text-5xl">
                   {item.year}
                 </p>
               )}

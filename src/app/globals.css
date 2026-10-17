@@ -10,12 +10,14 @@
   --background: #ffffff;
   --foreground: #191919;
   /* Layout dimension, not a Design Token: navbar-driven clearances across
-   * the public site (sticky offsets, scroll margins) hang off this value. */
-  --navbar-height: 4.5rem;
+   * the public site (sticky offsets, scroll margins) hang off this value.
+   * Locked to 72px physical to decouple from fluid root scaling. */
+  --navbar-height: 72px;
   /* Layout dimension, not a Design Token: the Menu panel's width on
    * desktop — the column the Navbar's bar vacates while the Menu is open.
-   * Below lg the Menu is full-screen and this never leaves :root. */
-  --menu-width: min(85vw, 30rem);
+   * Below lg the Menu is full-screen and this never leaves :root.
+   * Locked to 480px physical to preserve hugging proportions on large viewports. */
+  --menu-width: min(85vw, 480px);
 }
 
 /*
@@ -23,9 +25,12 @@
  * and arbitrary-value styles read these variables directly.
  */
 @theme static {
-  /* Breakpoints — 2xl moved down to 1440px; 3xl keeps Tailwind's default 2xl (1536px) */
-  --breakpoint-2xl: 90rem;
-  --breakpoint-3xl: 96rem;
+  /* Breakpoints — md (tablet) starts at 768px (48rem); lg (desktop) starts at 1080px (67.5rem) */
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 67.5rem;
+  --breakpoint-xl: 90rem;
+  --breakpoint-2xl: 108rem;
+  --breakpoint-3xl: 120rem;
 
   /* Primary */
   --color-primary-50: #feefe8;
@@ -163,6 +168,7 @@
      the listing page's filter-row pattern. */
   html {
     scrollbar-width: none;
+    color-scheme: dark;
   }
 
   /* Fluid root scaling (Koto-style): on large monitors (>= 1728px), scale
@@ -209,6 +215,7 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    line-height: 1.5;
   }
 }
 
@@ -239,6 +246,18 @@
 [data-custom-cursor] textarea,
 [data-custom-cursor] [contenteditable="true"] {
   cursor: text;
+}
+
+/*
+ * Fluid Hero Title scaling (Koto-style): on viewports >= 1728px, the Hero
+ * H1 scales lockstep with the root scale: starting at 60px (1440px/1728px base)
+ * and scaling gracefully to 72px at 2560px+ (Koto scale).
+ * Unlayered so it outranks utility classes on the heading.
+ */
+@media (min-width: 1728px) {
+  [data-fluid-title] {
+    font-size: clamp(60px, 1.4423vw + 35.08px, 72px);
+  }
 }
 
 /*
@@ -280,7 +299,7 @@ header[data-frosted] .navbar-bar {
    starves the column but never crams the logo and control together.
    Below lg the Menu is a full-screen layer at the front — the bar keeps
    its shape and this clearance never applies. */
-@media (min-width: 64rem) {
+@media (min-width: 67.5rem) {
   header[data-menu-open] .navbar-bar {
     inset-inline-end: var(--menu-width);
     min-width: max-content;

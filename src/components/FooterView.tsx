@@ -11,7 +11,7 @@ import { AmbientYouTube } from "./AmbientYouTube";
 import { AutoVideo } from "./AutoVideo";
 import { usePreviewRequested } from "./live-preview/usePreviewRequested";
 import { hasFooterCtaContent, toFooterCta } from "./footerCta";
-import { LogoMark } from "./LogoMark";
+import { FooterWordmark } from "./FooterWordmark";
 import { toMenuLinks } from "./menu";
 import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
 import { toSocialLinks } from "./socialPlatforms";
@@ -180,7 +180,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
     /* The data attribute marks the Page Shift slab (ADR 0007). */
     <footer
       id="site-footer"
-      className="mt-auto mx-auto w-full max-w-[1440px] p-6 sm:p-8 md:p-8 lg:p-16 flex flex-col gap-y-6 items-stretch justify-start bg-neutral-950"
+      className="mt-auto mx-auto w-full max-w-[1440px] p-6 md:p-12 lg:p-16 flex flex-col gap-y-6 items-stretch justify-start bg-neutral-950"
       data-blackout-slab
       data-static-slab
     >
@@ -188,7 +188,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
         <section
           id="contact-cta"
           aria-label="Contact CTA"
-          className="flex w-full flex-col items-center justify-center gap-y-8 py-20 md:py-28 lg:py-32 text-center md:gap-y-12"
+          className="flex w-full flex-col items-center justify-center gap-y-8 py-16 md:py-24 lg:py-28 text-center md:gap-y-12"
         >
           <div className="flex flex-col gap-y-4 md:gap-y-6 items-center text-center">
             {cta.eyebrow && (
@@ -197,7 +197,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
               </p>
             )}
             {cta.headline && (
-              <h2 className="text-4xl text-white font-bold md:text-5xl lg:text-7xl tracking-tight max-w-4xl">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] xl:text-6xl text-white font-bold tracking-tight max-w-4xl">
                 {cta.headline}
               </h2>
             )}
@@ -251,7 +251,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
             </div>
           )}
         </div>
-        <div className={columnRowClassName}>
+        <div className="w-full grid grid-cols-2 gap-6 items-start md:flex md:flex-row md:justify-between md:gap-10">
           {menuLinks.length > 0 && (
             <div className="space-y-6 w-full">
               <h2 className="text-base text-neutral-500">{menuHeading}</h2>
@@ -277,7 +277,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
               <h2 className="text-base text-neutral-500">{contactHeading}</h2>
               {/* address marks the agency's own contact details; preflight
                   doesn't un-italicize it, so not-italic keeps the look. */}
-              <address className="flex flex-col justify-start items-start gap-y-2 not-italic">
+              <address className="flex flex-col justify-start items-start gap-y-2 not-italic text-sm sm:text-base break-all sm:break-normal">
                 {callToAction &&
                   (callToActionUrl ? (
                     <Link
@@ -318,24 +318,15 @@ export const FooterContent = ({ data }: { data: Footer }) => {
           with the rule and bottom bar layered over its lower letters. Below
           md the letters are too short to spare, so the bar just follows them.
           The window's bottom edge is the footer's bottom edge. */}
-      <div className="relative overflow-hidden -mx-6 sm:-mx-8 md:-mx-8 lg:-mx-16">
-        <div aria-hidden="true" className="w-full text-[#1F1F1F] md:mb-[-3%]">
-          <LogoMark className="block h-auto w-full" monochrome />
-        </div>
-        <div className="relative z-10 md:absolute md:inset-x-0 md:bottom-0 px-6 sm:px-8 md:px-8 lg:px-16">
-          <div className="mb-16 h-px w-full bg-neutral-900" />
-          <div className="w-full grid grid-rows-3 lg:grid-rows-1 lg:grid-cols-3 justify-between items-center gap-x-6 gap-y-3">
-            <span className="text-sm text-neutral-500 text-center lg:text-left">
-              &copy; {new Date().getFullYear()} {copyrightName}. All Rights
-              Reserved.
-            </span>
-            {data.location && (
-              <div className="text-sm text-neutral-500 flex items-center justify-center gap-x-3 text-center">
-                <span>{data.location}</span>
-              </div>
-            )}
+      <div className="relative overflow-hidden -mx-6 sm:-mx-8 md:-mx-8 lg:-mx-16 -mb-6 sm:-mb-8 md:-mb-8 lg:-mb-16 min-h-0 sm:min-h-[160px] flex flex-col justify-end">
+        {/* On tablet and desktop, the wordmark stays in-flow behind/below the sub-bar as before */}
+        <FooterWordmark className="hidden md:block h-auto w-full select-none pointer-events-none" />
+        <div className="relative md:absolute md:inset-x-0 md:bottom-0 z-10 px-6 sm:px-8 md:px-8 lg:px-16 pt-6 sm:pt-8 md:pt-8 lg:pt-16 pb-0 md:pb-8 lg:pb-16 flex flex-col">
+          <div className="mb-6 sm:mb-8 md:mb-8 lg:mb-16 h-px w-full bg-neutral-900" />
+          <div className="w-full flex flex-col md:flex-row lg:grid lg:grid-cols-3 justify-between items-center gap-y-[12px] md:gap-y-0 gap-x-6">
+            {/* Social media links: on mobile (order-1) sits at the top; on tablet (md:order-2) sits on the right; on desktop (lg:order-3) sits in column 3 */}
             {socialLinks.length > 0 && (
-              <div className="flex justify-center lg:justify-end items-center gap-x-3">
+              <div className="order-1 md:order-2 lg:order-3 flex flex-wrap justify-center md:justify-end items-center gap-2 sm:gap-3">
                 {socialLinks.map(({ id, url, label, Icon }) => (
                   <a
                     aria-label={label}
@@ -350,6 +341,27 @@ export const FooterContent = ({ data }: { data: Footer }) => {
                 ))}
               </div>
             )}
+
+            {/* Copyright & Location wrapper:
+                On mobile: flex-col with Location first (order-1) and Copyright second (order-2) to place Copyright at the bottom before wordmark.
+                On tablet: flex-col left-aligned (md:items-start md:text-left) with Copyright first (md:order-1) and Location second (md:order-2), with a precise 12px gap (md:gap-y-[12px]).
+                On desktop: lg:contents dissolves the wrapper so Copyright takes column 1 and Location takes column 2 in the 3-column grid. */}
+            <div className="order-2 md:order-1 lg:contents flex flex-col items-center md:items-start text-center md:text-left gap-y-[12px]">
+              {data.location && (
+                <div className="order-1 md:order-2 lg:order-2 text-sm text-neutral-500 flex items-center justify-center lg:justify-center gap-x-3 text-center">
+                  <span>{data.location}</span>
+                </div>
+              )}
+              <span className="order-2 md:order-1 lg:order-1 text-sm text-neutral-500 text-center lg:text-left">
+                &copy; {new Date().getFullYear()} {copyrightName}. All Rights
+                Reserved.
+              </span>
+            </div>
+          </div>
+
+          {/* Mobile-only Wordmark: placed cleanly under the copyright with 24px top spacing, bleeding edge-to-edge flush to bottom */}
+          <div className="block md:hidden -mx-6 sm:-mx-8 mt-6">
+            <FooterWordmark className="block h-auto w-full select-none pointer-events-none" />
           </div>
         </div>
       </div>

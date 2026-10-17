@@ -15,7 +15,7 @@ export interface StatItem {
   value: string;
 }
 
-interface WhoWeAreSectionProps {
+export interface WhoWeAreSectionProps {
   heading: string;
   description: string | null;
   stats: readonly StatItem[] | null | undefined;
@@ -115,19 +115,19 @@ export const WhoWeAreSection = ({
   return (
     <section
       aria-label={heading}
-      className="w-full max-w-[1440px] mx-auto px-6 pt-6 pb-12 md:p-16"
+      className="w-full max-w-[1440px] mx-auto px-6 py-12 md:px-12 md:py-20 lg:px-16 lg:py-24"
       ref={scopeRef}
     >
-      <div className="flex flex-col gap-y-6 lg:gap-12 lg:flex-row">
+      <div className="flex flex-col gap-y-8 lg:gap-12 lg:flex-row">
         <div className="w-full lg:w-[30%]">
-          <div className="inline-flex rounded border border-neutral-700 px-4 py-2">
-            <h2 className="text-md text-white">{heading}</h2>
+          <div className="inline-flex rounded border border-neutral-700 bg-neutral-950/70 px-3 py-1 sm:px-3.5 sm:py-1.5 md:px-4 md:py-2 backdrop-blur">
+            <h2 className="text-xs sm:text-sm md:text-base text-white">{heading}</h2>
           </div>
         </div>
         <div className="w-full lg:w-[70%]">
           {description && (
             <p
-              className="text-2xl text-white md:text-[32px] lg:text-[40px] leading-[1.2em]"
+              className="text-2xl md:text-[32px] lg:text-[36px] xl:text-[40px] leading-[1.25] tracking-tight text-white"
               ref={textRef}
             >
               {words.map((word, index) => (
@@ -142,17 +142,21 @@ export const WhoWeAreSection = ({
           )}
           {items.length > 0 && (
             <ul
-              className={`flex flex-col items-center gap-x-6 gap-y-12 lg:flex lg:flex-row lg:gap-24 ${
+              className={`grid grid-cols-2 gap-x-6 gap-y-8 md:gap-x-12 md:gap-y-10 xl:grid-cols-4 xl:gap-x-12 ${
                 description ? "mt-12" : ""
               }`}
               ref={statsRef}
             >
               {items.map((stat, index) => (
-                <li data-stat-item key={stat.id ?? index}>
-                  <p className="text-[64px] font-semibold text-secondary-500 lg:text-7xl">
+                <li
+                  className="flex flex-col items-start"
+                  data-stat-item
+                  key={stat.id ?? index}
+                >
+                  <p className="text-[44px] md:text-[52px] xl:text-[64px] font-semibold leading-none text-secondary-500">
                     <span data-stat-value>{stat.value}</span>
                   </p>
-                  <p className="mt-3 text-xl text-neutral-300 text-center lg:text-left">
+                  <p className="mt-2 md:mt-3 text-sm md:text-base leading-tight text-neutral-400 text-left max-w-[140px] md:max-w-[180px]">
                     {stat.label}
                   </p>
                 </li>

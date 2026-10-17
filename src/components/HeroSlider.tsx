@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { accessibleHeroTitle } from "./heroTitle";
-import { nextWordIndex, WORD_BLUR_PX, WORD_CYCLE_MS } from "./rotatingWord";
+import { nextWordIndex, WORD_BLUR_EM, WORD_CYCLE_MS } from "./rotatingWord";
 import type { ScrollCueAction } from "./scrollCue";
 import { getSmoothScroll } from "./SmoothScroll";
 import { navigateWithBlackout } from "./page-transition/navigateWithBlackout";
@@ -27,7 +27,7 @@ const SLIDE_INTERVAL_MS = 8000;
 
 // One display line of the title: the word stack's every slot keys off this
 // single height.
-const TITLE_LINE_EM = 1.15;
+const TITLE_LINE_EM = 1.25;
 
 /**
  * The Hero's video slider: every slide mounted at once (only the active one
@@ -143,7 +143,7 @@ export const HeroSlider = ({
   };
 
   const scrollCueClassName =
-    "hidden lg:inline-flex absolute bottom-6 right-6 z-20 md:bottom-12 md:right-16 items-center justify-center gap-2 transition-colors px-6 py-4 rounded-[4px] text-base bg-white text-black border border-white hover:bg-neutral-100 hover:text-primary-500 mix-blend-difference";
+    "hidden lg:inline-flex items-center justify-center gap-2 transition-colors px-6 py-4 rounded-[4px] text-base bg-white text-black border border-white hover:bg-neutral-100 hover:text-primary-500 whitespace-nowrap";
 
   return (
     <section
@@ -193,90 +193,80 @@ export const HeroSlider = ({
         ))}
       </div>
 
-      {/* Difference Text (ADR 0006): the title and dashes are white with
-          difference blending, so they read as the negative of the video. The
-          blend sits on this container — a plain child of the section, so its
-          backdrop is the video stack. */}
-      <div className="absolute bottom-6 left-6 z-20 flex flex-col gap-4 mix-blend-difference md:bottom-12 md:left-16 md:gap-6">
-        {/* The visible lines are aria-hidden — the word swap would otherwise
-            re-announce every few seconds — so a static sr-only twin carries
-            the full title to assistive tech and crawlers. */}
-        <h1
-          className="text-[32px] lg:text-4xl xl:text-5xl 2xl:text-6xl 3xl:text-7xl leading-[1.15] tracking-tight text-white"
-          style={{ ["--title-line" as string]: `${TITLE_LINE_EM}em` }}
-        >
-          <span aria-hidden="true">
-            {title}
-            {rotatingWords.length > 0 && (
-              <>
-                <br />
-                {leadInWord}{" "}
-                {/* The softblur crossfade: every word stacked in one grid
-                    cell, the outgoing and incoming both fading while
-                    blurring to --word-blur on the shared swipe easing
-                    (duration-500 mirrors WORD_TRANSITION_MS). The stack's
-                    width holds the widest word, so the line never reflows
-                    mid-cycle. */}
-                <span
-                  className="inline-grid h-(--title-line) align-bottom"
-                  style={{ ["--word-blur" as string]: `${WORD_BLUR_PX}px` }}
-                >
-                  {rotatingWords.map((word, index) => (
-                    <span
-                      className={`col-start-1 row-start-1 block h-(--title-line) text-secondary-500 transition-[opacity,filter] duration-500 ease-swipe ${
-                        index === safeWordIndex
-                          ? "opacity-100 [filter:blur(0px)]"
-                          : "opacity-0 [filter:blur(var(--word-blur))]"
-                      }`}
-                      key={`${word}-${index}`}
-                    >
-                      {word}
-                    </span>
-                  ))}
-                </span>
-              </>
-            )}
-          </span>
-          <span className="sr-only">
-            {accessibleHeroTitle(title, rotatingWords, leadInWord)}
-          </span>
-        </h1>
-
-        {slides.length > 1 && (
-          <div aria-hidden className="flex items-center gap-2">
-            {slides.map((slide, index) => (
-              <div
-                className={
-                  index === safeActiveIndex
-                    ? "h-0.75 w-8 bg-white md:w-16"
-                    : "h-0.75 w-6 bg-white/50"
-                }
-                key={slide.id || index}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {cue.kind === "link" ? (
-        <Link
-          className={scrollCueClassName}
-          href={cue.url}
-          onNavigate={(event) => navigateWithBlackout(event, cue.url)}
-        >
-          {cue.label} <ArrowRight />
-        </Link>
-      ) : (
-        cue.kind === "scroll" && (
-          <button
-            className={scrollCueClassName}
-            onClick={scrollBelowHero}
-            type="button"
+      {/* Difference Text (ADR 0006): the title and scroll cue button are
+          rendered together in a bottom flex bar with difference blending.
+          The gap prevents title/button collision on narrow desktop viewports,
+          allowing the title text to naturally wrap/flex downwards. */}
+      <div className="absolute inset-x-6 bottom-6 z-20 flex flex-row items-end justify-between gap-8 md:inset-x-16 md:bottom-12 md:gap-12 mix-blend-difference pointer-events-none">
+        <div className="min-w-0 flex-1 pointer-events-auto">
+          {/* The visible lines are aria-hidden — the word swap would otherwise
+              re-announce every few seconds — so a static sr-only twin carries
+              the full title to assistive tech and crawlers. */}
+          <h1
+            className="text-[36px] lg:text-[52px] xl:text-6xl leading-[1.25] tracking-tight text-white"
+            data-fluid-title
+            style={{ ["--title-line" as string]: `${TITLE_LINE_EM}em` }}
           >
-            {cue.label} <ArrowRight />
-          </button>
-        )
-      )}
+            <span aria-hidden="true">
+              {title}
+              {rotatingWords.length > 0 && (
+                <>
+                  <br />
+                  {leadInWord}{" "}
+                  {/* The softblur crossfade: every word stacked in one grid
+                      cell, the outgoing and incoming both fading while
+                      blurring to --word-blur on the shared swipe easing
+                      (duration-500 mirrors WORD_TRANSITION_MS). The stack's
+                      width holds the widest word, so the line never reflows
+                      mid-cycle. */}
+                  <span
+                    className="inline-grid h-(--title-line) align-bottom"
+                    style={{ ["--word-blur" as string]: `${WORD_BLUR_EM}em` }}
+                  >
+                    {rotatingWords.map((word, index) => (
+                      <span
+                        className={`col-start-1 row-start-1 block h-(--title-line) text-secondary-500 transition-[opacity,filter] duration-500 ease-swipe ${
+                          index === safeWordIndex
+                            ? "opacity-100 [filter:blur(0px)]"
+                            : "opacity-0 [filter:blur(var(--word-blur))]"
+                        }`}
+                        key={`${word}-${index}`}
+                      >
+                        {word}
+                      </span>
+                    ))}
+                  </span>
+                </>
+              )}
+            </span>
+            <span className="sr-only">
+              {accessibleHeroTitle(title, rotatingWords, leadInWord)}
+            </span>
+          </h1>
+        </div>
+
+        <div className="shrink-0 pointer-events-auto">
+          {cue.kind === "link" ? (
+            <Link
+              className={scrollCueClassName}
+              href={cue.url}
+              onNavigate={(event) => navigateWithBlackout(event, cue.url)}
+            >
+              {cue.label} <ArrowRight />
+            </Link>
+          ) : (
+            cue.kind === "scroll" && (
+              <button
+                className={scrollCueClassName}
+                onClick={scrollBelowHero}
+                type="button"
+              >
+                {cue.label} <ArrowRight />
+              </button>
+            )
+          )}
+        </div>
+      </div>
     </section>
   );
 };
