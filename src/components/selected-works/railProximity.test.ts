@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   RAIL_LINE_MAX_PX,
   RAIL_LINE_REST_PX,
+  RAIL_PROXIMITY_RADIUS_PX,
   railLineWidth,
 } from "./railProximity";
 
@@ -28,9 +29,7 @@ describe("railLineWidth", () => {
   });
 
   it("swells a neighbor at one row pitch to exactly half the swell", () => {
-    // 32px rows + 16px gaps put the next line 48px out; the falloff
-    // radius is that same pitch, so half the swell survives there.
-    expect(railLineWidth(48)).toBe(
+    expect(railLineWidth(RAIL_PROXIMITY_RADIUS_PX)).toBe(
       RAIL_LINE_REST_PX + (RAIL_LINE_MAX_PX - RAIL_LINE_REST_PX) / 2,
     );
   });

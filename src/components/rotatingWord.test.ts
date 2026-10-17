@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   nextWordIndex,
+  WORD_BLUR_EM,
   WORD_BLUR_PX,
   WORD_CYCLE_MS,
   WORD_HOLD_MS,
@@ -17,7 +18,8 @@ describe("softblur timing contract", () => {
     expect(WORD_TRANSITION_MS).toBe(500);
   });
 
-  it("blurs to roughly 8px", () => {
+  it("blurs to roughly 0.133em (roughly 8px at 60px base)", () => {
+    expect(WORD_BLUR_EM).toBe(0.133);
     expect(WORD_BLUR_PX).toBe(8);
   });
 

@@ -335,10 +335,11 @@ export const Cursor = () => {
     <div
       aria-hidden="true"
       className="pointer-events-none fixed left-0 top-0 z-[70] opacity-0"
+      data-static-slab
       ref={rootRef}
     >
-      {/* The resting width comes from w-10; every width after that is
-          GSAP's. px-5 is permanent: the pill's own padding is where the
+      {/* The resting width comes from w-[40px]; every width after that is
+          GSAP's. px-[20px] is permanent: the pill's own padding is where the
           resting arrow centers — overflow-hidden clips at the padding edge,
           not the content edge, so the arrow never sits cramped. The label
           is clipped to nothing at rest and carries no padding of its own —
@@ -347,11 +348,11 @@ export const Cursor = () => {
           visitor aims by — and the morph tweens the gap, the label's width,
           and the pill's width apart in lockstep. */}
       <div
-        className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-black/40 px-5"
+        className="flex h-[40px] w-[40px] items-center justify-center overflow-hidden rounded-full bg-black/40 px-[20px]"
         ref={pillRef}
       >
         <span
-          className="max-w-0 text-sm whitespace-nowrap text-white opacity-0"
+          className="max-w-0 text-[14px] whitespace-nowrap text-white opacity-0"
           ref={labelRef}
         >
           See More
@@ -364,12 +365,12 @@ export const Cursor = () => {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt=""
-          className="size-28 max-w-0 object-contain opacity-0"
+          className="size-[112px] max-w-0 object-contain opacity-0"
           ref={logoImgRef}
         />
         <svg
           aria-hidden="true"
-          className="h-4.5 w-4.5 shrink-0 text-white"
+          className="size-[18px] shrink-0 text-white"
           fill="none"
           ref={arrowRef}
           stroke="currentColor"

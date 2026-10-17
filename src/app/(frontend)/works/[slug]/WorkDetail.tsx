@@ -308,7 +308,7 @@ function WorkDetailContent({ data }: { data: Work }) {
                ========================================================== */
             <nav aria-label="Work sections" className="space-y-6">
               <Link
-                className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border border-neutral-800 text-neutral-400 hover:text-primary-500 hover:border-primary-500/50 font-sans text-xs transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border border-neutral-800 text-neutral-400 hover:text-primary-500 hover:border-primary-500/50 font-sans text-xs transition-colors w-fit"
                 href="/works"
                 onNavigate={(event) => navigateWithBlackout(event, "/works")}
               >
@@ -316,7 +316,7 @@ function WorkDetailContent({ data }: { data: Work }) {
                 Back
               </Link>
 
-              <div className="w-full max-lg:border-b-0 border-b border-neutral-900/80 pb-6">
+              <div className="w-full max-lg:border-b-0 border-b border-neutral-900/80 max-md:pb-0 pb-6">
                 <div className="flex items-center gap-1.5 text-xs font-sans uppercase text-neutral-500 mb-2.5">
                   <span>{sectorName ?? "PROJECT"}</span>
                   <span>•</span>
@@ -439,7 +439,7 @@ function WorkDetailContent({ data }: { data: Work }) {
           >
             {heroThumbnail && (
               <div
-                className={`relative w-full aspect-video ${
+                className={`relative w-full aspect-[552/581.83] md:aspect-video ${
                   variant === "hybrid"
                     ? "max-lg:rounded-none rounded-md"
                     : "rounded-md"
@@ -581,8 +581,8 @@ function WorkDetailContent({ data }: { data: Work }) {
               id="testimonials"
               className={
                 variant === "feugee"
-                  ? "scroll-mt-[calc(var(--navbar-height)+0.5rem)] py-32 px-8 lg:px-16 flex flex-col items-center justify-center text-center"
-                  : "scroll-mt-[calc(var(--navbar-height)+0.5rem)] py-20 lg:py-24 px-8 lg:px-16 flex flex-col items-center justify-center text-center"
+                  ? "scroll-mt-[calc(var(--navbar-height)+0.5rem)] py-32 px-6 md:px-12 lg:px-16 flex flex-col items-center justify-center text-center"
+                  : "scroll-mt-[calc(var(--navbar-height)+0.5rem)] py-20 lg:py-24 px-6 md:px-12 lg:px-16 flex flex-col items-center justify-center text-center"
               }
             >
               <div className="w-full max-w-3xl space-y-8 flex flex-col items-center justify-center text-center">

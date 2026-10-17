@@ -38,7 +38,7 @@ export const MenuControl = ({
         by items-end (see menuIcon.ts for the lines' own motion). */}
     <span
       aria-hidden="true"
-      className="flex h-3 w-6 flex-col items-end justify-between"
+      className="flex h-2.5 w-5 md:h-[11px] md:w-[22px] lg:h-3 lg:w-6 flex-col items-end justify-between"
     >
       <span className={menuIconLine(open, true)} />
       <span className={menuIconLine(open, false)} />

@@ -12,8 +12,12 @@ const LINE_TRANSITION =
 export const menuIconLine = (open: boolean, first: boolean): string =>
   first
     ? `h-[2px] w-full bg-current ${LINE_TRANSITION} ${
-        open ? "translate-y-[5px] rotate-45" : ""
+        open
+          ? "translate-y-[4px] md:translate-y-[4.5px] lg:translate-y-[5px] rotate-45"
+          : ""
       }`
     : `h-[2px] bg-current ${LINE_TRANSITION} ${
-        open ? "w-full -translate-y-[5px] -rotate-45" : "w-2/3"
+        open
+          ? "w-full -translate-y-[4px] md:-translate-y-[4.5px] lg:-translate-y-[5px] -rotate-45"
+          : "w-2/3"
       }`;
