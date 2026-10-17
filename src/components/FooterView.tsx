@@ -117,7 +117,7 @@ const CtaButton = ({
   const className = `${ctaButtonClassName} ${
     primary
       ? "bg-white text-black border border-white hover:bg-neutral-100 hover:text-primary-500"
-      : "border border-neutral-800 text-white hover:border-neutral-700 hover:text-primary-500"
+      : "border border-neutral-800 text-neutral-400 hover:border-primary-500/50 hover:text-primary-500"
   }`;
 
   return url ? (
