@@ -496,7 +496,7 @@ export const WorksListing = ({
             </p>
           ) : (
             <div
-              className="flex w-full flex-col gap-1 lg:flex-row"
+              className="flex w-full flex-col gap-[6px] lg:flex-row"
               // The departing stage is inert, not merely dimmed: the exit
               // plays on cards whose destination is already decided, so no
               // click, focus, or hover may re-enter them mid-flight.
@@ -504,7 +504,7 @@ export const WorksListing = ({
             >
               {columns.map((column, columnIndex) => (
                 <div
-                  className="flex w-full flex-1 flex-col gap-1"
+                  className="flex w-full flex-1 flex-col gap-[6px]"
                   key={columnIndex}
                 >
                   {column.map((item) => (
