@@ -249,11 +249,30 @@
 }
 
 /*
- * Fluid Hero Title scaling (Koto-style): on viewports >= 1728px, the Hero
- * H1 scales lockstep with the root scale: starting at 60px (1440px/1728px base)
- * and scaling gracefully to 72px at 2560px+ (Koto scale).
- * Unlayered so it outranks utility classes on the heading.
+ * Fluid Hero Title scaling (Koto-style):
+ * - Mobile / Tablet (< 1080px): 36px
+ * - Desktop (1080px - 1439px): 52px
+ * - Large Desktop (1440px - 1727px): 60px
+ * - Ultra-wide (>= 1728px): Liquid scaling from 60px to 72px at 2560px+
+ * Unlayered author rule so it outranks utility classes and is 100% immune
+ * to Turbopack utility scanning bugs.
  */
+[data-fluid-title] {
+  font-size: 36px;
+}
+
+@media (min-width: 67.5rem) {
+  [data-fluid-title] {
+    font-size: 52px;
+  }
+}
+
+@media (min-width: 90rem) {
+  [data-fluid-title] {
+    font-size: 60px;
+  }
+}
+
 @media (min-width: 1728px) {
   [data-fluid-title] {
     font-size: clamp(60px, 1.4423vw + 35.08px, 72px);

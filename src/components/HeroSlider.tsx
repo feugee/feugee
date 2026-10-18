@@ -203,7 +203,7 @@ export const HeroSlider = ({
               re-announce every few seconds — so a static sr-only twin carries
               the full title to assistive tech and crawlers. */}
           <h1
-            className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl leading-[1.25] tracking-tight text-white"
+            className="leading-[1.25] tracking-tight text-white"
             data-fluid-title
             style={{ ["--title-line" as string]: `${TITLE_LINE_EM}em` }}
           >
