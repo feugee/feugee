@@ -197,7 +197,7 @@ export const HeroSlider = ({
           rendered together in a bottom flex bar with difference blending.
           The gap prevents title/button collision on narrow desktop viewports,
           allowing the title text to naturally wrap/flex downwards. */}
-      <div className="absolute inset-x-6 bottom-6 z-20 flex flex-row items-end justify-between gap-8 md:inset-x-16 md:bottom-12 md:gap-12 mix-blend-difference pointer-events-none">
+      <div className="absolute inset-x-6 bottom-6 z-20 flex flex-row items-end justify-between gap-8 md:inset-x-12 lg:inset-x-16 md:bottom-12 md:gap-12 mix-blend-difference pointer-events-none">
         <div className="min-w-0 flex-1 pointer-events-auto">
           {/* The visible lines are aria-hidden — the word swap would otherwise
               re-announce every few seconds — so a static sr-only twin carries
