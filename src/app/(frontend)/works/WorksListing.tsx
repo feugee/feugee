@@ -433,8 +433,8 @@ export const WorksListing = ({
           there instead. */}
       <aside className="self-start w-full lg:w-[20rem] lg:shrink-0 px-6 md:px-12 lg:px-0 max-lg:pt-32 lg:sticky lg:top-28 lg:pt-4">
         {/* A div, not a nav: the filter buttons are controls, not links. */}
-        <div className="space-y-6">
-          <div className="w-full max-lg:border-b-0 border-b border-neutral-900/80 max-md:pb-0 pb-6">
+        <div className="lg:space-y-6">
+          <div className="w-full max-lg:border-b-0 border-b border-neutral-900/80 pb-6">
             <h1 className="text-xl md:text-2xl font-sans font-medium tracking-tight text-white mb-1.5">
               Our Works
             </h1>
