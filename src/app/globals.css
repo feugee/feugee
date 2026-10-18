@@ -250,7 +250,7 @@
 
 /*
  * Fluid Hero Title scaling (Koto-style):
- * - Mobile (< 768px): 36px
+ * - Mobile (< 768px): 30px
  * - Tablet (768px - 1079px): 40px
  * - Desktop (1080px - 1439px): 52px
  * - Large Desktop (1440px - 1727px): 60px
@@ -259,7 +259,7 @@
  * to Turbopack utility scanning bugs.
  */
 [data-fluid-title] {
-  font-size: 36px;
+  font-size: 30px;
 }
 
 @media (min-width: 48rem) {
