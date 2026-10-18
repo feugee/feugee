@@ -120,20 +120,21 @@ export const SectorFilter = ({
       <div
         aria-expanded={open}
         aria-label="Filter Works"
-        className={`fixed inset-x-6 bottom-6 z-45 overflow-hidden transition-[max-height,height,opacity,translate,border-radius,box-shadow,background-color,border-color,backdrop-filter,visibility] duration-500 ease-swipe lg:hidden ${
+        className={`fixed inset-x-6 bottom-6 z-45 overflow-hidden transition-[opacity,translate,border-radius,box-shadow,background-color,border-color,backdrop-filter,visibility] duration-500 ease-swipe lg:hidden ${
           !isShown
             ? "invisible translate-y-10 opacity-0 pointer-events-none"
             : "visible translate-y-0 opacity-100"
         } ${
           open
-            ? "max-h-[65svh] h-[360px] rounded-[8px] border border-neutral-700 bg-neutral-950 backdrop-blur-none shadow-2xl"
-            : "max-h-[50px] h-[50px] rounded-[4px] border border-neutral-700/80 bg-neutral-950/70 backdrop-blur-md shadow-lg cursor-pointer"
+            ? "rounded-[8px] border border-neutral-700 bg-neutral-950 backdrop-blur-none shadow-2xl"
+            : "rounded-[4px] border border-neutral-700/80 bg-neutral-950/70 backdrop-blur-md shadow-lg cursor-pointer"
         }`}
+        data-lenis-prevent
         ref={barRef}
       >
         {/* Header Row */}
         <div
-          className={`flex items-center justify-between px-4 h-[50px] transition-colors duration-500 ${
+          className={`flex items-center justify-between px-4 h-[50px] shrink-0 transition-colors duration-500 ${
             open ? "border-b border-neutral-900" : ""
           }`}
           onClick={() => {
@@ -187,39 +188,47 @@ export const SectorFilter = ({
           </button>
         </div>
 
-        {/* Expanded Sector List Body */}
+        {/* Expandable Sector List Grid: Smooth CSS Grid Accordion */}
         <div
-          className={`transition-[opacity,translate] duration-400 ease-swipe ${
-            open
-              ? "opacity-100 translate-y-0 delay-100 pointer-events-auto"
-              : "opacity-0 -translate-y-2 pointer-events-none"
+          className={`grid transition-[grid-template-rows] duration-500 ease-swipe ${
+            open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
           }`}
         >
-          <ul className="max-h-[calc(65svh-50px)] space-y-2 overflow-y-auto p-4">
-            {[null, ...sectors].map((sector) => {
-              const active = activeSector === (sector?.slug ?? null);
-              return (
-                <li key={sector?.slug ?? "all"}>
-                  <button
-                    aria-pressed={active}
-                    className={`group flex w-full items-center text-left text-sm font-sans transition-colors py-1.5 ${
-                      active
-                        ? "text-primary-500 font-medium"
-                        : "text-neutral-700 hover:text-white font-normal"
-                    }`}
-                    onClick={() => {
-                      onSelect(sector?.slug ?? null);
-                      closeSheet();
-                    }}
-                    type="button"
-                  >
-                    <ArrowPush active={active} hover={false} />
-                    {sector?.name ?? "All"}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="overflow-hidden min-h-0">
+            <div
+              className={`transition-[opacity,translate] duration-500 ease-swipe ${
+                open
+                  ? "opacity-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 translate-y-3 pointer-events-none"
+              }`}
+            >
+              <ul className="max-h-[calc(65svh-50px)] space-y-2 overflow-y-auto overscroll-contain p-4 pb-6 mask-[linear-gradient(to_bottom,black_calc(100%-24px),transparent)]">
+                {[null, ...sectors].map((sector) => {
+                  const active = activeSector === (sector?.slug ?? null);
+                  return (
+                    <li key={sector?.slug ?? "all"}>
+                      <button
+                        aria-pressed={active}
+                        className={`group flex w-full items-center text-left text-sm font-sans transition-colors py-1.5 ${
+                          active
+                            ? "text-primary-500 font-medium"
+                            : "text-neutral-700 hover:text-white font-normal"
+                        }`}
+                        onClick={() => {
+                          onSelect(sector?.slug ?? null);
+                          closeSheet();
+                        }}
+                        type="button"
+                      >
+                        <ArrowPush active={active} hover={false} />
+                        {sector?.name ?? "All"}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </>

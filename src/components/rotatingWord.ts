@@ -8,6 +8,7 @@
 
 export const WORD_HOLD_MS = 1500;
 export const WORD_TRANSITION_MS = 500;
+export const WORD_BLUR_EM = 0.133;
 export const WORD_BLUR_PX = 8;
 
 // One full word turn: the hold, then the crossfade it ends with.
