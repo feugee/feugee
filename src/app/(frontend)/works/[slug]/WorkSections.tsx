@@ -13,15 +13,15 @@ export const sectionAnchor = (index: number) => `section-${index}`;
 // The tracks are minmax(0,1fr), not bare 1fr: a track's auto minimum refuses
 // to shrink below an Asset's intrinsic width and pushes it past the screen.
 const layoutClassFeugee: Record<WorkLayout["blockType"], string> = {
-  "one-column": "grid grid-cols-[minmax(0,1fr)] gap-[4px]",
-  "two-column": "grid gap-[4px] md:grid-cols-[repeat(2,minmax(0,1fr))]",
-  "three-column": "grid gap-[4px] lg:grid-cols-[repeat(3,minmax(0,1fr))]",
+  "one-column": "grid grid-cols-[minmax(0,1fr)] gap-[6px]",
+  "two-column": "grid gap-[6px] md:grid-cols-[repeat(2,minmax(0,1fr))]",
+  "three-column": "grid gap-[6px] lg:grid-cols-[repeat(3,minmax(0,1fr))]",
   // Item 1 spans both rows on the left; items 2 and 3 stack top and bottom right.
   "feature-left":
-    "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
+    "grid gap-[6px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
   // Item 1 spans both rows on the right; items 2 and 3 stack top and bottom left.
   "feature-right":
-    "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
+    "grid gap-[6px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
 };
 
 const layoutClassRefined: Record<WorkLayout["blockType"], string> = {
@@ -35,13 +35,13 @@ const layoutClassRefined: Record<WorkLayout["blockType"], string> = {
 };
 
 const layoutClassHybrid: Record<WorkLayout["blockType"], string> = {
-  "one-column": "grid grid-cols-[minmax(0,1fr)] gap-[4px]",
-  "two-column": "grid gap-[4px] md:grid-cols-[repeat(2,minmax(0,1fr))]",
-  "three-column": "grid gap-[4px] lg:grid-cols-[repeat(3,minmax(0,1fr))]",
+  "one-column": "grid grid-cols-[minmax(0,1fr)] gap-[6px]",
+  "two-column": "grid gap-[6px] md:grid-cols-[repeat(2,minmax(0,1fr))]",
+  "three-column": "grid gap-[6px] lg:grid-cols-[repeat(3,minmax(0,1fr))]",
   "feature-left":
-    "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
+    "grid gap-[6px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
   "feature-right":
-    "grid gap-[4px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
+    "grid gap-[6px] lg:grid-cols-[repeat(2,minmax(0,1fr))] lg:grid-rows-2",
 };
 
 const itemClass = (layout: WorkLayout, index: number) => {
@@ -82,13 +82,13 @@ export const WorkSections = ({
   const isKoto = variant === "koto";
 
   return (
-    <div className={isKoto ? "w-full space-y-3 md:space-y-4 pb-12" : "w-full space-y-1 pb-8"}>
+    <div className={isKoto ? "w-full space-y-3 md:space-y-4 pb-12" : "w-full space-y-[6px] pb-8"}>
       {sections.map((section, sectionIndex) => (
         <section
           key={section.id ?? sectionIndex}
           id={sectionAnchor(sectionIndex)}
           className={`scroll-mt-[calc(var(--navbar-height)+0.5rem)] ${
-            isKoto ? "space-y-3 md:space-y-4" : "space-y-1"
+            isKoto ? "space-y-3 md:space-y-4" : "space-y-[6px]"
           }`}
         >
           {(section.layouts ?? []).map((layout, layoutIndex) => (

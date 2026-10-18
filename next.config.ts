@@ -24,6 +24,7 @@ const nextConfig: NextConfig = {
       { protocol: "http", hostname: "localhost", port: "3000" },
       { protocol: "http", hostname: "localhost", port: "3001" },
       { protocol: "https", hostname: "feugee.com" },
+      { protocol: "https", hostname: "assets.feugee.com" },
       ...(process.env.R2_PUBLIC_URL
         ? [
             {
