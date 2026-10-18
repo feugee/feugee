@@ -197,13 +197,13 @@ export const HeroSlider = ({
           rendered together in a bottom flex bar with difference blending.
           The gap prevents title/button collision on narrow desktop viewports,
           allowing the title text to naturally wrap/flex downwards. */}
-      <div className="absolute inset-x-6 bottom-6 z-20 flex flex-row items-end justify-between gap-8 md:inset-x-12 lg:inset-x-16 md:bottom-12 md:gap-12 mix-blend-difference pointer-events-none">
+      <div className="absolute inset-x-6 bottom-6 z-20 flex flex-row items-end justify-between gap-8 md:inset-x-16 md:bottom-12 md:gap-12 mix-blend-difference pointer-events-none">
         <div className="min-w-0 flex-1 pointer-events-auto">
           {/* The visible lines are aria-hidden — the word swap would otherwise
               re-announce every few seconds — so a static sr-only twin carries
               the full title to assistive tech and crawlers. */}
           <h1
-            className="text-[36px] lg:text-[52px] xl:text-6xl leading-[1.25] tracking-tight text-white"
+            className="text-[32px] md:text-[36px] lg:text-[42px] xl:text-[52px] leading-[1.25] tracking-tight text-white"
             data-fluid-title
             style={{ ["--title-line" as string]: `${TITLE_LINE_EM}em` }}
           >
