@@ -250,7 +250,8 @@
 
 /*
  * Fluid Hero Title scaling (Koto-style):
- * - Mobile / Tablet (< 1080px): 36px
+ * - Mobile (< 768px): 36px
+ * - Tablet (768px - 1079px): 40px
  * - Desktop (1080px - 1439px): 52px
  * - Large Desktop (1440px - 1727px): 60px
  * - Ultra-wide (>= 1728px): Liquid scaling from 60px to 72px at 2560px+
@@ -259,6 +260,12 @@
  */
 [data-fluid-title] {
   font-size: 36px;
+}
+
+@media (min-width: 48rem) {
+  [data-fluid-title] {
+    font-size: 40px;
+  }
 }
 
 @media (min-width: 67.5rem) {
