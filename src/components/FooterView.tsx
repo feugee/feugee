@@ -188,7 +188,7 @@ export const FooterContent = ({ data }: { data: Footer }) => {
         <section
           id="contact-cta"
           aria-label="Contact CTA"
-          className="flex w-full flex-col items-center justify-center gap-y-8 py-16 md:py-24 lg:py-28 text-center md:gap-y-12"
+          className="flex w-full flex-col items-center justify-center gap-y-8 pt-8 pb-16 md:pt-12 md:pb-20 lg:pt-16 lg:pb-24 text-center md:gap-y-12"
         >
           <div className="flex flex-col gap-y-4 md:gap-y-6 items-center text-center">
             {cta.eyebrow && (
